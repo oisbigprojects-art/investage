@@ -1,6 +1,17 @@
 # Investage — kirish so'rovi va rollar (1-bosqich)
 
-Next.js 15 + Supabase + Vercel. Hammasi bepul tariflarda ishlaydi.
+Next.js 15 + Supabase + Netlify. Hammasi bepul tariflarda ishlaydi.
+
+## Hozirgi holat
+
+| Nima | Qayerda |
+|---|---|
+| Jonli sayt | https://investage-j3av.netlify.app |
+| Kod | https://github.com/oisbigprojects-art/investage (`main` ga push → sayt avtomatik yangilanadi) |
+| Baza | Supabase loyihasi `investage` (Frankfurt, bepul), ref `fuklumjbymmkaflzndxp` |
+| Hosting | Netlify loyihasi `investage-j3av` (bepul) |
+
+**Email tasdiqlash vaqtincha o'chiq.** Supabase'ning bepul email xizmati faqat jamoa a'zolariga xat yuboradi. Ommaga ochishdan oldin alohida email xizmati (SMTP, masalan Resend) ulanib, Authentication → Sign In / Providers → "Confirm email" qayta yoqilishi kerak. Shunda Authentication → URL Configuration → Site URL ga sayt manzilini yozing.
 
 ## Nima bor
 
@@ -22,7 +33,7 @@ Next.js 15 + Supabase + Vercel. Hammasi bepul tariflarda ishlaydi.
 
 ---
 
-## O'rnatish (taxminan 20 daqiqa)
+## Noldan o'rnatish (boshqa hisobda qayta qurish kerak bo'lsa)
 
 ### 1. Supabase
 1. [supabase.com](https://supabase.com) → **New project** (bepul tarif).

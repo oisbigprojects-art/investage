@@ -3,10 +3,12 @@ import { getSession } from '@/lib/supabase/server';
 import StartupCard from '@/components/StartupCard';
 import { STAGES } from '@/lib/labels';
 
+export const metadata = { title: 'Startaplar — Investage' };
+
 export default async function StartupsPage({ searchParams }) {
   const sp = await searchParams;
   const stage = STAGES[sp?.bosqich] ? sp.bosqich : null;
-  const { supabase } = await getSession();
+  const { supabase, profile } = await getSession();
 
   let q = supabase
     .from('startups')
@@ -20,11 +22,16 @@ export default async function StartupsPage({ searchParams }) {
     <>
       <div className="page-head">
         <h1>Startaplar</h1>
-        <p className="muted">Ochiq ma&apos;lumotlar. Summa, ulush va kontaktlar — startap ruxsat bergandan keyin.</p>
+        <p className="muted">
+          Tanishtiruvlar hammaga ochiq. Summa, ulush va kontaktlarni ko&apos;rish uchun startapga kirish so&apos;rovi
+          yuboriladi.
+        </p>
       </div>
 
-      <div className="filters">
-        <Link href="/startaplar" className={`filter ${!stage ? 'is-on' : ''}`}>Hammasi</Link>
+      <div className="filters" role="group" aria-label="Bosqich bo'yicha saralash">
+        <Link href="/startaplar" className={`filter ${!stage ? 'is-on' : ''}`}>
+          Hammasi
+        </Link>
         {Object.entries(STAGES).map(([k, v]) => (
           <Link key={k} href={`/startaplar?bosqich=${k}`} className={`filter ${stage === k ? 'is-on' : ''}`}>
             {v}
@@ -39,7 +46,25 @@ export default async function StartupsPage({ searchParams }) {
           ))}
         </div>
       ) : (
-        <div className="empty">Bu bo&apos;limda hozircha startap yo&apos;q.</div>
+        <div className="empty">
+          <h3>{stage ? "Bu bosqichda hozircha startap yo'q" : "Hozircha startaplar yo'q"}</h3>
+          <p>
+            {stage
+              ? "Boshqa bosqichni tanlang yoki barcha startaplarni ko'ring."
+              : "Birinchi bo'lib profil oching, investorlar sizni birinchi ko'rishadi."}
+          </p>
+          {stage ? (
+            <Link className="btn btn-ghost" href="/startaplar">
+              Barcha startaplar
+            </Link>
+          ) : (
+            !profile && (
+              <Link className="btn btn-gold" href="/royxat?rol=startup">
+                Startap profilini yaratish
+              </Link>
+            )
+          )}
+        </div>
       )}
     </>
   );

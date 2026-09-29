@@ -1,6 +1,23 @@
 import Link from 'next/link';
 import { getSession } from '@/lib/supabase/server';
 import StartupCard from '@/components/StartupCard';
+import SealedDemo from '@/components/SealedDemo';
+import { ScoreRing } from '@/components/ui';
+import { CheckIcon, LockIcon, SealIcon } from '@/components/icons';
+
+const STARTUP_POINTS = [
+  "Ochiq tanishtiruv va yopiq ma'lumotni alohida to'ldiring",
+  "Kirish so'rovlarini tasdiqlang yoki rad eting",
+  'Bergan ruxsatingizni istalgan payt yoping',
+  "Baho va tasdiq belgisi bilan ishonchni oshiring",
+];
+
+const INVESTOR_POINTS = [
+  "Startaplarni bosqich bo'yicha saralang",
+  "Qiziqqan startapga kirish so'rovi yuboring",
+  "So'rovlaringiz holatini bir joyda kuzating",
+  "Ruxsat berilgach summa, ulush va kontaktlarni ko'ring",
+];
 
 export default async function Home() {
   const { supabase, profile } = await getSession();
@@ -13,61 +30,146 @@ export default async function Home() {
   return (
     <>
       <section className="hero">
-        <h1>O&apos;zbekiston startaplari va investorlari uchun uchrashuv joyi</h1>
-        <p className="lead">
-          Startaplar o&apos;zini tanishtiradi, investorlar ko&apos;rib chiqadi. Chuqur ma&apos;lumotlar faqat startap
-          ruxsat bergan investorga ochiladi.
-        </p>
+        <div className="hero-copy">
+          <h1>
+            <span>Startap tanishtiradi.</span>
+            <span>Investor so&apos;raydi.</span>
+            <span>Qaror startapniki.</span>
+          </h1>
+          <p className="lead">
+            Investage — O&apos;zbekiston startaplari va investorlari uchun platforma. Summa, ulush va kontaktlar faqat
+            startap tasdiqlagan investorga ochiladi.
+          </p>
 
-        {!profile && (
-          <div className="role-pick">
-            <Link href="/royxat?rol=startup" className="card role-card">
-              <span className="role-kicker">Men startapman</span>
-              <strong>Mablag&apos; izlayapman</strong>
-              <span className="muted small">Profil oching, kimga ma&apos;lumot ochishni o&apos;zingiz hal qiling.</span>
-            </Link>
-            <Link href="/royxat?rol=investor" className="card role-card">
-              <span className="role-kicker">Men investorman</span>
-              <strong>Loyiha izlayapman</strong>
-              <span className="muted small">Startaplarni ko&apos;ring, qiziqqaniga kirish so&apos;rovi yuboring.</span>
-            </Link>
-          </div>
-        )}
-        {profile && (
-          <div className="hero-cta">
-            <Link href="/kabinet" className="btn btn-primary">Kabinetga o&apos;tish</Link>
-          </div>
-        )}
+          {profile ? (
+            <div className="row">
+              <Link className="btn btn-gold" href="/kabinet">
+                Kabinetga o&apos;tish
+              </Link>
+              <Link className="btn btn-ghost" href="/startaplar">
+                Startaplarni ko&apos;rish
+              </Link>
+            </div>
+          ) : (
+            <div className="row">
+              <Link className="btn btn-gold" href="/royxat?rol=startup">
+                Startap sifatida boshlash
+              </Link>
+              <Link className="btn btn-ghost" href="/royxat?rol=investor">
+                Investor sifatida boshlash
+              </Link>
+            </div>
+          )}
+
+          <p className="hero-note">
+            <LockIcon size={15} />
+            Platforma orqali pul o&apos;tkazilmaydi: kelishuv tomonlar o&apos;rtasida.
+          </p>
+        </div>
+
+        <SealedDemo />
       </section>
 
-      <section className="steps">
-        <div className="step">
-          <span className="step-n">1</span>
-          <div>
-            <strong>Ochiq qism</strong>
-            <p className="muted small">Hamma startap nomi, sohasi, bosqichi, bahosi va tasdiq belgisini ko&apos;radi.</p>
-          </div>
+      <section className="section">
+        <div className="section-head">
+          <h2>Ruxsat qanday ishlaydi</h2>
+          <p className="muted">Ma&apos;lumot ochilishini har doim startapning o&apos;zi hal qiladi.</p>
         </div>
-        <div className="step">
-          <span className="step-n">2</span>
-          <div>
-            <strong>Kirish so&apos;rovi</strong>
-            <p className="muted small">Investor qiziqqan startapiga qisqa xabar bilan so&apos;rov yuboradi.</p>
-          </div>
+        <ol className="steps">
+          <li>
+            <span className="step-n">1</span>
+            <h3>Tanishtiruv hammaga ochiq</h3>
+            <p className="muted">
+              Nomi, sohasi, bosqichi, bahosi va tasdiq belgisi ro&apos;yxatdan o&apos;tmagan mehmonga ham ko&apos;rinadi.
+            </p>
+          </li>
+          <li>
+            <span className="step-n">2</span>
+            <h3>Investor so&apos;rov yuboradi</h3>
+            <p className="muted">Qiziqqan startapiga qisqa xabar bilan so&apos;rov yuboradi. Har bir so&apos;rov alohida ko&apos;riladi.</p>
+          </li>
+          <li>
+            <span className="step-n">3</span>
+            <h3>Startap qaror qiladi</h3>
+            <p className="muted">
+              Tasdiqlasa, summa, ulush va kontaktlar faqat shu investorga ochiladi. Ruxsatni istalgan payt yopish mumkin.
+            </p>
+          </li>
+        </ol>
+      </section>
+
+      <section className="section">
+        <div className="section-head">
+          <h2>Har tomon o&apos;ziga kerakli narsani ko&apos;radi</h2>
         </div>
-        <div className="step">
-          <span className="step-n">3</span>
-          <div>
-            <strong>Startap qaror qiladi</strong>
-            <p className="muted small">Tasdiqlasa — summa, ulush va kontaktlar faqat shu investorga ochiladi.</p>
+        <div className="split">
+          <div className="panel">
+            <h3>Startap uchun</h3>
+            <p className="sub muted">Ma&apos;lumotingiz sizning nazoratingizda.</p>
+            <ul className="checks">
+              {STARTUP_POINTS.map((t) => (
+                <li key={t}>
+                  <CheckIcon size={18} />
+                  <span>{t}</span>
+                </li>
+              ))}
+            </ul>
+            {!profile && (
+              <Link className="btn btn-gold panel-btn" href="/royxat?rol=startup">
+                Startap profilini ochish
+              </Link>
+            )}
+          </div>
+          <div className="panel">
+            <h3>Investor uchun</h3>
+            <p className="sub muted">Qiziqqan loyihalarni topib, to&apos;g&apos;ridan-to&apos;g&apos;ri so&apos;rang.</p>
+            <ul className="checks">
+              {INVESTOR_POINTS.map((t) => (
+                <li key={t}>
+                  <CheckIcon size={18} />
+                  <span>{t}</span>
+                </li>
+              ))}
+            </ul>
+            {!profile && (
+              <Link className="btn btn-ghost panel-btn" href="/royxat?rol=investor">
+                Investor sifatida ro&apos;yxatdan o&apos;tish
+              </Link>
+            )}
           </div>
         </div>
       </section>
 
-      <section>
+      <section className="section">
+        <div className="trust">
+          <div>
+            <h2>Baho va tasdiq belgisini startap o&apos;zi qo&apos;ya olmaydi</h2>
+            <p className="muted">
+              Baho (0 dan 100 gacha) va &laquo;Tasdiqlangan&raquo; belgisi Investage jamoasi tomonidan qo&apos;yiladi.
+              Startap ularni o&apos;zgartira olmaydi, shuning uchun investor ularga tayana oladi.
+            </p>
+          </div>
+          <div className="trust-visual">
+            <div className="tile">
+              <ScoreRing value={78} size={64} />
+              <b>Baho</b>
+              <span className="muted small">0 dan 100 gacha</span>
+            </div>
+            <div className="tile">
+              <span className="tile-seal">
+                <SealIcon size={40} />
+              </span>
+              <b>Tasdiqlangan</b>
+              <span className="muted small">Hujjatlari tekshirilgan</span>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section className="section">
         <div className="section-head">
           <h2>Yangi startaplar</h2>
-          <Link href="/startaplar">Barchasi →</Link>
+          <Link href="/startaplar">Barchasini ko&apos;rish</Link>
         </div>
         {startups?.length ? (
           <div className="grid">
@@ -76,7 +178,15 @@ export default async function Home() {
             ))}
           </div>
         ) : (
-          <div className="empty">Hozircha startaplar yo&apos;q.</div>
+          <div className="empty">
+            <h3>Birinchi startap siz bo&apos;ling</h3>
+            <p>Hozircha ro&apos;yxat bo&apos;sh. Profil oching, investorlar sizni birinchi bo&apos;lib ko&apos;rishadi.</p>
+            {!profile && (
+              <Link className="btn btn-gold" href="/royxat?rol=startup">
+                Startap profilini yaratish
+              </Link>
+            )}
+          </div>
         )}
       </section>
     </>

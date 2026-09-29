@@ -2,10 +2,17 @@ import './globals.css';
 import Link from 'next/link';
 import { getSession } from '@/lib/supabase/server';
 import { logout } from './auth-actions';
+import Logo from '@/components/Logo';
 
 export const metadata = {
   title: 'Investage — startaplar va investorlar platformasi',
-  description: "O'zbekistondagi startaplar va investorlarni bog'lovchi platforma",
+  description:
+    "O'zbekiston startaplari va investorlari uchun platforma. Tanishtiruv ochiq, summa, ulush va kontaktlar faqat startap ruxsati bilan ochiladi.",
+};
+
+export const viewport = {
+  themeColor: '#0F0F0F',
+  colorScheme: 'dark',
 };
 
 export default async function RootLayout({ children }) {
@@ -14,44 +21,90 @@ export default async function RootLayout({ children }) {
 
   return (
     <html lang="uz">
+      <head>
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="" />
+        <link
+          rel="stylesheet"
+          href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;600&display=swap"
+        />
+      </head>
       <body>
+        <a className="skip" href="#main">
+          Asosiy qismga o&apos;tish
+        </a>
         <header className="topbar">
           <div className="wrap topbar-inner">
-            <Link href="/" className="logo">
-              Invest<span>age</span>
+            <Link href="/" className="logo" aria-label="Investage — bosh sahifa">
+              <Logo height={26} />
             </Link>
-            <nav className="nav">
+            <nav className="nav" aria-label="Asosiy menyu">
               {role === 'startup' && (
                 <>
-                  <Link href="/kabinet/startap">Mening startapim</Link>
-                  <Link href="/kabinet/startap#sorovlar">So&apos;rovlar</Link>
+                  <Link className="nav-link" href="/kabinet/startap">
+                    Mening startapim
+                  </Link>
+                  <Link className="nav-link" href="/kabinet/startap#sorovlar">
+                    So&apos;rovlar
+                  </Link>
                 </>
               )}
               {role === 'investor' && (
                 <>
-                  <Link href="/startaplar">Startaplar</Link>
-                  <Link href="/kabinet/investor">So&apos;rovlarim</Link>
+                  <Link className="nav-link" href="/startaplar">
+                    Startaplar
+                  </Link>
+                  <Link className="nav-link" href="/kabinet/investor">
+                    So&apos;rovlarim
+                  </Link>
                 </>
               )}
-              {!role && <Link href="/startaplar">Startaplar</Link>}
+              {!role && (
+                <Link className="nav-link" href="/startaplar">
+                  Startaplar
+                </Link>
+              )}
               {role ? (
                 <form action={logout}>
-                  <button className="btn btn-ghost btn-sm" type="submit">Chiqish</button>
+                  <button className="btn btn-ghost btn-sm" type="submit">
+                    Chiqish
+                  </button>
                 </form>
               ) : (
                 <>
-                  <Link href="/kirish">Kirish</Link>
-                  <Link href="/royxat" className="btn btn-primary btn-sm">Ro&apos;yxatdan o&apos;tish</Link>
+                  <Link className="nav-link" href="/kirish">
+                    Kirish
+                  </Link>
+                  <Link href="/royxat" className="btn btn-gold btn-sm">
+                    Ro&apos;yxatdan o&apos;tish
+                  </Link>
                 </>
               )}
             </nav>
           </div>
         </header>
-        <main className="wrap main">{children}</main>
+
+        <main id="main" className="wrap main">
+          {children}
+        </main>
+
         <footer className="footer">
-          <div className="wrap">
-            © {new Date().getFullYear()} Investage. Platforma orqali pul o&apos;tkazilmaydi — kelishuvlar tomonlar o&apos;rtasida to&apos;g&apos;ridan-to&apos;g&apos;ri amalga oshiriladi.
+          <div className="wrap footer-grid">
+            <div className="footer-brand">
+              <Logo height={22} />
+              <p className="muted small">O&apos;zbekiston startaplari va investorlari uchun platforma.</p>
+            </div>
+            <nav className="footer-links" aria-label="Pastki menyu">
+              <Link href="/startaplar">Startaplar</Link>
+              <Link href="/kirish">Kirish</Link>
+              <Link href="/royxat">Ro&apos;yxatdan o&apos;tish</Link>
+            </nav>
+            <p className="footer-note small muted">
+              Investage hozircha katalog sifatida ishlaydi: platforma orqali pul o&apos;tkazilmaydi, kelishuv tomonlar
+              o&apos;rtasida amalga oshiriladi.
+            </p>
           </div>
+          <div className="wrap footer-copy small muted">© {new Date().getFullYear()} Investage</div>
         </footer>
       </body>
     </html>

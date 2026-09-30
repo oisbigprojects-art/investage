@@ -1,5 +1,5 @@
 import { Monogram, StatusBadge } from './ui';
-import { decideRequest, revokeAccess } from '@/app/kabinet/actions';
+import { decideRequest, revokeAccess } from '@/app/cabinet-actions';
 import { formatDate } from '@/lib/labels';
 
 // Startap kabinetidagi bitta kirish so'rovi: investor kimligi va harakatlar

@@ -347,3 +347,7 @@ create policy logos_select on storage.objects for select to authenticated
 drop policy if exists logos_delete on storage.objects;
 create policy logos_delete on storage.objects for delete to authenticated
   using (bucket_id = 'logos' and (storage.foldername(name))[1] = (select auth.uid())::text);
+
+-- Bildirishnomalar: foydalanuvchi ularni oxirgi marta qachon ko'rgani (migratsiya "notifications_seen_at")
+alter table public.profiles add column if not exists notifications_seen_at timestamptz not null default now();
+grant update (notifications_seen_at) on public.profiles to authenticated;

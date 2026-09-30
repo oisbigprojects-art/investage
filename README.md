@@ -77,4 +77,6 @@ Hozircha admin panel yo'q: Supabase → **Table Editor → startups** → kerakl
 
 - **Startap:** umumiy ko'rinish (profil to'liqligi), so'rovlar (filtr bilan), profil (logotip yuklash), katalogdan yashirish.
 - **Investor:** umumiy ko'rinish, qidiruv va filtr (nom, soha, bosqich), saqlanganlar, so'rovni qaytarib olish, o'z profili.
+- **Dashboard hamma uchun:** mehmon, startap va investor uchun yon menyuli panel (`app/(app)`), ko'rsatkichlar va grafiklar, faollik tasmasi, qo'ng'iroqcha (bildirishnomalar, `/kabinet/bildirishnomalar`). Bosh sahifa, `/kirish`, `/royxat` alohida (`app/(site)`) — yuqori panel bilan.
+- Bildirishnomalar alohida jadvalsiz, `access_requests` va `saved_startups` dan hosil qilinadi; o'qilgan vaqt `profiles.notifications_seen_at` da.
 - Baza o'zgarishlari `supabase/schema.sql` 8-bo'limida. Logotiplar `logos` bucket'ida (1 MB, PNG/JPG/WebP).

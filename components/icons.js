@@ -119,3 +119,46 @@ export function EyeOffIcon({ size = 18 }) {
     </svg>
   );
 }
+
+export function BellIcon({ size = 18 }) {
+  return (
+    <svg {...base} width={size} height={size}>
+      <path d="M5 8a5 5 0 0110 0c0 4.5 1.5 5.5 1.5 5.5h-13S5 12.5 5 8z" />
+      <path d="M8.5 16.5a1.6 1.6 0 003 0" />
+    </svg>
+  );
+}
+
+export function HomeIcon({ size = 18 }) {
+  return (
+    <svg {...base} width={size} height={size}>
+      <path d="M3.5 9.5L10 4l6.5 5.5" />
+      <path d="M5 8.5V16h3.5v-4h3v4H15V8.5" />
+    </svg>
+  );
+}
+
+export function PulseIcon({ size = 18 }) {
+  return (
+    <svg {...base} width={size} height={size}>
+      <path d="M2.5 10h3.2l2-5.5 3.6 11 2-5.5h4.2" />
+    </svg>
+  );
+}
+
+export function LogoutIcon({ size = 18 }) {
+  return (
+    <svg {...base} width={size} height={size}>
+      <path d="M8 3.5H5a1.5 1.5 0 00-1.5 1.5v10A1.5 1.5 0 005 16.5h3" />
+      <path d="M12 6.5l3.5 3.5-3.5 3.5M15.5 10H8" />
+    </svg>
+  );
+}
+
+export function PlusIcon({ size = 18 }) {
+  return (
+    <svg {...base} width={size} height={size}>
+      <path d="M10 4.5v11M4.5 10h11" />
+    </svg>
+  );
+}

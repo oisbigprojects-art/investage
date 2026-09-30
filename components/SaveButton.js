@@ -1,5 +1,5 @@
 import { BookmarkIcon } from './icons';
-import { toggleSaved } from '@/app/kabinet/actions';
+import { toggleSaved } from '@/app/cabinet-actions';
 
 // Investor uchun "saqlash" tugmasi (JS talab qilinmaydi: oddiy forma)
 export default function SaveButton({ startupId, saved, back, withLabel = false }) {

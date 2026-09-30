@@ -377,3 +377,4 @@ grant execute on function public.platform_stats() to anon, authenticated;
 -- profiles: city, public_profile, is_demo; startups: is_demo, logo_url endi '/demo-logos/%' ham bo'lishi mumkin;
 -- jadval feedback (RLS: hamma yozadi, faqat o'zinikini o'qiydi); funksiya investor_directory() (faqat kirganlarga).
 -- Namuna ma'lumotlar: supabase/demo-seed.sql
+-- 11. Namuna startapga yuborilgan so'rov avtomatik tasdiqlanadi: trigger access_requests_demo_auto -> private.demo_auto_approve()

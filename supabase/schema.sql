@@ -381,3 +381,5 @@ grant execute on function public.platform_stats() to anon, authenticated;
 -- 12. Yangi murojaat (feedback) Telegram'ga: trigger feedback_telegram -> private.feedback_notify() (pg_net).
 -- Bot: @Investagee_bot. Token Vault'da ('telegram_bot_token'), qabul qiluvchi private.settings ('telegram_username', 'telegram_chat_id').
 -- Qabul qiluvchi botga /start bosishi kerak; chat id private.tg_link() bilan avtomatik topiladi.
+-- 13. Kuzatuv: pg_cron -> private.usage_report() (har oy 1-kuni, Telegram'ga hisobot) va private.usage_alert() (har kuni, 80% dan oshsa ogohlantirish).
+-- Vercel Cron har kuni /api/keepalive ni chaqiradi: bepul Supabase loyihasi faolsiz deb to'xtatilmaydi.

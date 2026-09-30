@@ -2,6 +2,8 @@ import Link from 'next/link';
 import { getSession } from '@/lib/supabase/server';
 import { getT } from '@/lib/i18n/server';
 import LangSwitch from '@/components/LangSwitch';
+import ThemeToggle from '@/components/ThemeToggle';
+import { getTheme } from '@/lib/i18n/server';
 import { getRequests, getSaved, getMyStartup } from '@/lib/data';
 import { buildEvents, notificationsOf } from '@/lib/events';
 import { logout } from '@/app/auth-actions';
@@ -172,6 +174,7 @@ export async function TopActions() {
 
       <div className="top-right">
         <LangSwitch current={t.lang} label={t('lang.label')} />
+        <ThemeToggle initial={await getTheme()} labels={{ dark: t('theme.dark'), light: t('theme.light') }} />
         {!user ? (
           <>
             <Link className="nav-link" href="/kirish">

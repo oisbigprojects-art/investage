@@ -1,6 +1,6 @@
 import './globals.css';
 import { Inter, Manrope } from 'next/font/google';
-import { getLang, getT } from '@/lib/i18n/server';
+import { getLang, getT, getTheme } from '@/lib/i18n/server';
 
 // Shriftlar build vaqtida yuklab olinib saytning o'zidan beriladi (Google'ga so'rov yo'q)
 const inter = Inter({ subsets: ['latin', 'latin-ext', 'cyrillic'], variable: '--font-inter', display: 'swap' });
@@ -17,9 +17,9 @@ export const viewport = {
 };
 
 export default async function RootLayout({ children }) {
-  const lang = await getLang();
+  const [lang, theme] = await Promise.all([getLang(), getTheme()]);
   return (
-    <html lang={lang} className={`${inter.variable} ${display.variable}`}>
+    <html lang={lang} data-theme={theme} className={`${inter.variable} ${display.variable}`}>
       <body>
         {children}
       </body>

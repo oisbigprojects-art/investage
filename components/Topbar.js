@@ -4,6 +4,8 @@ import { getT } from '@/lib/i18n/server';
 import { logout } from '@/app/auth-actions';
 import Logo from '@/components/Logo';
 import LangSwitch from '@/components/LangSwitch';
+import ThemeToggle from '@/components/ThemeToggle';
+import { getTheme } from '@/lib/i18n/server';
 
 // Sahifa qobig'i darrov chiqadi, menyu (rolga bog'liq) keyin oqib keladi
 export function TopbarShell({ children, homeLabel }) {
@@ -63,6 +65,7 @@ export default async function Topbar() {
           </Link>
         )}
         <LangSwitch current={t.lang} label={t('lang.label')} />
+        <ThemeToggle initial={await getTheme()} labels={{ dark: t('theme.dark'), light: t('theme.light') }} />
         {role ? (
           <form action={logout}>
             <button className="btn btn-ghost btn-sm" type="submit">

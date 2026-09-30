@@ -3,8 +3,6 @@
 import { useState } from 'react';
 import { stringsT } from '@/lib/i18n/client';
 
-export const CALC_KEYS = ['title', 'sub', 'amount', 'equity', 'pre', 'post', 'err', 'note'].map((k) => `calc.${k}`);
-
 const LOCALES = { uz: 'uz-UZ', ru: 'ru-RU', en: 'en-US' };
 
 // Oddiy hisob: post-money = summa / ulush, pre-money = post-money − summa

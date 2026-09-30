@@ -8,7 +8,8 @@ import SealedDemo from '@/components/SealedDemo';
 import { DEMO_KEYS } from '@/lib/i18n/demo-keys';
 import { ScoreRing } from '@/components/ui';
 import { CheckIcon, LockIcon, SealIcon } from '@/components/icons';
-import ValuationCalc, { CALC_KEYS } from '@/components/ValuationCalc';
+import ValuationCalc from '@/components/ValuationCalc';
+import { CALC_KEYS } from '@/lib/i18n/calc-keys';
 import { SectorIcon, ArrowIcon, SECTOR_KEYS } from '@/components/SectorIcons';
 
 // Rolga bog'liq tugmalar (sessiya keyin keladi, matn esa darrov ko'rinadi)

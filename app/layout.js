@@ -1,6 +1,7 @@
 import './globals.css';
 import { Inter, Manrope } from 'next/font/google';
 import { getLang, getT } from '@/lib/i18n/server';
+import Splash from '@/components/Splash';
 
 // Shriftlar build vaqtida yuklab olinib saytning o'zidan beriladi (Google'ga so'rov yo'q)
 const inter = Inter({ subsets: ['latin', 'latin-ext', 'cyrillic'], variable: '--font-inter', display: 'swap' });
@@ -21,6 +22,7 @@ export default async function RootLayout({ children }) {
   return (
     <html lang={lang} className={`${inter.variable} ${display.variable}`}>
       <body>
+        <Splash />
         {children}
       </body>
     </html>

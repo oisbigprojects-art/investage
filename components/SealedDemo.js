@@ -14,7 +14,8 @@ const SAMPLES = [
   { keys: ['s2_name', 's2_sector', 's2_desc'], score: 71, stage: 'daromad', verified: true, funding: '$120,000', equity: '12%', contact: '@namuna_logistika' },
   { keys: ['s3_name', 's3_sector', 's3_desc'], score: 55, stage: 'mvp', verified: false, funding: '$80,000', equity: '15%', contact: '@namuna_fintech' },
 ];
-const ROTATE_MS = 3000;
+const ROTATE_MS = 6500;
+const LEAVE_MS = 450;
 
 // Bu haqiqiy startap emas — faqat jarayonni ko'rsatadi.
 export default function SealedDemo({ strings, lang }) {
@@ -23,6 +24,7 @@ export default function SealedDemo({ strings, lang }) {
   const timer = useRef(null);
   const [idx, setIdx] = useState(0);
   const [paused, setPaused] = useState(false);
+  const [leaving, setLeaving] = useState(false);
 
   useEffect(() => () => clearTimeout(timer.current), []);
 
@@ -30,8 +32,20 @@ export default function SealedDemo({ strings, lang }) {
   useEffect(() => {
     if (phase !== 'locked' || paused) return;
     if (window.matchMedia?.('(prefers-reduced-motion: reduce)').matches) return;
-    const id = setInterval(() => setIdx((i) => (i + 1) % SAMPLES.length), ROTATE_MS);
-    return () => clearInterval(id);
+    let inner;
+    const id = setInterval(() => {
+      // Avval butun karta chiqib ketadi, so'ng keyingisi kirib keladi
+      setLeaving(true);
+      inner = setTimeout(() => {
+        setIdx((i) => (i + 1) % SAMPLES.length);
+        setLeaving(false);
+      }, LEAVE_MS);
+    }, ROTATE_MS);
+    return () => {
+      clearInterval(id);
+      clearTimeout(inner);
+      setLeaving(false);
+    };
   }, [phase, paused]);
 
   function send() {
@@ -59,7 +73,7 @@ export default function SealedDemo({ strings, lang }) {
       onFocus={() => setPaused(true)}
       onBlur={() => setPaused(false)}
     >
-      <div className="demo-swap" key={idx}>
+      <div className={`demo-swap ${leaving ? 'is-out' : ''}`} key={idx}>
         <div className="demo-top">
           <Monogram name={t(kName)} size={48} />
           <div className="grow">
@@ -76,7 +90,6 @@ export default function SealedDemo({ strings, lang }) {
           <Verified on={sm.verified} t={t} />
           <span className="chip chip-muted">{t('demo.badge')}</span>
         </div>
-      </div>
 
       <div className={`sealed ${open ? 'is-open' : ''}`}>
         <div className="sealed-head">
@@ -114,7 +127,7 @@ export default function SealedDemo({ strings, lang }) {
 
       <div className="demo-dots" role="tablist" aria-hidden={phase !== 'locked'}>
         {SAMPLES.map((_, i) => (
-          <button key={i} type="button" className={i === idx ? 'is-on' : ''} onClick={() => phase === 'locked' && setIdx(i)} aria-label={`${i + 1}`} tabIndex={-1} />
+          <button key={i} type="button" className={i === idx ? 'is-on' : ''} onClick={() => phase === 'locked' && !leaving && setIdx(i)} aria-label={`${i + 1}`} tabIndex={-1} />
         ))}
       </div>
 
@@ -138,6 +151,7 @@ export default function SealedDemo({ strings, lang }) {
           {open ? <UnlockIcon size={15} /> : phase === 'pending' ? <CheckIcon size={15} /> : <LockIcon size={15} />}
           {status}
         </span>
+      </div>
       </div>
     </div>
   );

@@ -732,9 +732,10 @@ input[type='file']::file-selector-button { margin-right: 12px; padding: 6px 12px
 
 @media (prefers-reduced-motion: reduce) { .csplash { display: none; } }
 
-/* Namuna startaplar almashishi */
-.demo-swap { animation: demo-swap 0.5s var(--ease) both; }
-@keyframes demo-swap { from { opacity: 0; transform: translateY(8px); } }
+/* Namuna startaplar almashishi: butun karta siljib chiqadi va yangisi kirib keladi */
+.demo-swap { animation: demo-in 0.7s var(--ease) both; transition: opacity 0.45s ease, transform 0.45s ease; }
+.demo-swap.is-out { opacity: 0; transform: translateX(-28px) scale(0.97); }
+@keyframes demo-in { from { opacity: 0; transform: translateX(28px) scale(0.97); } }
 .demo-dots { display: flex; justify-content: center; gap: 6px; margin-top: 16px; }
 .demo-dots button { width: 8px; height: 8px; padding: 0; border: 0; border-radius: 999px; background: var(--line); cursor: pointer; transition: width 0.3s var(--ease), background 0.3s var(--ease); }
 .demo-dots button.is-on { width: 22px; background: var(--gold); }

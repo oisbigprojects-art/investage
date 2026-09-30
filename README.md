@@ -72,3 +72,9 @@ Hozircha admin panel yo'q: Supabase → **Table Editor → startups** → kerakl
 - **Teaser/yopiq qismni ko'chirish:** ustunni `startups` ↔ `startup_private` jadvallari orasida ko'chiring.
 - **Ranglar va shrift:** `app/globals.css` → `:root` o'zgaruvchilari.
 - **Valyuta:** `lib/labels.js` → `formatMoney` (hozir AQSH dollari, $).
+
+## Kabinet funksiyalari
+
+- **Startap:** umumiy ko'rinish (profil to'liqligi), so'rovlar (filtr bilan), profil (logotip yuklash), katalogdan yashirish.
+- **Investor:** umumiy ko'rinish, qidiruv va filtr (nom, soha, bosqich), saqlanganlar, so'rovni qaytarib olish, o'z profili.
+- Baza o'zgarishlari `supabase/schema.sql` 8-bo'limida. Logotiplar `logos` bucket'ida (1 MB, PNG/JPG/WebP).

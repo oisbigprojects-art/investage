@@ -4,7 +4,8 @@ import { getSession } from '@/lib/supabase/server';
 import { Flash, StageBadge, Verified, ScoreRing, StatusBadge, Monogram, Redact } from '@/components/ui';
 import PrivateDetails from '@/components/PrivateDetails';
 import { LockIcon, UnlockIcon, ClockIcon } from '@/components/icons';
-import { requestAccess } from '@/app/kabinet/actions';
+import SaveButton from '@/components/SaveButton';
+import { requestAccess, withdrawRequest } from '@/app/kabinet/actions';
 import { formatDate } from '@/lib/labels';
 
 export async function generateMetadata({ params }) {
@@ -21,7 +22,7 @@ export default async function StartupDetail({ params, searchParams }) {
 
   const { data: s } = await supabase
     .from('startups')
-    .select('id, owner_id, name, sector, short_desc, stage, score, verified, created_at')
+    .select('id, owner_id, name, sector, short_desc, stage, score, verified, created_at, logo_url, hidden')
     .eq('id', id)
     .maybeSingle();
   if (!s) notFound();
@@ -35,7 +36,15 @@ export default async function StartupDetail({ params, searchParams }) {
     : { data: null };
 
   let myRequest = null;
+  let isSaved = false;
   if (isInvestor) {
+    const { data: sv } = await supabase
+      .from('saved_startups')
+      .select('startup_id')
+      .eq('investor_id', user.id)
+      .eq('startup_id', s.id)
+      .maybeSingle();
+    isSaved = !!sv;
     const { data } = await supabase
       .from('access_requests')
       .select('id, status, created_at, decided_at')
@@ -51,11 +60,17 @@ export default async function StartupDetail({ params, searchParams }) {
         ← Startaplar
       </Link>
       <Flash searchParams={sp} />
+      {isOwner && s.hidden && (
+        <div className="flash flash-warn" role="status">
+          Profilingiz yashirilgan: bu sahifani faqat siz ko&apos;rasiz. Katalogda ko&apos;rsatish uchun{' '}
+          <Link href="/kabinet/startap">kabinetga</Link> o&apos;ting.
+        </div>
+      )}
 
       {/* ---------- OMMAVIY TANISHTIRUV ---------- */}
       <section className="card head-card">
         <div className="head-top">
-          <Monogram name={s.name} size={64} />
+          <Monogram name={s.name} logo={s.logo_url} size={64} />
           <div className="head-title">
             <h1>{s.name}</h1>
             {s.sector && <p className="muted">{s.sector}</p>}
@@ -70,6 +85,7 @@ export default async function StartupDetail({ params, searchParams }) {
           <StageBadge stage={s.stage} />
           <Verified on={s.verified} />
           <span className="muted small">Qo&apos;shilgan: {formatDate(s.created_at)}</span>
+          {isInvestor && <SaveButton startupId={s.id} saved={isSaved} back={`/startaplar/${s.id}`} withLabel />}
         </div>
       </section>
 
@@ -143,10 +159,10 @@ function AccessPanel({ user, profile, req, startupId, isOwner, hasAccess }) {
           Investorlar tanishtiruvni ko&apos;radi. Yopiq qism faqat siz ruxsat bergan investorlarga ochiladi.
         </p>
         <div className="col">
-          <Link className="btn btn-gold" href="/kabinet/startap">
+          <Link className="btn btn-gold" href="/kabinet/startap/profil">
             Profilni tahrirlash
           </Link>
-          <Link className="btn btn-ghost" href="/kabinet/startap#sorovlar">
+          <Link className="btn btn-ghost" href="/kabinet/startap/sorovlar">
             So&apos;rovlarni ko&apos;rish
           </Link>
         </div>
@@ -211,6 +227,13 @@ function AccessPanel({ user, profile, req, startupId, isOwner, hasAccess }) {
           bo&apos;limida ko&apos;rinadi.
         </p>
         <StatusBadge status="pending" />
+        <form action={withdrawRequest}>
+          <input type="hidden" name="request_id" value={req.id} />
+          <input type="hidden" name="back" value={`/startaplar/${startupId}`} />
+          <button className="btn btn-ghost btn-sm" type="submit">
+            So&apos;rovni qaytarib olish
+          </button>
+        </form>
       </>
     );
   }

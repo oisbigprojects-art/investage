@@ -55,3 +55,67 @@ export function SealIcon({ size = 16 }) {
     </svg>
   );
 }
+
+export function GridIcon({ size = 18 }) {
+  return (
+    <svg {...base} width={size} height={size}>
+      <rect x="3" y="3" width="6" height="6" rx="1.5" />
+      <rect x="11" y="3" width="6" height="6" rx="1.5" />
+      <rect x="3" y="11" width="6" height="6" rx="1.5" />
+      <rect x="11" y="11" width="6" height="6" rx="1.5" />
+    </svg>
+  );
+}
+
+export function InboxIcon({ size = 18 }) {
+  return (
+    <svg {...base} width={size} height={size}>
+      <path d="M3 11l2-6h10l2 6v4a1.5 1.5 0 01-1.5 1.5h-11A1.5 1.5 0 013 15v-4z" />
+      <path d="M3 11h4l1 2h4l1-2h4" />
+    </svg>
+  );
+}
+
+export function UserIcon({ size = 18 }) {
+  return (
+    <svg {...base} width={size} height={size}>
+      <circle cx="10" cy="7" r="3.2" />
+      <path d="M3.8 16.5c.8-3 3.2-4.5 6.2-4.5s5.4 1.5 6.2 4.5" />
+    </svg>
+  );
+}
+
+export function SearchIcon({ size = 18 }) {
+  return (
+    <svg {...base} width={size} height={size}>
+      <circle cx="9" cy="9" r="5.2" />
+      <path d="M13 13l3.8 3.8" />
+    </svg>
+  );
+}
+
+export function BookmarkIcon({ size = 18, filled = false }) {
+  return (
+    <svg {...base} width={size} height={size} fill={filled ? 'currentColor' : 'none'}>
+      <path d="M5.5 3.5h9a1 1 0 011 1v12l-5.5-3.5L4.5 16.5v-12a1 1 0 011-1z" />
+    </svg>
+  );
+}
+
+export function GlobeIcon({ size = 18 }) {
+  return (
+    <svg {...base} width={size} height={size}>
+      <circle cx="10" cy="10" r="7" />
+      <path d="M3 10h14M10 3c2 2 3 4.3 3 7s-1 5-3 7c-2-2-3-4.3-3-7s1-5 3-7z" />
+    </svg>
+  );
+}
+
+export function EyeOffIcon({ size = 18 }) {
+  return (
+    <svg {...base} width={size} height={size}>
+      <path d="M2.5 10s2.8-5 7.5-5c1.2 0 2.3.3 3.2.8M17.5 10s-2.8 5-7.5 5c-1.2 0-2.3-.3-3.2-.8" />
+      <path d="M3.5 3.5l13 13" />
+    </svg>
+  );
+}

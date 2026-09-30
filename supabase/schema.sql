@@ -237,3 +237,113 @@ grant  execute on function public.revoke_access(uuid)           to authenticated
 -- Trigger funksiyasini API orqali chaqirib bo'lmasin
 revoke execute on function public.handle_new_user() from public, anon, authenticated;
 
+
+-- =====================================================================
+-- 8. KABINET FUNKSIYALARI (logotip, yashirish, investor profili, saqlanganlar, qaytarib olish)
+-- Bu qism allaqachon "cabinet_features" migratsiyasi sifatida bazaga qo'llangan.
+-- =====================================================================
+alter table public.startups
+  add column if not exists logo_url text,
+  add column if not exists hidden boolean not null default false;
+
+alter table public.startups drop constraint if exists startups_logo_url_check;
+alter table public.startups add constraint startups_logo_url_check
+  check (logo_url is null or logo_url like 'https://fuklumjbymmkaflzndxp.supabase.co/storage/v1/object/public/logos/%');
+
+alter table public.profiles
+  add column if not exists company   text not null default '',
+  add column if not exists interests text not null default '',
+  add column if not exists bio       text not null default '';
+
+alter table public.profiles drop constraint if exists profiles_len_check;
+alter table public.profiles add constraint profiles_len_check
+  check (char_length(company) <= 120 and char_length(interests) <= 200 and char_length(bio) <= 600);
+
+grant update (full_name, company, interests, bio) on public.profiles to authenticated;
+grant insert (logo_url) on public.startups to authenticated;
+grant update (logo_url, hidden) on public.startups to authenticated;
+
+-- Yashirilgan startap: faqat egasiga ko'rinadi, yopiq ma'lumot ham yopiladi
+drop policy if exists startups_select on public.startups;
+create policy startups_select on public.startups for select to anon, authenticated
+  using (hidden = false or owner_id = (select auth.uid()));
+
+create or replace function private.has_access(sid uuid)
+returns boolean language sql stable security definer set search_path = public as $$
+  select exists (
+    select 1 from public.access_requests r
+    join public.startups s on s.id = r.startup_id
+    where r.startup_id = sid and r.investor_id = auth.uid() and r.status = 'approved' and s.hidden = false
+  )
+$$;
+
+create or replace function public.request_access(p_startup uuid, p_message text default '')
+returns text language plpgsql security definer set search_path = public as $$
+declare v_status text;
+begin
+  if auth.uid() is null then raise exception 'Avval tizimga kiring'; end if;
+  if coalesce(private.my_role(), '') <> 'investor' then raise exception 'Faqat investorlar so''rov yubora oladi'; end if;
+  if not exists (select 1 from public.startups where id = p_startup and hidden = false) then
+    raise exception 'Startap topilmadi';
+  end if;
+
+  insert into public.access_requests (startup_id, investor_id, status, message)
+  values (p_startup, auth.uid(), 'pending', left(coalesce(p_message, ''), 1000))
+  on conflict (startup_id, investor_id) do update
+    set status = 'pending', message = excluded.message, created_at = now(), decided_at = null
+    where public.access_requests.status in ('rejected', 'revoked');
+
+  select status into v_status from public.access_requests
+  where startup_id = p_startup and investor_id = auth.uid();
+  return v_status;
+end $$;
+
+-- Investor javob kelmagan so'rovini qaytarib oladi
+create or replace function public.withdraw_request(p_request uuid)
+returns void language plpgsql security definer set search_path = public as $$
+begin
+  delete from public.access_requests
+   where id = p_request and investor_id = auth.uid() and status = 'pending';
+  if not found then raise exception 'Kutilayotgan so''rov topilmadi'; end if;
+end $$;
+
+revoke execute on function public.withdraw_request(uuid) from public, anon;
+grant  execute on function public.withdraw_request(uuid) to authenticated;
+
+-- Saqlangan startaplar
+create table if not exists public.saved_startups (
+  investor_id uuid not null references public.profiles(id) on delete cascade,
+  startup_id  uuid not null references public.startups(id) on delete cascade,
+  created_at  timestamptz not null default now(),
+  primary key (investor_id, startup_id)
+);
+alter table public.saved_startups enable row level security;
+
+drop policy if exists saved_select on public.saved_startups;
+create policy saved_select on public.saved_startups for select to authenticated
+  using (investor_id = (select auth.uid()));
+drop policy if exists saved_insert on public.saved_startups;
+create policy saved_insert on public.saved_startups for insert to authenticated
+  with check (investor_id = (select auth.uid()) and private.my_role() = 'investor');
+drop policy if exists saved_delete on public.saved_startups;
+create policy saved_delete on public.saved_startups for delete to authenticated
+  using (investor_id = (select auth.uid()));
+
+revoke all on public.saved_startups from anon;
+revoke update on public.saved_startups from authenticated;
+
+-- Logotiplar uchun ochiq bucket (1 MB, faqat rasm)
+insert into storage.buckets (id, name, public, file_size_limit, allowed_mime_types)
+values ('logos', 'logos', true, 1048576, array['image/png', 'image/jpeg', 'image/webp'])
+on conflict (id) do update
+  set public = true, file_size_limit = 1048576, allowed_mime_types = array['image/png', 'image/jpeg', 'image/webp'];
+
+drop policy if exists logos_insert on storage.objects;
+create policy logos_insert on storage.objects for insert to authenticated
+  with check (bucket_id = 'logos' and (storage.foldername(name))[1] = (select auth.uid())::text and private.my_role() = 'startup');
+drop policy if exists logos_select on storage.objects;
+create policy logos_select on storage.objects for select to authenticated
+  using (bucket_id = 'logos' and (storage.foldername(name))[1] = (select auth.uid())::text);
+drop policy if exists logos_delete on storage.objects;
+create policy logos_delete on storage.objects for delete to authenticated
+  using (bucket_id = 'logos' and (storage.foldername(name))[1] = (select auth.uid())::text);

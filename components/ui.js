@@ -68,13 +68,28 @@ export function ScoreRing({ value, size = 44 }) {
   );
 }
 
-// Startap nomining bosh harfi
-export function Monogram({ name, size = 44 }) {
+// Startap logotipi yoki nomining bosh harfi
+export function Monogram({ name, size = 44, logo }) {
+  if (logo) {
+    return (
+      // eslint-disable-next-line @next/next/no-img-element
+      <img className="mono-tile mono-img" src={logo} alt="" width={size} height={size} style={{ width: size, height: size }} />
+    );
+  }
   const initial = (name || '?').trim().charAt(0).toUpperCase() || '?';
   return (
     <span className="mono-tile" style={{ width: size, height: size, fontSize: Math.round(size * 0.42) }} aria-hidden="true">
       {initial}
     </span>
+  );
+}
+
+// Foiz ko'rsatkichi (profil to'liqligi)
+export function Progress({ value, label }) {
+  return (
+    <div className="progress" role="progressbar" aria-valuenow={value} aria-valuemin={0} aria-valuemax={100} aria-label={label}>
+      <i style={{ width: `${value}%` }} />
+    </div>
   );
 }
 

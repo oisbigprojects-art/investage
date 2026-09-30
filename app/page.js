@@ -23,7 +23,8 @@ export default async function Home() {
   const { supabase, profile } = await getSession();
   const { data: startups } = await supabase
     .from('startups')
-    .select('id, name, sector, short_desc, stage, score, verified')
+    .select('id, name, sector, short_desc, stage, score, verified, logo_url')
+    .eq('hidden', false)
     .order('created_at', { ascending: false })
     .limit(6);
 

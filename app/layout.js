@@ -43,9 +43,9 @@ export default async function RootLayout({ children }) {
               {role === 'startup' && (
                 <>
                   <Link className="nav-link" href="/kabinet/startap">
-                    Mening startapim
+                    Kabinet
                   </Link>
-                  <Link className="nav-link" href="/kabinet/startap#sorovlar">
+                  <Link className="nav-link" href="/kabinet/startap/sorovlar">
                     So&apos;rovlar
                   </Link>
                 </>
@@ -56,7 +56,7 @@ export default async function RootLayout({ children }) {
                     Startaplar
                   </Link>
                   <Link className="nav-link" href="/kabinet/investor">
-                    So&apos;rovlarim
+                    Kabinet
                   </Link>
                 </>
               )}

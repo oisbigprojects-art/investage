@@ -1,12 +1,10 @@
-// Saytga birinchi kirganda ko'rinadigan kirish animatsiyasi (faqat CSS, kutubxonasiz).
+// Bosh sahifaga har safar kirilganda (yangilaganda ham) ko'rinadigan kirish animatsiyasi. Faqat CSS, kutubxonasiz.
 // Logotip ochiladi, ostida o'sib borayotgan investitsiya ustunlari va o'sish chizig'i chiziladi, so'ng parda tepaga siljiydi.
-// Bir sessiyada bir marta ko'rsatiladi; animatsiyani kamaytirishni tanlaganlarga ko'rsatilmaydi.
-const SKIP = "try{if(sessionStorage.getItem('inv_splash')){document.getElementById('splash').style.display='none'}else{sessionStorage.setItem('inv_splash','1')}}catch(e){}";
-
+// Animatsiyani kamaytirishni tanlaganlarga ko'rsatilmaydi.
 export default function Splash() {
   return (
     <>
-      <div id="splash" className="splash" aria-hidden="true" suppressHydrationWarning>
+      <div id="splash" className="splash" aria-hidden="true">
         <div className="splash-box">
           <img className="splash-logo" src="/logo-dark.webp" alt="" width="240" height="65" />
           <svg className="splash-chart" viewBox="0 0 160 70" fill="none" aria-hidden="true" focusable="false">
@@ -21,7 +19,6 @@ export default function Splash() {
         </div>
         <span className="splash-bar" />
       </div>
-      <script dangerouslySetInnerHTML={{ __html: SKIP }} />
     </>
   );
 }

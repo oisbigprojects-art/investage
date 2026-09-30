@@ -690,3 +690,44 @@ input[type='file']::file-selector-button { margin-right: 12px; padding: 6px 12px
 @keyframes splash-load { from { transform: scaleX(0); } }
 @keyframes splash-out { to { transform: translateY(-100%); visibility: hidden; } }
 @media (prefers-reduced-motion: reduce) { .splash { display: none; } }
+
+/* ---------- Kabinetga kirish animatsiyalari ---------- */
+.csplash-host { display: contents; }
+.csplash { position: fixed; inset: 0; z-index: 9999; display: grid; place-items: center; border-radius: 0 0 48px 48px; overflow: hidden; pointer-events: none; animation: splash-out 0.7s cubic-bezier(0.7, 0, 0.2, 1) 1.95s forwards; }
+.csplash::before { content: ''; position: absolute; width: min(80vw, 620px); aspect-ratio: 1; border-radius: 50%; animation: splash-glow 1.4s var(--ease) both; }
+.csplash-startup { background: var(--bg); }
+.csplash-startup::before { background: radial-gradient(closest-side, rgba(246, 190, 19, 0.34), rgba(246, 190, 19, 0)); }
+.csplash-investor { background: #1d1d1d; color: #fff; animation-delay: 2.15s; }
+.csplash-investor::before { background: radial-gradient(closest-side, rgba(246, 190, 19, 0.3), rgba(246, 190, 19, 0)); }
+.cs-scene { position: relative; display: flex; flex-direction: column; align-items: center; gap: 22px; }
+.cs-label { font: 800 clamp(1.3rem, 4vw, 1.9rem) var(--display); letter-spacing: -0.04em; animation: cs-fade 0.7s var(--ease) 0.7s both; }
+@keyframes cs-fade { from { opacity: 0; transform: translateY(10px); } }
+
+/* Startap: raketa uchadi */
+.cs-rocket-wrap { width: 92px; height: auto; overflow: visible; }
+.cs-rocket { transform-box: fill-box; animation: cs-launch 1.7s cubic-bezier(0.5, 0, 0.3, 1) 0.15s both; }
+.cs-body { fill: var(--gold); }
+.cs-fin { fill: #1d1d1d; }
+.cs-window { fill: #1d1d1d; }
+.cs-glint { fill: #fff; }
+.cs-flame { fill: #ff9d1c; transform-box: fill-box; transform-origin: top; animation: cs-flame 0.16s ease-in-out infinite alternate; }
+.cs-star { position: absolute; width: 8px; height: 8px; border-radius: 50%; background: var(--gold); opacity: 0; animation: cs-twinkle 1.2s ease-in-out infinite; }
+.cs-s1 { top: -16px; left: -70px; animation-delay: 0.5s; }
+.cs-s2 { top: 34px; right: -84px; width: 6px; height: 6px; animation-delay: 0.8s; }
+.cs-s3 { top: 90px; left: -96px; width: 5px; height: 5px; animation-delay: 1s; }
+.cs-s4 { top: -30px; right: -50px; width: 5px; height: 5px; animation-delay: 0.65s; }
+@keyframes cs-launch { 0% { transform: translateY(70px); opacity: 0; } 20% { opacity: 1; } 55% { transform: translateY(0); } 70% { transform: translate(1.5px, -8px); } 80% { transform: translate(-1.5px, -14px); } 100% { transform: translateY(-26px); } }
+@keyframes cs-flame { from { transform: scaleY(0.75); } to { transform: scaleY(1.15); } }
+@keyframes cs-twinkle { 50% { opacity: 1; transform: scale(1.5); } }
+
+/* Investor: tangalar ustuni va o'sish o'qi */
+.cs-coins { width: 132px; height: auto; overflow: visible; }
+.cs-coin { fill: var(--gold); stroke: #b98a00; stroke-width: 2; animation: cs-drop 0.65s cubic-bezier(0.3, 1.5, 0.5, 1) both; }
+.cs-c1 { animation-delay: 0.15s; }
+.cs-c2 { animation-delay: 0.4s; fill: #f8c93a; }
+.cs-c3 { animation-delay: 0.65s; fill: #ffd24a; }
+.cs-c4 { animation-delay: 0.9s; fill: #ffdc73; }
+.cs-arrow { stroke: #fff; stroke-width: 4; stroke-linecap: round; stroke-linejoin: round; stroke-dasharray: 1; stroke-dashoffset: 1; animation: splash-draw 0.7s var(--ease) 1.4s forwards; }
+@keyframes cs-drop { from { transform: translateY(-90px); opacity: 0; } 30% { opacity: 1; } }
+
+@media (prefers-reduced-motion: reduce) { .csplash { display: none; } }

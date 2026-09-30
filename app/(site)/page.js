@@ -9,6 +9,7 @@ import SealedDemo from '@/components/SealedDemo';
 import { DEMO_KEYS } from '@/lib/i18n/demo-keys';
 import { ScoreRing } from '@/components/ui';
 import { CheckIcon, LockIcon, SealIcon } from '@/components/icons';
+import Splash from '@/components/Splash';
 import ValuationCalc from '@/components/ValuationCalc';
 import { CALC_KEYS } from '@/lib/i18n/calc-keys';
 import { SectorIcon, ArrowIcon, SECTOR_KEYS } from '@/components/SectorIcons';
@@ -100,6 +101,7 @@ export default async function Home() {
   const points = (role) => [1, 2, 3, 4].map((i) => t(`home.${role}_p${i}`));
   return (
     <>
+      <Splash />
       <section className="hero">
         <div className="hero-copy">
           <span className="eyebrow">{t('home.tag')}</span>

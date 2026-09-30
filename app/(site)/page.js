@@ -4,7 +4,8 @@ import { getSession } from '@/lib/supabase/server';
 import { getT } from '@/lib/i18n/server';
 import { pickStrings } from '@/lib/i18n';
 import StartupCard from '@/components/StartupCard';
-import SealedDemo, { DEMO_KEYS } from '@/components/SealedDemo';
+import SealedDemo from '@/components/SealedDemo';
+import { DEMO_KEYS } from '@/lib/i18n/demo-keys';
 import { ScoreRing } from '@/components/ui';
 import { CheckIcon, LockIcon, SealIcon } from '@/components/icons';
 

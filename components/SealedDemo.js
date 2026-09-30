@@ -5,15 +5,6 @@ import { LockIcon, UnlockIcon, ClockIcon, CheckIcon } from './icons';
 import { Monogram, ScoreRing, StageBadge, Verified } from './ui';
 import { stringsT } from '@/lib/i18n/client';
 
-// Serverdan uzatiladigan matn kalitlari (client faqat shularni oladi)
-export const DEMO_KEYS = [
-  'stage.mvp',
-  'ui.verified',
-  'ui.verified_title',
-  'ui.score_label',
-  'ui.score_none',
-  ...['aria', 'name', 'sector', 'desc', 'badge', 'sealed', 'opened', 'waiting', 'closed', 'funding', 'equity', 'contact', 'cap_pending', 'cap_locked', 'again', 'send', 'sent', 'st_none', 'st_wait', 'st_ok'].map((k) => `demo.${k}`),
-];
 
 // Bosh sahifadagi namuna: yopiq ma'lumot so'rov → tasdiq orqali ochiladi.
 // Bu haqiqiy startap emas — faqat jarayonni ko'rsatadi.

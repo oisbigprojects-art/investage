@@ -24,12 +24,14 @@ export async function middleware(request) {
     }
   );
 
+  // getSession cookie'dan o'qiydi va faqat muddati tugagan bo'lsa yangilaydi (har so'rovda tarmoq yo'q).
+  // Haqiqiy tekshiruv sahifada: profil so'rovi va RLS.
   const {
-    data: { user },
-  } = await supabase.auth.getUser();
+    data: { session },
+  } = await supabase.auth.getSession();
 
   // Kabinet sahifalari faqat tizimga kirganlar uchun
-  if (!user && request.nextUrl.pathname.startsWith('/kabinet')) {
+  if (!session && request.nextUrl.pathname.startsWith('/kabinet')) {
     const url = request.nextUrl.clone();
     url.pathname = '/kirish';
     return NextResponse.redirect(url);

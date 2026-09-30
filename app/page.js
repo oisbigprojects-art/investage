@@ -1,3 +1,4 @@
+import { Suspense } from 'react';
 import Link from 'next/link';
 import { getSession } from '@/lib/supabase/server';
 import StartupCard from '@/components/StartupCard';
@@ -19,7 +20,37 @@ const INVESTOR_POINTS = [
   "Ruxsat berilgach summa, ulush va kontaktlarni ko'ring",
 ];
 
-export default async function Home() {
+// Rolga bog'liq tugmalar (sessiya keyin keladi, matn esa darrov ko'rinadi)
+async function HeroActions() {
+  const { profile } = await getSession();
+  return profile ? (
+    <div className="row">
+      <Link className="btn btn-gold" href="/kabinet">
+        Kabinetga o&apos;tish
+      </Link>
+      <Link className="btn btn-ghost" href="/startaplar">
+        Startaplarni ko&apos;rish
+      </Link>
+    </div>
+  ) : (
+    <div className="row">
+      <Link className="btn btn-gold" href="/royxat?rol=startup">
+        Startap sifatida boshlash
+      </Link>
+      <Link className="btn btn-ghost" href="/royxat?rol=investor">
+        Investor sifatida boshlash
+      </Link>
+    </div>
+  );
+}
+
+// Faqat kirmagan mehmonga ko'rsatiladi
+async function GuestOnly({ children }) {
+  const { profile } = await getSession();
+  return profile ? null : children;
+}
+
+async function LatestStartups() {
   const { supabase, profile } = await getSession();
   const { data: startups } = await supabase
     .from('startups')
@@ -28,6 +59,26 @@ export default async function Home() {
     .order('created_at', { ascending: false })
     .limit(6);
 
+  return startups?.length ? (
+    <div className="grid">
+      {startups.map((s) => (
+        <StartupCard key={s.id} s={s} />
+      ))}
+    </div>
+  ) : (
+    <div className="empty">
+      <h3>Birinchi startap siz bo&apos;ling</h3>
+      <p>Hozircha ro&apos;yxat bo&apos;sh. Profil oching, investorlar sizni birinchi bo&apos;lib ko&apos;rishadi.</p>
+      {!profile && (
+        <Link className="btn btn-gold" href="/royxat?rol=startup">
+          Startap profilini yaratish
+        </Link>
+      )}
+    </div>
+  );
+}
+
+export default function Home() {
   return (
     <>
       <section className="hero">
@@ -42,25 +93,9 @@ export default async function Home() {
             startap tasdiqlagan investorga ochiladi.
           </p>
 
-          {profile ? (
-            <div className="row">
-              <Link className="btn btn-gold" href="/kabinet">
-                Kabinetga o&apos;tish
-              </Link>
-              <Link className="btn btn-ghost" href="/startaplar">
-                Startaplarni ko&apos;rish
-              </Link>
-            </div>
-          ) : (
-            <div className="row">
-              <Link className="btn btn-gold" href="/royxat?rol=startup">
-                Startap sifatida boshlash
-              </Link>
-              <Link className="btn btn-ghost" href="/royxat?rol=investor">
-                Investor sifatida boshlash
-              </Link>
-            </div>
-          )}
+          <Suspense fallback={<div className="row"><span className="skel skel-btn" /><span className="skel skel-btn" /></div>}>
+            <HeroActions />
+          </Suspense>
 
           <p className="hero-note">
             <LockIcon size={15} />
@@ -115,11 +150,13 @@ export default async function Home() {
                 </li>
               ))}
             </ul>
-            {!profile && (
-              <Link className="btn btn-gold panel-btn" href="/royxat?rol=startup">
-                Startap profilini ochish
-              </Link>
-            )}
+            <Suspense fallback={null}>
+              <GuestOnly>
+                <Link className="btn btn-gold panel-btn" href="/royxat?rol=startup">
+                  Startap profilini ochish
+                </Link>
+              </GuestOnly>
+            </Suspense>
           </div>
           <div className="panel">
             <h3>Investor uchun</h3>
@@ -132,11 +169,13 @@ export default async function Home() {
                 </li>
               ))}
             </ul>
-            {!profile && (
-              <Link className="btn btn-ghost panel-btn" href="/royxat?rol=investor">
-                Investor sifatida ro&apos;yxatdan o&apos;tish
-              </Link>
-            )}
+            <Suspense fallback={null}>
+              <GuestOnly>
+                <Link className="btn btn-ghost panel-btn" href="/royxat?rol=investor">
+                  Investor sifatida ro&apos;yxatdan o&apos;tish
+                </Link>
+              </GuestOnly>
+            </Suspense>
           </div>
         </div>
       </section>
@@ -172,23 +211,9 @@ export default async function Home() {
           <h2>Yangi startaplar</h2>
           <Link href="/startaplar">Barchasini ko&apos;rish</Link>
         </div>
-        {startups?.length ? (
-          <div className="grid">
-            {startups.map((s) => (
-              <StartupCard key={s.id} s={s} />
-            ))}
-          </div>
-        ) : (
-          <div className="empty">
-            <h3>Birinchi startap siz bo&apos;ling</h3>
-            <p>Hozircha ro&apos;yxat bo&apos;sh. Profil oching, investorlar sizni birinchi bo&apos;lib ko&apos;rishadi.</p>
-            {!profile && (
-              <Link className="btn btn-gold" href="/royxat?rol=startup">
-                Startap profilini yaratish
-              </Link>
-            )}
-          </div>
-        )}
+        <Suspense fallback={<div className="skel-row"><span className="skel skel-card" /><span className="skel skel-card" /><span className="skel skel-card" /></div>}>
+          <LatestStartups />
+        </Suspense>
       </section>
     </>
   );

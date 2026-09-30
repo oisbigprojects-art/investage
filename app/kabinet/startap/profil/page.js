@@ -8,7 +8,7 @@ export const metadata = { title: 'Profil — Startap kabineti — Investage' };
 
 export default async function StartupProfile({ searchParams }) {
   const sp = await searchParams;
-  const { s, p } = await startupContext({ requireProfile: false });
+  const { s, p } = await startupContext({ requireProfile: false, withPrivate: true });
   const extra = p?.extra || {};
 
   return (

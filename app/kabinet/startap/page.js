@@ -11,13 +11,17 @@ export const metadata = { title: "Umumiy ko'rinish — Startap kabineti — Inve
 
 export default async function StartupOverview({ searchParams }) {
   const sp = await searchParams;
-  const { supabase, s, p } = await startupContext();
+  const { supabase, s } = await startupContext();
 
-  const { data: reqs } = await supabase
-    .from('access_requests')
-    .select(STARTUP_REQUESTS_SELECT)
-    .eq('startup_id', s.id)
-    .order('created_at', { ascending: false });
+  // Ikkala so'rov bir vaqtda ketadi
+  const [{ data: reqs }, { data: p }] = await Promise.all([
+    supabase
+      .from('access_requests')
+      .select(STARTUP_REQUESTS_SELECT)
+      .eq('startup_id', s.id)
+      .order('created_at', { ascending: false }),
+    supabase.from('startup_private').select('*').eq('startup_id', s.id).maybeSingle(),
+  ]);
 
   const all = reqs || [];
   const pending = all.filter((r) => r.status === 'pending');

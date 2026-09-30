@@ -1,3 +1,4 @@
+import { cache } from 'react';
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
 import { getSession } from '@/lib/supabase/server';
@@ -8,10 +9,20 @@ import SaveButton from '@/components/SaveButton';
 import { requestAccess, withdrawRequest } from '@/app/kabinet/actions';
 import { formatDate } from '@/lib/labels';
 
+// Sarlavha va sahifa bitta so'rovdan foydalanadi
+const getStartup = cache(async (id) => {
+  const { supabase } = await getSession();
+  const { data } = await supabase
+    .from('startups')
+    .select('id, owner_id, name, sector, short_desc, stage, score, verified, created_at, logo_url, hidden')
+    .eq('id', id)
+    .maybeSingle();
+  return data;
+});
+
 export async function generateMetadata({ params }) {
   const { id } = await params;
-  const { supabase } = await getSession();
-  const { data } = await supabase.from('startups').select('name').eq('id', id).maybeSingle();
+  const data = await getStartup(id);
   return { title: data?.name ? `${data.name} — Investage` : 'Startap — Investage' };
 }
 
@@ -20,39 +31,27 @@ export default async function StartupDetail({ params, searchParams }) {
   const sp = await searchParams;
   const { supabase, user, profile } = await getSession();
 
-  const { data: s } = await supabase
-    .from('startups')
-    .select('id, owner_id, name, sector, short_desc, stage, score, verified, created_at, logo_url, hidden')
-    .eq('id', id)
-    .maybeSingle();
-  if (!s) notFound();
-
-  const isOwner = !!user && s.owner_id === user.id;
   const isInvestor = profile?.role === 'investor';
 
-  // RLS: faqat egasi yoki tasdiqlangan investor uchun qator qaytadi
-  const { data: priv } = user
-    ? await supabase.from('startup_private').select('*').eq('startup_id', s.id).maybeSingle()
-    : { data: null };
-
-  let myRequest = null;
-  let isSaved = false;
-  if (isInvestor) {
-    const { data: sv } = await supabase
-      .from('saved_startups')
-      .select('startup_id')
-      .eq('investor_id', user.id)
-      .eq('startup_id', s.id)
-      .maybeSingle();
-    isSaved = !!sv;
-    const { data } = await supabase
-      .from('access_requests')
-      .select('id, status, created_at, decided_at')
-      .eq('startup_id', s.id)
-      .eq('investor_id', user.id)
-      .maybeSingle();
-    myRequest = data;
-  }
+  // Hammasi bir vaqtda: startap, yopiq qism (RLS: egasi yoki tasdiqlangan investor), mening so'rovim, saqlanganmi
+  const [s, { data: priv }, { data: myRequest }, { data: sv }] = await Promise.all([
+    getStartup(id),
+    user ? supabase.from('startup_private').select('*').eq('startup_id', id).maybeSingle() : { data: null },
+    isInvestor
+      ? supabase
+          .from('access_requests')
+          .select('id, status, created_at, decided_at')
+          .eq('startup_id', id)
+          .eq('investor_id', user.id)
+          .maybeSingle()
+      : { data: null },
+    isInvestor
+      ? supabase.from('saved_startups').select('startup_id').eq('investor_id', user.id).eq('startup_id', id).maybeSingle()
+      : { data: null },
+  ]);
+  if (!s) notFound();
+  const isOwner = !!user && s.owner_id === user.id;
+  const isSaved = !!sv;
 
   return (
     <>

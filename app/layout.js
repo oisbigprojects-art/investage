@@ -1,9 +1,14 @@
 import './globals.css';
+import { Suspense } from 'react';
 import Link from 'next/link';
-import { getSession } from '@/lib/supabase/server';
-import { logout } from './auth-actions';
+import { Inter, JetBrains_Mono } from 'next/font/google';
 import Logo from '@/components/Logo';
+import Topbar, { TopbarFallback } from '@/components/Topbar';
 import { CONTACT } from '@/lib/site';
+
+// Shriftlar build vaqtida yuklab olinib saytning o'zidan beriladi (Google'ga so'rov yo'q)
+const inter = Inter({ subsets: ['latin', 'latin-ext'], variable: '--font-inter', display: 'swap' });
+const mono = JetBrains_Mono({ subsets: ['latin', 'latin-ext'], variable: '--font-mono', display: 'swap' });
 
 export const metadata = {
   title: 'Investage — startaplar va investorlar platformasi',
@@ -16,74 +21,16 @@ export const viewport = {
   colorScheme: 'dark',
 };
 
-export default async function RootLayout({ children }) {
-  const { profile } = await getSession();
-  const role = profile?.role;
-
+export default function RootLayout({ children }) {
   return (
-    <html lang="uz">
-      <head>
-        <link rel="preconnect" href="https://fonts.googleapis.com" />
-        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="" />
-        <link
-          rel="stylesheet"
-          href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;600&display=swap"
-        />
-      </head>
+    <html lang="uz" className={`${inter.variable} ${mono.variable}`}>
       <body>
         <a className="skip" href="#main">
           Asosiy qismga o&apos;tish
         </a>
-        <header className="topbar">
-          <div className="wrap topbar-inner">
-            <Link href="/" className="logo" aria-label="Investage — bosh sahifa">
-              <Logo height={26} />
-            </Link>
-            <nav className="nav" aria-label="Asosiy menyu">
-              {role === 'startup' && (
-                <>
-                  <Link className="nav-link" href="/kabinet/startap">
-                    Kabinet
-                  </Link>
-                  <Link className="nav-link" href="/kabinet/startap/sorovlar">
-                    So&apos;rovlar
-                  </Link>
-                </>
-              )}
-              {role === 'investor' && (
-                <>
-                  <Link className="nav-link" href="/startaplar">
-                    Startaplar
-                  </Link>
-                  <Link className="nav-link" href="/kabinet/investor">
-                    Kabinet
-                  </Link>
-                </>
-              )}
-              {!role && (
-                <Link className="nav-link" href="/startaplar">
-                  Startaplar
-                </Link>
-              )}
-              {role ? (
-                <form action={logout}>
-                  <button className="btn btn-ghost btn-sm" type="submit">
-                    Chiqish
-                  </button>
-                </form>
-              ) : (
-                <>
-                  <Link className="nav-link" href="/kirish">
-                    Kirish
-                  </Link>
-                  <Link href="/royxat" className="btn btn-gold btn-sm">
-                    Ro&apos;yxatdan o&apos;tish
-                  </Link>
-                </>
-              )}
-            </nav>
-          </div>
-        </header>
+        <Suspense fallback={<TopbarFallback />}>
+          <Topbar />
+        </Suspense>
 
         <main id="main" className="wrap main">
           {children}

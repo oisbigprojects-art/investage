@@ -1,6 +1,7 @@
 import { redirect } from 'next/navigation';
 import { getSession } from '@/lib/supabase/server';
 import CabinetNav from '@/components/CabinetNav';
+import { getMyStartup } from '@/lib/cabinet';
 
 // Kabinet: chapda yon menyu, o'ngda tanlangan bo'lim
 export default async function CabinetLayout({ children }) {
@@ -13,16 +14,9 @@ export default async function CabinetLayout({ children }) {
 
   if (profile?.role === 'startup') {
     roleLabel = 'Startap';
-    const { data: s } = await supabase.from('startups').select('id, hidden').eq('owner_id', user.id).maybeSingle();
-    let pending = 0;
-    if (s) {
-      const { count } = await supabase
-        .from('access_requests')
-        .select('id', { count: 'exact', head: true })
-        .eq('startup_id', s.id)
-        .eq('status', 'pending');
-      pending = count || 0;
-    }
+    const mine = await getMyStartup(user.id);
+    const s = mine?.s;
+    const pending = mine?.pending || 0;
     items = [
       { href: '/kabinet/startap', label: "Umumiy ko'rinish", icon: 'grid', exact: true },
       { href: '/kabinet/startap/sorovlar', label: "So'rovlar", icon: 'inbox', badge: pending },

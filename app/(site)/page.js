@@ -8,27 +8,60 @@ import SealedDemo from '@/components/SealedDemo';
 import { DEMO_KEYS } from '@/lib/i18n/demo-keys';
 import { ScoreRing } from '@/components/ui';
 import { CheckIcon, LockIcon, SealIcon } from '@/components/icons';
+import ValuationCalc, { CALC_KEYS } from '@/components/ValuationCalc';
+import { SectorIcon, ArrowIcon, SECTOR_KEYS } from '@/components/SectorIcons';
 
 // Rolga bog'liq tugmalar (sessiya keyin keladi, matn esa darrov ko'rinadi)
-async function HeroActions() {
+async function HeroActions({ onDark = false }) {
   const [{ profile }, t] = await Promise.all([getSession(), getT()]);
+  const ghost = onDark ? 'btn btn-light' : 'btn btn-ghost';
   return profile ? (
     <div className="row">
       <Link className="btn btn-gold" href="/kabinet">
-        {t('home.cta_cabinet')}
+        {t('home.cta_cabinet')} <ArrowIcon size={16} />
       </Link>
-      <Link className="btn btn-ghost" href="/startaplar">
+      <Link className={ghost} href="/startaplar">
         {t('home.cta_browse')}
       </Link>
     </div>
   ) : (
     <div className="row">
       <Link className="btn btn-gold" href="/royxat?rol=startup">
-        {t('home.cta_startup')}
+        {t('home.cta_startup')} <ArrowIcon size={16} />
       </Link>
-      <Link className="btn btn-ghost" href="/royxat?rol=investor">
+      <Link className={ghost} href="/royxat?rol=investor">
         {t('home.cta_investor')}
       </Link>
+    </div>
+  );
+}
+
+// Platforma raqamlari: haqiqiy sonlar bo'lsa ko'rsatiladi, bo'sh bo'lsa aniq faktlar
+async function StatBand() {
+  const [{ supabase }, t] = await Promise.all([getSession(), getT()]);
+  const { data } = await supabase.rpc('platform_stats');
+  const n = (k) => Number(data?.[k]) || 0;
+  const real = n('startups') + n('investors') > 0;
+  const items = real
+    ? [
+        [n('startups'), t('home.stat_startups')],
+        [n('verified'), t('home.stat_verified')],
+        [n('investors'), t('home.stat_investors')],
+        [n('approved'), t('home.stat_approved')],
+      ]
+    : [
+        [t('home.fact_score_n'), t('home.fact_score')],
+        [t('home.fact_lang_n'), t('home.fact_lang')],
+        [t('home.fact_ctrl_n'), t('home.fact_ctrl')],
+      ];
+  return (
+    <div className={`statband ${real ? 'is-4' : ''}`}>
+      {items.map(([v, l]) => (
+        <div key={l}>
+          <b className="num">{v}</b>
+          <span>{l}</span>
+        </div>
+      ))}
     </div>
   );
 }
@@ -74,9 +107,10 @@ export default async function Home() {
     <>
       <section className="hero">
         <div className="hero-copy">
+          <span className="eyebrow">{t('home.tag')}</span>
           <h1>
             <span>{t('home.h1a')}</span>
-            <span>{t('home.h1b')}</span>
+            <span className="hl">{t('home.h1b')}</span>
             <span>{t('home.h1c')}</span>
           </h1>
           <p className="lead">
@@ -93,7 +127,23 @@ export default async function Home() {
           </p>
         </div>
 
-        <SealedDemo strings={pickStrings(t, DEMO_KEYS)} lang={t.lang} />
+        <div className="hero-visual">
+          <span className="float float-a">
+            <ScoreRing value={78} size={40} t={t} />
+            <b>{t('ui.score')}</b>
+          </span>
+          <span className="float float-b">
+            <SealIcon size={22} />
+            <b>{t('ui.verified')}</b>
+          </span>
+          <SealedDemo strings={pickStrings(t, DEMO_KEYS)} lang={t.lang} />
+        </div>
+      </section>
+
+      <section className="section section-tight">
+        <Suspense fallback={<div className="statband"><span className="skel skel-stat" /></div>}>
+          <StatBand />
+        </Suspense>
       </section>
 
       <section className="section">
@@ -167,6 +217,28 @@ export default async function Home() {
       </section>
 
       <section className="section">
+        <div className="section-head">
+          <h2>{t('home.sectors_title')}</h2>
+          <p className="muted">{t('home.sectors_sub')}</p>
+        </div>
+        <div className="sectors">
+          {SECTOR_KEYS.map((k) => (
+            <Link key={k} className="sector" href={`/startaplar?q=${encodeURIComponent(t(`sec.${k}`))}`}>
+              <span className="sector-ico">
+                <SectorIcon name={k} />
+              </span>
+              <b>{t(`sec.${k}`)}</b>
+              <ArrowIcon size={18} />
+            </Link>
+          ))}
+        </div>
+      </section>
+
+      <section className="section">
+        <ValuationCalc strings={pickStrings(t, CALC_KEYS)} lang={t.lang} />
+      </section>
+
+      <section className="section">
         <div className="trust">
           <div>
             <h2>{t('home.trust_title')}</h2>
@@ -197,6 +269,18 @@ export default async function Home() {
         <Suspense fallback={<div className="skel-row"><span className="skel skel-card" /><span className="skel skel-card" /><span className="skel skel-card" /></div>}>
           <LatestStartups />
         </Suspense>
+      </section>
+
+      <section className="section">
+        <div className="cta">
+          <div>
+            <h2>{t('home.cta_title')}</h2>
+            <p>{t('home.cta_text')}</p>
+          </div>
+          <Suspense fallback={<div className="row"><span className="skel skel-btn" /></div>}>
+            <HeroActions onDark />
+          </Suspense>
+        </div>
       </section>
     </>
   );

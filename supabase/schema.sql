@@ -351,3 +351,24 @@ create policy logos_delete on storage.objects for delete to authenticated
 -- Bildirishnomalar: foydalanuvchi ularni oxirgi marta qachon ko'rgani (migratsiya "notifications_seen_at")
 alter table public.profiles add column if not exists notifications_seen_at timestamptz not null default now();
 grant update (notifications_seen_at) on public.profiles to authenticated;
+
+
+-- =====================================================================
+-- 9. Bosh sahifa ko'rsatkichlari (faqat yig'ma sonlar, hamma o'qiy oladi)
+-- =====================================================================
+create or replace function public.platform_stats()
+returns json
+language sql
+stable
+security definer
+set search_path = public
+as $$
+  select json_build_object(
+    'startups',  (select count(*) from public.startups where hidden = false),
+    'verified',  (select count(*) from public.startups where hidden = false and verified = true),
+    'investors', (select count(*) from public.profiles where role = 'investor'),
+    'approved',  (select count(*) from public.access_requests where status = 'approved')
+  );
+$$;
+revoke all on function public.platform_stats() from public;
+grant execute on function public.platform_stats() to anon, authenticated;

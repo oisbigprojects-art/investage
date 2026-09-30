@@ -1,10 +1,10 @@
 import './globals.css';
-import { Inter, JetBrains_Mono } from 'next/font/google';
+import { Inter, Manrope } from 'next/font/google';
 import { getLang, getT } from '@/lib/i18n/server';
 
 // Shriftlar build vaqtida yuklab olinib saytning o'zidan beriladi (Google'ga so'rov yo'q)
-const inter = Inter({ subsets: ['latin', 'latin-ext'], variable: '--font-inter', display: 'swap' });
-const mono = JetBrains_Mono({ subsets: ['latin', 'latin-ext'], variable: '--font-mono', display: 'swap' });
+const inter = Inter({ subsets: ['latin', 'latin-ext', 'cyrillic'], variable: '--font-inter', display: 'swap' });
+const display = Manrope({ subsets: ['latin', 'latin-ext', 'cyrillic'], variable: '--font-display', display: 'swap' });
 
 export async function generateMetadata() {
   const t = await getT();
@@ -12,14 +12,14 @@ export async function generateMetadata() {
 }
 
 export const viewport = {
-  themeColor: '#0F0F0F',
-  colorScheme: 'dark',
+  themeColor: '#F5F5F3',
+  colorScheme: 'light',
 };
 
 export default async function RootLayout({ children }) {
   const lang = await getLang();
   return (
-    <html lang={lang} className={`${inter.variable} ${mono.variable}`}>
+    <html lang={lang} className={`${inter.variable} ${display.variable}`}>
       <body>
         {children}
       </body>

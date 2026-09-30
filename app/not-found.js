@@ -1,14 +1,16 @@
 import Link from 'next/link';
 import SiteChrome from '@/components/SiteChrome';
+import { getT } from '@/lib/i18n/server';
 
-export default function NotFound() {
+export default async function NotFound() {
+  const t = await getT();
   return (
     <SiteChrome>
       <div className="empty">
-        <h3>Sahifa topilmadi</h3>
-        <p>Bu sahifa o&apos;chirilgan yoki havola noto&apos;g&apos;ri.</p>
+        <h3>{t('nf.title')}</h3>
+        <p>{t('nf.text')}</p>
         <Link className="btn btn-gold" href="/startaplar">
-          Startaplar ro&apos;yxatiga qaytish
+          {t('nf.cta')}
         </Link>
       </div>
     </SiteChrome>

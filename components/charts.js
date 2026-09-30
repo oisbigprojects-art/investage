@@ -37,11 +37,11 @@ export function Stat({ value, text, suffix, label, hint, href, tone }) {
 }
 
 // Ustunli diagramma: data = [{ label, value }]
-export function BarChart({ data, title }) {
+export function BarChart({ data, title, t }) {
   const max = Math.max(1, ...data.map((d) => d.value));
   const total = data.reduce((a, d) => a + d.value, 0);
   return (
-    <div className="bars" role="img" aria-label={`${title}: jami ${total}. ${data.map((d) => `${d.label} — ${d.value}`).join(', ')}`}>
+    <div className="bars" role="img" aria-label={t('chart.total', { title, total, items: data.map((d) => `${d.label} — ${d.value}`).join(', ') })}>
       {data.map((d, i) => (
         <div className="bar-col" key={i} aria-hidden="true">
           <span className="bar-val num">{d.value || ''}</span>
@@ -56,7 +56,7 @@ export function BarChart({ data, title }) {
 }
 
 // Halqa diagramma: parts = [{ label, value, tone }] (tone: ok | warn | bad | muted)
-export function Donut({ parts, title, centerLabel = 'jami' }) {
+export function Donut({ parts, title, centerLabel = '' }) {
   const total = parts.reduce((a, p) => a + p.value, 0);
   let acc = 0;
   return (

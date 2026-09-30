@@ -4,6 +4,7 @@ import { redirect } from 'next/navigation';
 import { revalidatePath } from 'next/cache';
 import { getSession } from '@/lib/supabase/server';
 import { EXTRA_FIELDS } from '@/lib/labels';
+import { getT } from '@/lib/i18n/server';
 
 const go = (path, key, msg) => redirect(`${path}${path.includes('?') ? '&' : '?'}${key}=${encodeURIComponent(msg)}`);
 
@@ -26,6 +27,17 @@ const money = (v) => {
 
 const text = (formData, key) => String(formData.get(key) || '').trim();
 
+// Bazadagi (RPC) xato matnlari o'zbekcha: foydalanuvchi tiliga o'tkazamiz, notanish xato o'z holicha qoladi
+const DB_ERRORS = {
+  'Avval tizimga kiring': 'db.login_first',
+  "Faqat investorlar so'rov yubora oladi": 'ac.investors_only',
+  'Startap topilmadi': 'db.startup_not_found',
+  "So'rov topilmadi yoki allaqachon ko'rib chiqilgan": 'db.request_gone',
+  'Faol ruxsat topilmadi': 'db.no_active',
+  "Kutilayotgan so'rov topilmadi": 'db.no_pending',
+};
+const dbMsg = (t, error) => (DB_ERRORS[error?.message] ? t(DB_ERRORS[error.message]) : error?.message || '');
+
 const LOGO_TYPES = { 'image/png': 'png', 'image/jpeg': 'jpg', 'image/webp': 'webp' };
 const LOGO_MAX = 1024 * 1024;
 const LOGO_PREFIX = '/storage/v1/object/public/logos/';
@@ -36,6 +48,7 @@ const logoPath = (url) => (url && url.includes(LOGO_PREFIX) ? url.split(LOGO_PRE
 // ---------------- STARTAP: profilni saqlash ----------------
 export async function saveStartup(formData) {
   const PATH = '/kabinet/startap/profil';
+  const t = await getT();
   const { supabase, user, profile } = await getSession();
   if (!user || profile?.role !== 'startup') redirect('/kirish');
 
@@ -45,20 +58,20 @@ export async function saveStartup(formData) {
     short_desc: text(formData, 'short_desc'),
     stage: text(formData, 'stage') || 'goya',
   };
-  if (!pub.name) go(PATH, 'xato', 'Startap nomini kiriting.');
+  if (!pub.name) go(PATH, 'xato', t('ac.name_required'));
 
   const funding = money(formData.get('funding_amount'));
   const equity = num(formData.get('equity_percent'));
-  if (funding !== null && (isNaN(funding) || funding < 0)) go(PATH, 'xato', "Summa noto'g'ri. Faqat raqam kiriting (AQSH dollarida).");
+  if (funding !== null && (isNaN(funding) || funding < 0)) go(PATH, 'xato', t('ac.bad_amount'));
   if (equity !== null && (isNaN(equity) || equity <= 0 || equity > 100))
-    go(PATH, 'xato', "Ulush 0 dan katta va 100 dan kichik bo'lishi kerak.");
+    go(PATH, 'xato', t('ac.bad_equity'));
 
   // Logotipni oldindan tekshiramiz (xato bo'lsa hech narsa saqlanmaydi)
   const file = formData.get('logo');
   const hasFile = file && typeof file === 'object' && file.size > 0;
   if (hasFile) {
-    if (!LOGO_TYPES[file.type]) go(PATH, 'xato', 'Logotip PNG, JPG yoki WebP formatida bo‘lishi kerak.');
-    if (file.size > LOGO_MAX) go(PATH, 'xato', 'Logotip hajmi 1 MB dan oshmasin.');
+    if (!LOGO_TYPES[file.type]) go(PATH, 'xato', t('ac.logo_type'));
+    if (file.size > LOGO_MAX) go(PATH, 'xato', t('ac.logo_size'));
   }
 
   const { data: existing } = await supabase
@@ -91,7 +104,7 @@ export async function saveStartup(formData) {
     const { error: upErr } = await supabase.storage
       .from('logos')
       .upload(path, file, { contentType: file.type, cacheControl: '31536000' });
-    if (upErr) go(PATH, 'xato', `Logotipni yuklab bo'lmadi: ${upErr.message}`);
+    if (upErr) go(PATH, 'xato', t('ac.logo_upload', { msg: upErr.message }));
     const {
       data: { publicUrl },
     } = supabase.storage.from('logos').getPublicUrl(path);
@@ -125,76 +138,82 @@ export async function saveStartup(formData) {
   if (privErr) go(PATH, 'xato', privErr.message);
 
   revalidatePath('/', 'layout');
-  go(PATH, 'xabar', 'Saqlandi.');
+  go(PATH, 'xabar', t('ac.saved'));
 }
 
 // ---------------- STARTAP: katalogda ko'rinish (yashirish / qayta ko'rsatish) ----------------
 export async function setVisibility(formData) {
   const PATH = back(formData, '/kabinet/startap');
+  const t = await getT();
   const { supabase, user, profile } = await getSession();
   if (!user || profile?.role !== 'startup') redirect('/kirish');
   const hidden = formData.get('hidden') === 'true';
   const { error } = await supabase.from('startups').update({ hidden }).eq('owner_id', user.id);
   if (error) go(PATH, 'xato', error.message);
   revalidatePath('/', 'layout');
-  go(PATH, 'xabar', hidden ? 'Profil yashirildi: katalogda ko‘rinmaydi.' : 'Profil katalogda yana ko‘rinadi.');
+  go(PATH, 'xabar', hidden ? t('ac.hidden_on') : t('ac.hidden_off'));
 }
 
 // ---------------- STARTAP: so'rovni tasdiqlash / rad etish / yopish ----------------
 export async function decideRequest(formData) {
   const PATH = back(formData, '/kabinet/startap/sorovlar');
+  const t = await getT();
   const { supabase } = await getSession();
   const approve = formData.get('decision') === 'approve';
   const { error } = await supabase.rpc('decide_request', {
     p_request: String(formData.get('request_id')),
     p_approve: approve,
   });
-  if (error) go(PATH, 'xato', error.message);
+  if (error) go(PATH, 'xato', dbMsg(t, error));
   revalidatePath('/', 'layout');
-  go(PATH, 'xabar', approve ? 'Ruxsat berildi.' : "So'rov rad etildi.");
+  go(PATH, 'xabar', approve ? t('ac.approved') : t('ac.rejected'));
 }
 
 export async function revokeAccess(formData) {
   const PATH = back(formData, '/kabinet/startap/sorovlar');
+  const t = await getT();
   const { supabase } = await getSession();
   const { error } = await supabase.rpc('revoke_access', { p_request: String(formData.get('request_id')) });
-  if (error) go(PATH, 'xato', error.message);
+  if (error) go(PATH, 'xato', dbMsg(t, error));
   revalidatePath('/', 'layout');
-  go(PATH, 'xabar', 'Ruxsat yopildi.');
+  go(PATH, 'xabar', t('ac.revoked'));
 }
 
 // ---------------- INVESTOR: so'rov yuborish / qaytarib olish ----------------
 export async function requestAccess(formData) {
   const startupId = String(formData.get('startup_id'));
   const path = `/startaplar/${startupId}`;
+  const t = await getT();
   const { supabase, user, profile } = await getSession();
   if (!user) redirect('/kirish');
-  if (profile?.role !== 'investor') go(path, 'xato', "Faqat investorlar so'rov yubora oladi.");
+  if (profile?.role !== 'investor') go(path, 'xato', t('ac.investors_only'));
 
   const { error } = await supabase.rpc('request_access', {
     p_startup: startupId,
     p_message: text(formData, 'message'),
   });
-  if (error) go(path, 'xato', error.message);
+  if (error) go(path, 'xato', dbMsg(t, error));
   revalidatePath('/', 'layout');
-  go(path, 'xabar', "So'rovingiz startapga yuborildi.");
+  go(path, 'xabar', t('ac.sent'));
 }
 
 export async function withdrawRequest(formData) {
   const PATH = back(formData, '/kabinet/investor/sorovlar');
+  const t = await getT();
   const { supabase } = await getSession();
   const { error } = await supabase.rpc('withdraw_request', { p_request: String(formData.get('request_id')) });
-  if (error) go(PATH, 'xato', error.message);
+  if (error) go(PATH, 'xato', dbMsg(t, error));
   revalidatePath('/', 'layout');
-  go(PATH, 'xabar', "So'rov qaytarib olindi.");
+  go(PATH, 'xabar', t('ac.withdrawn'));
 }
 
 // ---------------- INVESTOR: startapni saqlash / saqlanganlardan olib tashlash ----------------
 export async function toggleSaved(formData) {
   const PATH = back(formData, '/startaplar');
+  const t = await getT();
   const { supabase, user, profile } = await getSession();
   if (!user) redirect('/kirish');
-  if (profile?.role !== 'investor') go(PATH, 'xato', 'Faqat investorlar startaplarni saqlay oladi.');
+  if (profile?.role !== 'investor') go(PATH, 'xato', t('ac.save_investors_only'));
 
   const startupId = String(formData.get('startup_id'));
   const { error } =
@@ -212,6 +231,7 @@ export async function toggleSaved(formData) {
 // ---------------- INVESTOR: o'z profilini saqlash ----------------
 export async function saveInvestorProfile(formData) {
   const PATH = '/kabinet/investor/profil';
+  const t = await getT();
   const { supabase, user, profile } = await getSession();
   if (!user || profile?.role !== 'investor') redirect('/kirish');
 
@@ -221,15 +241,15 @@ export async function saveInvestorProfile(formData) {
     interests: text(formData, 'interests'),
     bio: text(formData, 'bio'),
   };
-  if (!patch.full_name) go(PATH, 'xato', 'Ismingizni kiriting.');
-  if (patch.company.length > 120) go(PATH, 'xato', 'Kompaniya nomi 120 belgidan oshmasin.');
-  if (patch.interests.length > 200) go(PATH, 'xato', 'Qiziqish sohalari 200 belgidan oshmasin.');
-  if (patch.bio.length > 600) go(PATH, 'xato', 'O‘zingiz haqingizda matn 600 belgidan oshmasin.');
+  if (!patch.full_name) go(PATH, 'xato', t('ac.name_req'));
+  if (patch.company.length > 120) go(PATH, 'xato', t('ac.company_len'));
+  if (patch.interests.length > 200) go(PATH, 'xato', t('ac.interests_len'));
+  if (patch.bio.length > 600) go(PATH, 'xato', t('ac.bio_len'));
 
   const { error } = await supabase.from('profiles').update(patch).eq('id', user.id);
   if (error) go(PATH, 'xato', error.message);
   revalidatePath('/', 'layout');
-  go(PATH, 'xabar', 'Saqlandi.');
+  go(PATH, 'xabar', t('ac.saved'));
 }
 
 // ---------------- Bildirishnomalarni o'qilgan deb belgilash ----------------

@@ -1,5 +1,5 @@
 // Sahifa ma'lumoti kelguncha ko'rinadigan skelet
-export default function PageSkeleton({ cards = 6 }) {
+export default function PageSkeleton({ cards = 6, label = 'Yuklanmoqda…' }) {
   return (
     <div aria-busy="true" aria-live="polite">
       <span className="skel skel-title" />
@@ -14,7 +14,7 @@ export default function PageSkeleton({ cards = 6 }) {
           <span key={i} className="skel skel-card" />
         ))}
       </div>
-      <span className="visually-hidden">Yuklanmoqda…</span>
+      <span className="visually-hidden">{label}</span>
     </div>
   );
 }

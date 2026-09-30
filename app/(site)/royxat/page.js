@@ -1,58 +1,63 @@
 import Link from 'next/link';
 import { redirect } from 'next/navigation';
 import { getSession } from '@/lib/supabase/server';
+import { getT } from '@/lib/i18n/server';
 import { Flash } from '@/components/ui';
 import { signup } from '@/app/auth-actions';
 
-export const metadata = { title: "Ro'yxatdan o'tish — Investage" };
+export async function generateMetadata() {
+  const t = await getT();
+  return { title: t('meta.signup') };
+}
 
 export default async function SignupPage({ searchParams }) {
   const sp = await searchParams;
+  const t = await getT();
   const { user } = await getSession();
   if (user) redirect('/kabinet');
   const preset = sp?.rol === 'investor' ? 'investor' : sp?.rol === 'startup' ? 'startup' : null;
 
   return (
     <div className="auth">
-      <h1>Ro&apos;yxatdan o&apos;tish</h1>
-      <p className="muted">Rolingizni tanlang. Keyin uni o&apos;zgartirib bo&apos;lmaydi.</p>
+      <h1>{t('signup.title')}</h1>
+      <p className="muted">{t('signup.sub')}</p>
       <Flash searchParams={sp} />
       <form action={signup} className="card form">
         <fieldset className="role-radio">
-          <legend>Siz kimsiz?</legend>
+          <legend>{t('signup.who')}</legend>
           <label className="radio-card">
             <input type="radio" name="role" value="startup" defaultChecked={preset === 'startup'} required />
             <span>
-              <strong>Startap</strong>
-              <small>Mablag&apos; izlayman</small>
+              <strong>{t('signup.startup')}</strong>
+              <small>{t('signup.startup_sub')}</small>
             </span>
           </label>
           <label className="radio-card">
             <input type="radio" name="role" value="investor" defaultChecked={preset === 'investor'} required />
             <span>
-              <strong>Investor yoki tadbirkor</strong>
-              <small>Loyiha izlayman</small>
+              <strong>{t('signup.investor')}</strong>
+              <small>{t('signup.investor_sub')}</small>
             </span>
           </label>
         </fieldset>
         <label>
-          Ism familiya
+          {t('signup.fullname')}
           <input name="full_name" required autoComplete="name" />
         </label>
         <label>
-          Email
+          {t('form.email')}
           <input name="email" type="email" required autoComplete="email" placeholder="name@company.com" />
         </label>
         <label>
-          Parol (kamida 6 belgi)
+          {t('signup.password')}
           <input name="password" type="password" minLength={6} required autoComplete="new-password" />
         </label>
         <button className="btn btn-gold" type="submit">
-          Ro&apos;yxatdan o&apos;tish
+          {t('signup.submit')}
         </button>
       </form>
       <p className="muted center">
-        Akkauntingiz bormi? <Link href="/kirish">Kirish</Link>
+        {t('signup.have')} <Link href="/kirish">{t('signup.have_link')}</Link>
       </p>
     </div>
   );

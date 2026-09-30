@@ -7,12 +7,12 @@ import { GridIcon, InboxIcon, UserIcon, SearchIcon, BookmarkIcon, GlobeIcon, Bel
 const ICONS = { grid: GridIcon, inbox: InboxIcon, user: UserIcon, search: SearchIcon, bookmark: BookmarkIcon, globe: GlobeIcon, bell: BellIcon, home: HomeIcon, plus: PlusIcon };
 
 // sections: [{ title, items: [{ href, label, icon, exact?, badge? }] }]
-export default function AppNav({ sections }) {
+export default function AppNav({ sections, label }) {
   const path = usePathname();
   const isOn = (it) => (it.exact ? path === it.href : path === it.href || path.startsWith(it.href + '/'));
 
   return (
-    <nav className="side-nav" aria-label="Asosiy menyu">
+    <nav className="side-nav" aria-label={label}>
       {sections.map((sec) => (
         <div className="side-sec" key={sec.title}>
           <span className="side-title">{sec.title}</span>

@@ -1,5 +1,7 @@
 import Link from 'next/link';
 import { getSession } from '@/lib/supabase/server';
+import { getT } from '@/lib/i18n/server';
+import LangSwitch from '@/components/LangSwitch';
 import { getRequests, getSaved, getMyStartup } from '@/lib/data';
 import { buildEvents, notificationsOf } from '@/lib/events';
 import { logout } from '@/app/auth-actions';
@@ -30,77 +32,77 @@ export function SidebarFallback() {
 }
 
 export async function Sidebar() {
-  const { user, profile } = await getSession();
+  const [{ user, profile }, t] = await Promise.all([getSession(), getT()]);
   const role = profile?.role;
 
   let sections;
   if (!user) {
     sections = [
       {
-        title: 'Sayt',
+        title: t('shell.sec_site'),
         items: [
-          { href: '/', label: 'Bosh sahifa', icon: 'home', exact: true },
-          { href: '/startaplar', label: 'Startaplar', icon: 'search' },
+          { href: '/', label: t('nav.home'), icon: 'home', exact: true },
+          { href: '/startaplar', label: t('nav.startups'), icon: 'search' },
         ],
       },
     ];
   } else if (role === 'startup') {
     const [requests, s] = await Promise.all([getRequests(), getMyStartup(user.id)]);
     const pending = requests.filter((r) => r.status === 'pending').length;
-    const { unread } = notificationsOf(buildEvents('startup', requests), profile.notifications_seen_at);
+    const { unread } = notificationsOf(buildEvents('startup', requests, [], t), profile.notifications_seen_at);
     sections = [
       {
-        title: 'Panel',
+        title: t('shell.sec_panel'),
         items: [
-          { href: '/kabinet/startap', label: "Umumiy ko'rinish", icon: 'grid', exact: true },
-          { href: '/kabinet/startap/sorovlar', label: "So'rovlar", icon: 'inbox', badge: pending },
-          { href: '/kabinet/bildirishnomalar', label: 'Bildirishnomalar', icon: 'bell', badge: unread },
+          { href: '/kabinet/startap', label: t('shell.overview'), icon: 'grid', exact: true },
+          { href: '/kabinet/startap/sorovlar', label: t('shell.requests'), icon: 'inbox', badge: pending },
+          { href: '/kabinet/bildirishnomalar', label: t('shell.notifications'), icon: 'bell', badge: unread },
         ],
       },
       {
-        title: 'Startap',
+        title: t('shell.sec_startup'),
         items: [
-          { href: '/kabinet/startap/profil', label: 'Profil', icon: 'user' },
-          ...(s ? [{ href: `/startaplar/${s.id}`, label: 'Ochiq sahifam', icon: 'globe', exact: true }] : []),
+          { href: '/kabinet/startap/profil', label: t('shell.profile'), icon: 'user' },
+          ...(s ? [{ href: `/startaplar/${s.id}`, label: t('shell.public_page'), icon: 'globe', exact: true }] : []),
         ],
       },
-      { title: 'Katalog', items: [{ href: '/startaplar', label: 'Startaplar', icon: 'search', exact: true }] },
+      { title: t('shell.sec_catalog'), items: [{ href: '/startaplar', label: t('nav.startups'), icon: 'search', exact: true }] },
     ];
   } else {
     const [requests, saved] = await Promise.all([getRequests(), getSaved()]);
     const pending = requests.filter((r) => r.status === 'pending').length;
-    const { unread } = notificationsOf(buildEvents('investor', requests, saved), profile.notifications_seen_at);
+    const { unread } = notificationsOf(buildEvents('investor', requests, saved, t), profile.notifications_seen_at);
     sections = [
       {
-        title: 'Panel',
+        title: t('shell.sec_panel'),
         items: [
-          { href: '/kabinet/investor', label: "Umumiy ko'rinish", icon: 'grid', exact: true },
-          { href: '/kabinet/investor/sorovlar', label: "So'rovlarim", icon: 'inbox', badge: pending },
-          { href: '/kabinet/investor/saqlangan', label: 'Saqlanganlar', icon: 'bookmark', badge: saved.length },
-          { href: '/kabinet/bildirishnomalar', label: 'Bildirishnomalar', icon: 'bell', badge: unread },
+          { href: '/kabinet/investor', label: t('shell.overview'), icon: 'grid', exact: true },
+          { href: '/kabinet/investor/sorovlar', label: t('shell.my_requests'), icon: 'inbox', badge: pending },
+          { href: '/kabinet/investor/saqlangan', label: t('shell.saved'), icon: 'bookmark', badge: saved.length },
+          { href: '/kabinet/bildirishnomalar', label: t('shell.notifications'), icon: 'bell', badge: unread },
         ],
       },
-      { title: 'Katalog', items: [{ href: '/startaplar', label: 'Startaplar', icon: 'search' }] },
-      { title: 'Hisob', items: [{ href: '/kabinet/investor/profil', label: 'Profil', icon: 'user' }] },
+      { title: t('shell.sec_catalog'), items: [{ href: '/startaplar', label: t('nav.startups'), icon: 'search' }] },
+      { title: t('shell.sec_account'), items: [{ href: '/kabinet/investor/profil', label: t('shell.profile'), icon: 'user' }] },
     ];
   }
 
   return (
     <aside className="side">
-      <Link href="/" className="side-logo" aria-label="Investage — bosh sahifa">
+      <Link href="/" className="side-logo" aria-label={t('brand.home_aria')}>
         <Logo height={24} />
       </Link>
-      <AppNav sections={sections} />
+      <AppNav sections={sections} label={t('nav.main')} />
 
       {!user ? (
         <div className="side-promo">
-          <b>Investage&apos;ga qo&apos;shiling</b>
-          <p className="small muted">Startap yoki investor sifatida ro&apos;yxatdan o&apos;ting va o&apos;z panelingizni oching.</p>
+          <b>{t('shell.promo_title')}</b>
+          <p className="small muted">{t('shell.promo_text')}</p>
           <Link className="btn btn-gold btn-sm" href="/royxat">
-            Ro&apos;yxatdan o&apos;tish
+            {t('nav.signup')}
           </Link>
           <Link className="btn btn-ghost btn-sm" href="/kirish">
-            Kirish
+            {t('nav.login')}
           </Link>
         </div>
       ) : (
@@ -109,11 +111,11 @@ export async function Sidebar() {
             {initial(profile.full_name)}
           </span>
           <div>
-            <b>{profile.full_name || 'Foydalanuvchi'}</b>
-            <span>{role === 'startup' ? 'Startap' : 'Investor'}</span>
+            <b>{profile.full_name || t('shell.user_default')}</b>
+            <span>{role === 'startup' ? t('role.startup') : t('role.investor')}</span>
           </div>
           <form action={logout}>
-            <button type="submit" className="icon-btn" aria-label="Chiqish" title="Chiqish">
+            <button type="submit" className="icon-btn" aria-label={t('nav.logout')} title={t('nav.logout')}>
               <LogoutIcon size={18} />
             </button>
           </form>
@@ -129,55 +131,56 @@ export function TopFallback() {
 }
 
 export async function TopActions() {
-  const { user, profile } = await getSession();
+  const [{ user, profile }, t] = await Promise.all([getSession(), getT()]);
   const role = profile?.role;
   let notif = { list: [], unread: 0 };
   if (user) {
     const [requests, saved] = await Promise.all([getRequests(), getSaved()]);
-    notif = notificationsOf(buildEvents(role, requests, saved), profile.notifications_seen_at);
+    notif = notificationsOf(buildEvents(role, requests, saved, t), profile.notifications_seen_at);
   }
 
   return (
     <div className="app-top-inner">
       <form className="top-search" action="/startaplar" role="search">
         <label>
-          <span className="visually-hidden">Startap qidirish</span>
+          <span className="visually-hidden">{t('top.search')}</span>
           <SearchIcon size={17} />
-          <input name="q" type="search" placeholder="Startap qidirish" maxLength={60} />
+          <input name="q" type="search" placeholder={t('top.search')} maxLength={60} />
         </label>
       </form>
 
       <div className="top-right">
+        <LangSwitch current={t.lang} label={t('lang.label')} />
         {!user ? (
           <>
             <Link className="nav-link" href="/kirish">
-              Kirish
+              {t('nav.login')}
             </Link>
             <Link className="btn btn-gold btn-sm" href="/royxat">
-              Ro&apos;yxatdan o&apos;tish
+              {t('nav.signup')}
             </Link>
           </>
         ) : (
           <>
             <details className="pop">
-              <summary className="icon-btn" aria-label={`Bildirishnomalar${notif.unread ? `: ${notif.unread} ta yangi` : ''}`}>
+              <summary className="icon-btn" aria-label={notif.unread ? t('top.bell_new', { n: notif.unread }) : t('top.bell')}>
                 <BellIcon size={19} />
                 {notif.unread > 0 && <em className="bell-dot">{notif.unread > 9 ? '9+' : notif.unread}</em>}
               </summary>
               <div className="pop-panel">
                 <div className="pop-head">
-                  <b>Bildirishnomalar</b>
+                  <b>{t('top.bell')}</b>
                   {notif.unread > 0 && (
                     <form action={markNotificationsSeen}>
                       <input type="hidden" name="back" value="/kabinet/bildirishnomalar" />
                       <button type="submit" className="link-btn">
-                        Hammasini o&apos;qildi deb belgilash
+                        {t('top.mark_all')}
                       </button>
                     </form>
                   )}
                 </div>
                 {notif.list.length === 0 ? (
-                  <p className="muted small pop-empty">Yangi xabar yo&apos;q.</p>
+                  <p className="muted small pop-empty">{t('top.empty')}</p>
                 ) : (
                   <ul className="pop-list">
                     {notif.list.slice(0, 5).map((e) => {
@@ -186,7 +189,7 @@ export async function TopActions() {
                         <li key={e.id} className={fresh ? 'is-fresh' : ''}>
                           <Link href={e.href}>
                             <span>{e.text}</span>
-                            <time className="muted small">{timeAgo(e.at)}</time>
+                            <time className="muted small">{timeAgo(e.at, t)}</time>
                           </Link>
                         </li>
                       );
@@ -194,12 +197,12 @@ export async function TopActions() {
                   </ul>
                 )}
                 <Link className="pop-all" href="/kabinet/bildirishnomalar">
-                  Hammasini ko&apos;rish
+                  {t('top.see_all')}
                 </Link>
               </div>
             </details>
 
-            <Link href={role === 'startup' ? '/kabinet/startap/profil' : '/kabinet/investor/profil'} className="top-avatar" aria-label="Profilim" title={profile.full_name}>
+            <Link href={role === 'startup' ? '/kabinet/startap/profil' : '/kabinet/investor/profil'} className="top-avatar" aria-label={t('top.profile')} title={profile.full_name}>
               {initial(profile.full_name)}
             </Link>
           </>

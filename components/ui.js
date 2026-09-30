@@ -1,4 +1,4 @@
-import { STAGES, STATUS } from '@/lib/labels';
+import { STATUS_TONE } from '@/lib/labels';
 import { SealIcon } from './icons';
 
 export function Flash({ searchParams }) {
@@ -17,40 +17,39 @@ export function Flash({ searchParams }) {
   return null;
 }
 
-export function StageBadge({ stage }) {
+export function StageBadge({ stage, t }) {
   return (
     <span className={`chip chip-stage-${stage}`}>
       <i aria-hidden="true" />
-      {STAGES[stage] || stage}
+      {t(`stage.${stage}`)}
     </span>
   );
 }
 
-export function StatusBadge({ status }) {
-  const s = STATUS[status] || { label: status, tone: 'muted' };
+export function StatusBadge({ status, t }) {
   return (
-    <span className={`chip chip-${s.tone}`}>
+    <span className={`chip chip-${STATUS_TONE[status] || 'muted'}`}>
       <i aria-hidden="true" />
-      {s.label}
+      {t(`status.${status}`)}
     </span>
   );
 }
 
-export function Verified({ on }) {
+export function Verified({ on, t }) {
   if (!on) return null;
   return (
-    <span className="verified" title="Hujjatlari Investage jamoasi tomonidan tekshirilgan">
+    <span className="verified" title={t('ui.verified_title')}>
       <SealIcon size={15} />
-      Tasdiqlangan
+      {t('ui.verified')}
     </span>
   );
 }
 
 // Investage bahosi (0–100) — aylana ko'rsatkich
-export function ScoreRing({ value, size = 44 }) {
+export function ScoreRing({ value, size = 44, t }) {
   const has = value !== null && value !== undefined;
   const tone = !has ? 'empty' : value >= 70 ? 'ok' : value >= 40 ? 'gold' : 'bad';
-  const label = has ? `Investage bahosi: ${value} dan 100` : "Baho hali qo'yilmagan";
+  const label = has ? t('ui.score_label', { n: value }) : t('ui.score_none');
   return (
     <span
       className={`ring ring-${tone}`}

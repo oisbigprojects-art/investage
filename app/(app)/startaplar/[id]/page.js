@@ -2,6 +2,7 @@ import { cache } from 'react';
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
 import { getSession } from '@/lib/supabase/server';
+import { getT } from '@/lib/i18n/server';
 import { Flash, StageBadge, Verified, ScoreRing, StatusBadge, Monogram, Redact } from '@/components/ui';
 import PrivateDetails from '@/components/PrivateDetails';
 import { LockIcon, UnlockIcon, ClockIcon } from '@/components/icons';
@@ -22,14 +23,14 @@ const getStartup = cache(async (id) => {
 
 export async function generateMetadata({ params }) {
   const { id } = await params;
-  const data = await getStartup(id);
-  return { title: data?.name ? `${data.name} — Investage` : 'Startap — Investage' };
+  const [data, t] = await Promise.all([getStartup(id), getT()]);
+  return { title: data?.name ? `${data.name} — Investage` : t('meta.startup_default') };
 }
 
 export default async function StartupDetail({ params, searchParams }) {
   const { id } = await params;
   const sp = await searchParams;
-  const { supabase, user, profile } = await getSession();
+  const [{ supabase, user, profile }, t] = await Promise.all([getSession(), getT()]);
 
   const isInvestor = profile?.role === 'investor';
 
@@ -56,13 +57,13 @@ export default async function StartupDetail({ params, searchParams }) {
   return (
     <>
       <Link href="/startaplar" className="back">
-        ← Startaplar
+        {t('detail.back')}
       </Link>
       <Flash searchParams={sp} />
       {isOwner && s.hidden && (
         <div className="flash flash-warn" role="status">
-          Profilingiz yashirilgan: bu sahifani faqat siz ko&apos;rasiz. Katalogda ko&apos;rsatish uchun{' '}
-          <Link href="/kabinet/startap">kabinetga</Link> o&apos;ting.
+          {t('detail.hidden_a')} <Link href="/kabinet/startap">{t('detail.hidden_link')}</Link>
+          {t('detail.hidden_b')}
         </div>
       )}
 
@@ -75,16 +76,16 @@ export default async function StartupDetail({ params, searchParams }) {
             {s.sector && <p className="muted">{s.sector}</p>}
           </div>
           <div className="ring-wrap">
-            <ScoreRing value={s.score} size={64} />
-            <small className="muted">Baho</small>
+            <ScoreRing value={s.score} size={64} t={t} />
+            <small className="muted">{t('ui.score')}</small>
           </div>
         </div>
         {s.short_desc && <p className="head-desc">{s.short_desc}</p>}
         <div className="head-meta">
-          <StageBadge stage={s.stage} />
-          <Verified on={s.verified} />
-          <span className="muted small">Qo&apos;shilgan: {formatDate(s.created_at)}</span>
-          {isInvestor && <SaveButton startupId={s.id} saved={isSaved} back={`/startaplar/${s.id}`} withLabel />}
+          <StageBadge stage={s.stage} t={t} />
+          <Verified on={s.verified} t={t} />
+          <span className="muted small">{t('detail.joined', { date: formatDate(s.created_at, t) })}</span>
+          {isInvestor && <SaveButton startupId={s.id} saved={isSaved} back={`/startaplar/${s.id}`} withLabel t={t} />}
         </div>
       </section>
 
@@ -92,25 +93,26 @@ export default async function StartupDetail({ params, searchParams }) {
         {/* ---------- YOPIQ QISM ---------- */}
         <section className="card">
           <div className="section-head sm">
-            <h2>Batafsil ma&apos;lumot</h2>
+            <h2>{t('detail.info')}</h2>
             {priv ? (
               <span className="chip chip-ok">
                 <i aria-hidden="true" />
-                Ochiq
+                {t('detail.open')}
               </span>
             ) : (
               <span className="chip chip-muted">
                 <i aria-hidden="true" />
-                Yopiq
+                {t('detail.closed')}
               </span>
             )}
           </div>
-          {priv ? <PrivateDetails p={priv} /> : <Redacted />}
+          {priv ? <PrivateDetails p={priv} t={t} /> : <Redacted t={t} />}
         </section>
 
         {/* ---------- RUXSAT HOLATI / HARAKAT ---------- */}
         <aside className="card access">
           <AccessPanel
+            t={t}
             user={user}
             profile={profile}
             req={myRequest}
@@ -124,45 +126,43 @@ export default async function StartupDetail({ params, searchParams }) {
   );
 }
 
-function Redacted() {
+function Redacted({ t }) {
   return (
     <div className="dossier is-locked">
       <div className="figures">
         <div className="figure">
-          <span>Kerakli mablag&apos;</span>
+          <span>{t('pd.funding')}</span>
           <Redact w={124} />
         </div>
         <div className="figure">
-          <span>Taklif qilinayotgan ulush</span>
+          <span>{t('pd.equity')}</span>
           <Redact w={56} />
         </div>
       </div>
       <div className="block">
-        <h3>Jamoa</h3>
+        <h3>{t('pd.team')}</h3>
         <Redact w={220} />
       </div>
       <div className="block">
-        <h3>Kontaktlar</h3>
+        <h3>{t('pd.contacts')}</h3>
         <Redact w={160} />
       </div>
     </div>
   );
 }
 
-function AccessPanel({ user, profile, req, startupId, isOwner, hasAccess }) {
+function AccessPanel({ t, user, profile, req, startupId, isOwner, hasAccess }) {
   if (isOwner) {
     return (
       <>
-        <h2 className="access-title">Sizning sahifangiz</h2>
-        <p className="muted">
-          Investorlar tanishtiruvni ko&apos;radi. Yopiq qism faqat siz ruxsat bergan investorlarga ochiladi.
-        </p>
+        <h2 className="access-title">{t('access.owner_title')}</h2>
+        <p className="muted">{t('access.owner_text')}</p>
         <div className="col">
           <Link className="btn btn-gold" href="/kabinet/startap/profil">
-            Profilni tahrirlash
+            {t('access.owner_edit')}
           </Link>
           <Link className="btn btn-ghost" href="/kabinet/startap/sorovlar">
-            So&apos;rovlarni ko&apos;rish
+            {t('access.owner_requests')}
           </Link>
         </div>
       </>
@@ -173,12 +173,9 @@ function AccessPanel({ user, profile, req, startupId, isOwner, hasAccess }) {
     return (
       <>
         <h2 className="access-title access-open">
-          <UnlockIcon size={20} /> Ruxsat berilgan
+          <UnlockIcon size={20} /> {t('access.granted_title')}
         </h2>
-        <p className="muted">
-          Startap sizga batafsil ma&apos;lumotni ochdi{req?.decided_at ? ` (${formatDate(req.decided_at)})` : ''}. Kontaktlar
-          chapdagi bo&apos;limda.
-        </p>
+        <p className="muted">{t('access.granted_text', { when: req?.decided_at ? ` (${formatDate(req.decided_at, t)})` : '' })}</p>
       </>
     );
   }
@@ -187,17 +184,15 @@ function AccessPanel({ user, profile, req, startupId, isOwner, hasAccess }) {
     return (
       <>
         <h2 className="access-title">
-          <LockIcon size={20} /> Ma&apos;lumot yopiq
+          <LockIcon size={20} /> {t('access.locked_title')}
         </h2>
-        <p className="muted">
-          Summa, ulush va kontaktlarni ko&apos;rish uchun investor sifatida kiring va kirish so&apos;rovi yuboring.
-        </p>
+        <p className="muted">{t('access.guest_text')}</p>
         <div className="col">
           <Link href="/kirish" className="btn btn-gold">
-            Kirish
+            {t('nav.login')}
           </Link>
           <Link href="/royxat?rol=investor" className="btn btn-ghost">
-            Investor sifatida ro&apos;yxatdan o&apos;tish
+            {t('home.investor_cta')}
           </Link>
         </div>
       </>
@@ -208,9 +203,9 @@ function AccessPanel({ user, profile, req, startupId, isOwner, hasAccess }) {
     return (
       <>
         <h2 className="access-title">
-          <LockIcon size={20} /> Ma&apos;lumot yopiq
+          <LockIcon size={20} /> {t('access.locked_title')}
         </h2>
-        <p className="muted">Bu ma&apos;lumotlar faqat startap ruxsat bergan investorlarga ochiladi.</p>
+        <p className="muted">{t('access.other_text')}</p>
       </>
     );
   }
@@ -219,18 +214,15 @@ function AccessPanel({ user, profile, req, startupId, isOwner, hasAccess }) {
     return (
       <>
         <h2 className="access-title">
-          <ClockIcon size={20} /> So&apos;rov yuborildi
+          <ClockIcon size={20} /> {t('access.pending_title')}
         </h2>
-        <p className="muted">
-          So&apos;rovingiz {formatDate(req.created_at)} da yuborilgan. Startap javob bergach, natija &laquo;So&apos;rovlarim&raquo;
-          bo&apos;limida ko&apos;rinadi.
-        </p>
-        <StatusBadge status="pending" />
+        <p className="muted">{t('access.pending_text', { date: formatDate(req.created_at, t) })}</p>
+        <StatusBadge status="pending" t={t} />
         <form action={withdrawRequest}>
           <input type="hidden" name="request_id" value={req.id} />
           <input type="hidden" name="back" value={`/startaplar/${startupId}`} />
           <button className="btn btn-ghost btn-sm" type="submit">
-            So&apos;rovni qaytarib olish
+            {t('access.withdraw')}
           </button>
         </form>
       </>
@@ -241,27 +233,23 @@ function AccessPanel({ user, profile, req, startupId, isOwner, hasAccess }) {
   return (
     <form action={requestAccess} className="request-form">
       <h2 className="access-title">
-        <LockIcon size={20} /> Kirish so&apos;rovi
+        <LockIcon size={20} /> {t('access.form_title')}
       </h2>
       <p className="muted">
-        {again
-          ? req.status === 'rejected'
-            ? "Oldingi so'rovingiz rad etilgan. Qo'shimcha izoh bilan qayta so'rashingiz mumkin."
-            : "Startap ruxsatni yopgan. Qayta so'rov yuborishingiz mumkin."
-          : "Tasdiqlansa, ma'lumotlar faqat sizga ochiladi."}
+        {again ? (req.status === 'rejected' ? t('access.form_rejected') : t('access.form_revoked')) : t('access.form_fresh')}
       </p>
       <input type="hidden" name="startup_id" value={startupId} />
       <label>
-        Xabar (ixtiyoriy)
+        {t('access.message')}
         <textarea
           name="message"
           rows={4}
           maxLength={1000}
-          placeholder="Kimligingiz va nima uchun qiziqayotganingiz haqida qisqacha"
+          placeholder={t('access.message_ph')}
         />
       </label>
       <button className="btn btn-gold" type="submit">
-        {again ? "Qayta so'rov yuborish" : "Kirish so'rovini yuborish"}
+        {again ? t('access.send_again') : t('access.send')}
       </button>
     </form>
   );

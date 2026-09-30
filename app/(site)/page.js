@@ -1,44 +1,32 @@
 import { Suspense } from 'react';
 import Link from 'next/link';
 import { getSession } from '@/lib/supabase/server';
+import { getT } from '@/lib/i18n/server';
+import { pickStrings } from '@/lib/i18n';
 import StartupCard from '@/components/StartupCard';
-import SealedDemo from '@/components/SealedDemo';
+import SealedDemo, { DEMO_KEYS } from '@/components/SealedDemo';
 import { ScoreRing } from '@/components/ui';
 import { CheckIcon, LockIcon, SealIcon } from '@/components/icons';
 
-const STARTUP_POINTS = [
-  "Ochiq tanishtiruv va yopiq ma'lumotni alohida to'ldiring",
-  "Kirish so'rovlarini tasdiqlang yoki rad eting",
-  'Bergan ruxsatingizni istalgan payt yoping',
-  "Baho va tasdiq belgisi bilan ishonchni oshiring",
-];
-
-const INVESTOR_POINTS = [
-  "Startaplarni bosqich bo'yicha saralang",
-  "Qiziqqan startapga kirish so'rovi yuboring",
-  "So'rovlaringiz holatini bir joyda kuzating",
-  "Ruxsat berilgach summa, ulush va kontaktlarni ko'ring",
-];
-
 // Rolga bog'liq tugmalar (sessiya keyin keladi, matn esa darrov ko'rinadi)
 async function HeroActions() {
-  const { profile } = await getSession();
+  const [{ profile }, t] = await Promise.all([getSession(), getT()]);
   return profile ? (
     <div className="row">
       <Link className="btn btn-gold" href="/kabinet">
-        Kabinetga o&apos;tish
+        {t('home.cta_cabinet')}
       </Link>
       <Link className="btn btn-ghost" href="/startaplar">
-        Startaplarni ko&apos;rish
+        {t('home.cta_browse')}
       </Link>
     </div>
   ) : (
     <div className="row">
       <Link className="btn btn-gold" href="/royxat?rol=startup">
-        Startap sifatida boshlash
+        {t('home.cta_startup')}
       </Link>
       <Link className="btn btn-ghost" href="/royxat?rol=investor">
-        Investor sifatida boshlash
+        {t('home.cta_investor')}
       </Link>
     </div>
   );
@@ -51,7 +39,7 @@ async function GuestOnly({ children }) {
 }
 
 async function LatestStartups() {
-  const { supabase, profile } = await getSession();
+  const [{ supabase, profile }, t] = await Promise.all([getSession(), getT()]);
   const { data: startups } = await supabase
     .from('startups')
     .select('id, name, sector, short_desc, stage, score, verified, logo_url')
@@ -62,35 +50,36 @@ async function LatestStartups() {
   return startups?.length ? (
     <div className="grid">
       {startups.map((s) => (
-        <StartupCard key={s.id} s={s} />
+        <StartupCard key={s.id} s={s} t={t} />
       ))}
     </div>
   ) : (
     <div className="empty">
-      <h3>Birinchi startap siz bo&apos;ling</h3>
-      <p>Hozircha ro&apos;yxat bo&apos;sh. Profil oching, investorlar sizni birinchi bo&apos;lib ko&apos;rishadi.</p>
+      <h3>{t('home.empty_title')}</h3>
+      <p>{t('home.empty_text')}</p>
       {!profile && (
         <Link className="btn btn-gold" href="/royxat?rol=startup">
-          Startap profilini yaratish
+          {t('home.empty_cta')}
         </Link>
       )}
     </div>
   );
 }
 
-export default function Home() {
+export default async function Home() {
+  const t = await getT();
+  const points = (role) => [1, 2, 3, 4].map((i) => t(`home.${role}_p${i}`));
   return (
     <>
       <section className="hero">
         <div className="hero-copy">
           <h1>
-            <span>Startap tanishtiradi.</span>
-            <span>Investor so&apos;raydi.</span>
-            <span>Qaror startapniki.</span>
+            <span>{t('home.h1a')}</span>
+            <span>{t('home.h1b')}</span>
+            <span>{t('home.h1c')}</span>
           </h1>
           <p className="lead">
-            Investage — O&apos;zbekiston startaplari va investorlari uchun platforma. Summa, ulush va kontaktlar faqat
-            startap tasdiqlagan investorga ochiladi.
+            {t('home.lead')}
           </p>
 
           <Suspense fallback={<div className="row"><span className="skel skel-btn" /><span className="skel skel-btn" /></div>}>
@@ -99,80 +88,76 @@ export default function Home() {
 
           <p className="hero-note">
             <LockIcon size={15} />
-            Platforma orqali pul o&apos;tkazilmaydi: kelishuv tomonlar o&apos;rtasida.
+            {t('home.note')}
           </p>
         </div>
 
-        <SealedDemo />
+        <SealedDemo strings={pickStrings(t, DEMO_KEYS)} lang={t.lang} />
       </section>
 
       <section className="section">
         <div className="section-head">
-          <h2>Ruxsat qanday ishlaydi</h2>
-          <p className="muted">Ma&apos;lumot ochilishini har doim startapning o&apos;zi hal qiladi.</p>
+          <h2>{t('home.how_title')}</h2>
+          <p className="muted">{t('home.how_sub')}</p>
         </div>
         <ol className="steps">
           <li>
             <span className="step-n">1</span>
-            <h3>Tanishtiruv hammaga ochiq</h3>
-            <p className="muted">
-              Nomi, sohasi, bosqichi, bahosi va tasdiq belgisi ro&apos;yxatdan o&apos;tmagan mehmonga ham ko&apos;rinadi.
-            </p>
+            <h3>{t('home.step1_t')}</h3>
+            <p className="muted">{t('home.step1_d')}</p>
           </li>
           <li>
             <span className="step-n">2</span>
-            <h3>Investor so&apos;rov yuboradi</h3>
-            <p className="muted">Qiziqqan startapiga qisqa xabar bilan so&apos;rov yuboradi. Har bir so&apos;rov alohida ko&apos;riladi.</p>
+            <h3>{t('home.step2_t')}</h3>
+            <p className="muted">{t('home.step2_d')}</p>
           </li>
           <li>
             <span className="step-n">3</span>
-            <h3>Startap qaror qiladi</h3>
-            <p className="muted">
-              Tasdiqlasa, summa, ulush va kontaktlar faqat shu investorga ochiladi. Ruxsatni istalgan payt yopish mumkin.
-            </p>
+            <h3>{t('home.step3_t')}</h3>
+            <p className="muted">{t('home.step3_d')}</p>
           </li>
         </ol>
       </section>
 
       <section className="section">
         <div className="section-head">
-          <h2>Har tomon o&apos;ziga kerakli narsani ko&apos;radi</h2>
+          <h2>{t('home.roles_title')}</h2>
         </div>
         <div className="split">
           <div className="panel">
-            <h3>Startap uchun</h3>
-            <p className="sub muted">Ma&apos;lumotingiz sizning nazoratingizda.</p>
+            <h3>{t('home.startup_title')}</h3>
+            <p className="sub muted">{t('home.startup_sub')}</p>
             <ul className="checks">
-              {STARTUP_POINTS.map((t) => (
-                <li key={t}>
+              {points('startup').map((txt) => (
+                <li key={txt}>
                   <CheckIcon size={18} />
-                  <span>{t}</span>
+                  <span>{txt}</span>
                 </li>
               ))}
             </ul>
             <Suspense fallback={null}>
               <GuestOnly>
                 <Link className="btn btn-gold panel-btn" href="/royxat?rol=startup">
-                  Startap profilini ochish
+                  {t('home.startup_cta')}
                 </Link>
               </GuestOnly>
             </Suspense>
           </div>
           <div className="panel">
-            <h3>Investor uchun</h3>
-            <p className="sub muted">Qiziqqan loyihalarni topib, to&apos;g&apos;ridan-to&apos;g&apos;ri so&apos;rang.</p>
+            <h3>{t('home.investor_title')}</h3>
+            <p className="sub muted">{t('home.investor_sub')}</p>
             <ul className="checks">
-              {INVESTOR_POINTS.map((t) => (
-                <li key={t}>
+              {points('investor').map((txt) => (
+                <li key={txt}>
                   <CheckIcon size={18} />
-                  <span>{t}</span>
+                  <span>{txt}</span>
                 </li>
               ))}
             </ul>
             <Suspense fallback={null}>
               <GuestOnly>
                 <Link className="btn btn-ghost panel-btn" href="/royxat?rol=investor">
-                  Investor sifatida ro&apos;yxatdan o&apos;tish
+                  {t('home.investor_cta')}
                 </Link>
               </GuestOnly>
             </Suspense>
@@ -183,24 +168,21 @@ export default function Home() {
       <section className="section">
         <div className="trust">
           <div>
-            <h2>Baho va tasdiq belgisini startap o&apos;zi qo&apos;ya olmaydi</h2>
-            <p className="muted">
-              Baho (0 dan 100 gacha) va &laquo;Tasdiqlangan&raquo; belgisi Investage jamoasi tomonidan qo&apos;yiladi.
-              Startap ularni o&apos;zgartira olmaydi, shuning uchun investor ularga tayana oladi.
-            </p>
+            <h2>{t('home.trust_title')}</h2>
+            <p className="muted">{t('home.trust_text')}</p>
           </div>
           <div className="trust-visual">
             <div className="tile">
-              <ScoreRing value={78} size={64} />
-              <b>Baho</b>
-              <span className="muted small">0 dan 100 gacha</span>
+              <ScoreRing value={78} size={64} t={t} />
+              <b>{t('ui.score')}</b>
+              <span className="muted small">{t('home.trust_score_sub')}</span>
             </div>
             <div className="tile">
               <span className="tile-seal">
                 <SealIcon size={40} />
               </span>
-              <b>Tasdiqlangan</b>
-              <span className="muted small">Hujjatlari tekshirilgan</span>
+              <b>{t('ui.verified')}</b>
+              <span className="muted small">{t('home.trust_verified_sub')}</span>
             </div>
           </div>
         </div>
@@ -208,8 +190,8 @@ export default function Home() {
 
       <section className="section">
         <div className="section-head">
-          <h2>Yangi startaplar</h2>
-          <Link href="/startaplar">Barchasini ko&apos;rish</Link>
+          <h2>{t('home.latest')}</h2>
+          <Link href="/startaplar">{t('home.see_all')}</Link>
         </div>
         <Suspense fallback={<div className="skel-row"><span className="skel skel-card" /><span className="skel skel-card" /><span className="skel skel-card" /></div>}>
           <LatestStartups />

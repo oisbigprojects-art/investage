@@ -1,27 +1,25 @@
 import Link from 'next/link';
 import { startupContext, pick } from '@/lib/cabinet';
 import { getRequests } from '@/lib/data';
+import { getT } from '@/lib/i18n/server';
 import { Flash } from '@/components/ui';
 import StartupRequest from '@/components/StartupRequest';
 
-export const metadata = { title: "So'rovlar — Startap kabineti — Investage" };
+export async function generateMetadata() {
+  const t = await getT();
+  return { title: t('meta.startup_requests') };
+}
 
 const FILTERS = [
-  { key: 'hammasi', label: 'Hammasi', match: () => true },
-  { key: 'kutilmoqda', label: 'Kutilmoqda', match: (r) => r.status === 'pending' },
-  { key: 'ruxsat', label: 'Ruxsat berilgan', match: (r) => r.status === 'approved' },
-  { key: 'tarix', label: 'Tarix', match: (r) => r.status === 'rejected' || r.status === 'revoked' },
+  { key: 'hammasi', label: 'rq.f_all', empty: 'rq.empty_all', match: () => true },
+  { key: 'kutilmoqda', label: 'rq.f_pending', empty: 'rq.empty_pending', match: (r) => r.status === 'pending' },
+  { key: 'ruxsat', label: 'rq.f_approved', empty: 'rq.empty_approved', match: (r) => r.status === 'approved' },
+  { key: 'tarix', label: 'rq.f_history', empty: 'rq.empty_history', match: (r) => r.status === 'rejected' || r.status === 'revoked' },
 ];
-
-const EMPTY = {
-  hammasi: "Hali hech kim so'rov yubormagan.",
-  kutilmoqda: "Javob kutayotgan so'rov yo'q.",
-  ruxsat: 'Hali hech kimga ruxsat bermagansiz.',
-  tarix: "Rad etilgan yoki yopilgan so'rovlar yo'q.",
-};
 
 export default async function StartupRequests({ searchParams }) {
   const sp = await searchParams;
+  const t = await getT();
   const holat = pick(sp?.holat, FILTERS.map((f) => f.key), 'hammasi');
   const [, all] = await Promise.all([startupContext(), getRequests()]);
 
@@ -31,30 +29,30 @@ export default async function StartupRequests({ searchParams }) {
   return (
     <>
       <div className="page-head">
-        <span className="role-tag">Startap kabineti</span>
-        <h1>Kirish so&apos;rovlari</h1>
-        <p className="muted">Investorlar yopiq ma&apos;lumotlaringizni ko&apos;rish uchun so&apos;rov yuboradi. Qaror sizniki.</p>
+        <span className="role-tag">{t('cab.startup')}</span>
+        <h1>{t('rq.title')}</h1>
+        <p className="muted">{t('rq.sub')}</p>
       </div>
       <Flash searchParams={sp} />
 
-      <div className="filters" role="group" aria-label="So'rovlarni saralash">
+      <div className="filters" role="group" aria-label={t('rq.filter_aria')}>
         {FILTERS.map((f) => (
           <Link
             key={f.key}
             href={f.key === 'hammasi' ? '/kabinet/startap/sorovlar' : `/kabinet/startap/sorovlar?holat=${f.key}`}
             className={`filter ${holat === f.key ? 'is-on' : ''}`}
           >
-            {f.label} <span className="filter-n">{all.filter(f.match).length}</span>
+            {t(f.label)} <span className="filter-n">{all.filter(f.match).length}</span>
           </Link>
         ))}
       </div>
 
       <section className="card">
         {list.length === 0 ? (
-          <p className="muted small">{EMPTY[holat]}</p>
+          <p className="muted small">{t(active.empty)}</p>
         ) : (
           list.map((r) => (
-            <StartupRequest key={r.id} r={r} back={`/kabinet/startap/sorovlar${holat === 'hammasi' ? '' : `?holat=${holat}`}`} />
+            <StartupRequest key={r.id} r={r} t={t} back={`/kabinet/startap/sorovlar${holat === 'hammasi' ? '' : `?holat=${holat}`}`} />
           ))
         )}
       </section>

@@ -1,52 +1,55 @@
 import { investorContext } from '@/lib/cabinet';
+import { getT } from '@/lib/i18n/server';
 import { Flash } from '@/components/ui';
 import { saveInvestorProfile } from '@/app/cabinet-actions';
 
-export const metadata = { title: 'Profil — Investor kabineti — Investage' };
+export async function generateMetadata() {
+  const t = await getT();
+  return { title: t('meta.investor_profile') };
+}
 
 export default async function InvestorProfile({ searchParams }) {
   const sp = await searchParams;
+  const t = await getT();
   const { profile } = await investorContext();
 
   return (
     <>
       <div className="page-head">
-        <span className="role-tag">Investor kabineti</span>
-        <h1>Profil</h1>
-        <p className="muted">
-          Kirish so&apos;rovi yuborganingizda startap shu ma&apos;lumotlarni ko&apos;radi. Boshqa hech kimga ko&apos;rinmaydi.
-        </p>
+        <span className="role-tag">{t('cab.investor')}</span>
+        <h1>{t('ip.title')}</h1>
+        <p className="muted">{t('ip.sub')}</p>
       </div>
       <Flash searchParams={sp} />
 
       <form action={saveInvestorProfile} className="card form">
         <div className="two">
           <label>
-            Ism va familiya
+            {t('ip.name')}
             <input name="full_name" defaultValue={profile.full_name || ''} required maxLength={120} />
           </label>
           <label>
-            Kompaniya yoki fond
-            <input name="company" defaultValue={profile.company || ''} maxLength={120} placeholder="Ixtiyoriy" />
+            {t('ip.company')}
+            <input name="company" defaultValue={profile.company || ''} maxLength={120} placeholder={t('ip.optional')} />
           </label>
         </div>
         <label>
-          Qiziqish sohalari
-          <input name="interests" defaultValue={profile.interests || ''} maxLength={200} placeholder="Masalan: FinTech, EdTech, AgroTech" />
+          {t('ip.interests')}
+          <input name="interests" defaultValue={profile.interests || ''} maxLength={200} placeholder={t('sp.sector_ph')} />
         </label>
         <label>
-          O&apos;zingiz haqingizda
+          {t('ip.bio')}
           <textarea
             name="bio"
             rows={5}
             maxLength={600}
             defaultValue={profile.bio || ''}
-            placeholder="Tajribangiz, qanday startaplarga qiziqasiz, qanday yordam bera olasiz"
+            placeholder={t('ip.bio_ph')}
           />
         </label>
-        <p className="muted small">Email: {profile.email} (o&apos;zgartirib bo&apos;lmaydi).</p>
+        <p className="muted small">{t('ip.email_note', { email: profile.email })}</p>
         <button className="btn btn-gold" type="submit">
-          Saqlash
+          {t('ip.save')}
         </button>
       </form>
     </>

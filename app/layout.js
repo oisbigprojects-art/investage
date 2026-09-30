@@ -1,24 +1,25 @@
 import './globals.css';
 import { Inter, JetBrains_Mono } from 'next/font/google';
+import { getLang, getT } from '@/lib/i18n/server';
 
 // Shriftlar build vaqtida yuklab olinib saytning o'zidan beriladi (Google'ga so'rov yo'q)
 const inter = Inter({ subsets: ['latin', 'latin-ext'], variable: '--font-inter', display: 'swap' });
 const mono = JetBrains_Mono({ subsets: ['latin', 'latin-ext'], variable: '--font-mono', display: 'swap' });
 
-export const metadata = {
-  title: 'Investage — startaplar va investorlar platformasi',
-  description:
-    "O'zbekiston startaplari va investorlari uchun platforma. Tanishtiruv ochiq, summa, ulush va kontaktlar faqat startap ruxsati bilan ochiladi.",
-};
+export async function generateMetadata() {
+  const t = await getT();
+  return { title: t('meta.site_title'), description: t('meta.site_desc') };
+}
 
 export const viewport = {
   themeColor: '#0F0F0F',
   colorScheme: 'dark',
 };
 
-export default function RootLayout({ children }) {
+export default async function RootLayout({ children }) {
+  const lang = await getLang();
   return (
-    <html lang="uz" className={`${inter.variable} ${mono.variable}`}>
+    <html lang={lang} className={`${inter.variable} ${mono.variable}`}>
       <body>
         {children}
       </body>

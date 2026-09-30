@@ -556,6 +556,10 @@ input[type='file']::file-selector-button { margin-right: 12px; padding: 6px 12px
   .req-rich .req-actions { padding-left: 0; }
   .btn { white-space: normal; text-align: center; }
   .hero .row .btn { flex: 1 1 100%; }
+  .app-top-inner { flex-wrap: wrap; gap: 8px 10px; padding-top: 8px; padding-bottom: 8px; }
+  .top-search { flex: 1 1 100%; max-width: none; }
+  .top-right { margin-left: auto; flex-wrap: wrap; justify-content: flex-end; gap: 8px; }
+  .lang-switch button { padding: 0.4rem 0.5rem; }
 }
 @media (prefers-reduced-motion: reduce) {
   html { scroll-behavior: auto; }
@@ -563,3 +567,12 @@ input[type='file']::file-selector-button { margin-right: 12px; padding: 6px 12px
   .countup, .bar, .donut-seg, .hbar-track i, .app-content > *, .stats > .stat { animation: none !important; }
   *, *::before, *::after { transition-duration: 0.01ms !important; animation-duration: 0.01ms !important; }
 }
+
+
+/* ---------- Til almashtirgich ---------- */
+.lang-switch{display:inline-flex;align-items:center;gap:2px;padding:3px;border:1px solid var(--line,rgba(255,255,255,.12));border-radius:999px;background:rgba(255,255,255,.03)}
+.lang-switch button{appearance:none;border:0;background:transparent;color:var(--muted,#9a9a9a);font:600 .72rem/1 var(--font-inter,inherit);letter-spacing:.04em;padding:.42rem .6rem;border-radius:999px;cursor:pointer;transition:background .2s,color .2s}
+.lang-switch button:hover{color:var(--text,#fff)}
+.lang-switch button.is-on{background:var(--gold,#d4a94a);color:#111}
+.lang-switch button:focus-visible{outline:2px solid var(--gold,#d4a94a);outline-offset:2px}
+.lang-switch.is-busy{opacity:.6;pointer-events:none}

@@ -1,19 +1,24 @@
 import Link from 'next/link';
 import { getSession } from '@/lib/supabase/server';
+import { getT } from '@/lib/i18n/server';
 import StartupCard from '@/components/StartupCard';
 import { SearchIcon } from '@/components/icons';
 import { Stat, Donut, HBar } from '@/components/charts';
 import { getSaved } from '@/lib/data';
-import { STAGES } from '@/lib/labels';
+import { STAGE_KEYS } from '@/lib/labels';
 
-export const metadata = { title: 'Startaplar — Investage' };
+export async function generateMetadata() {
+  const t = await getT();
+  return { title: t('meta.startups') };
+}
 
 // PostgREST filtrini buzadigan belgilarni olib tashlaymiz
 const clean = (v) => String(v || '').replace(/[,()%*\\:"']/g, ' ').replace(/\s+/g, ' ').trim().slice(0, 60);
 
 export default async function StartupsPage({ searchParams }) {
   const sp = await searchParams;
-  const stage = STAGES[sp?.bosqich] ? sp.bosqich : null;
+  const t = await getT();
+  const stage = STAGE_KEYS.includes(sp?.bosqich) ? sp.bosqich : null;
   const term = clean(sp?.q);
   const sector = String(sp?.soha || '').trim().slice(0, 100); // faqat .eq() ga beriladi, xavfsiz
   const { supabase, user, profile } = await getSession();
@@ -56,39 +61,36 @@ export default async function StartupsPage({ searchParams }) {
   return (
     <>
       <div className="page-head">
-        <h1>Startaplar</h1>
-        <p className="muted">
-          Tanishtiruvlar hammaga ochiq. Summa, ulush va kontaktlarni ko&apos;rish uchun startapga kirish so&apos;rovi
-          yuboriladi.
-        </p>
+        <h1>{t('cat.title')}</h1>
+        <p className="muted">{t('cat.sub')}</p>
       </div>
 
       <div className="stats stats-4">
-        <Stat value={all.length} label="Startaplar katalogda" />
-        <Stat value={all.filter((r) => r.verified).length} label="Tasdiqlangan" tone="gold" />
-        <Stat value={byStage('mvp') + byStage('daromad')} label="MVP yoki daromadli" />
-        <Stat value={sectors.length} label="Turli sohalar" />
+        <Stat value={all.length} label={t('cat.stat_total')} />
+        <Stat value={all.filter((r) => r.verified).length} label={t('cat.stat_verified')} tone="gold" />
+        <Stat value={byStage('mvp') + byStage('daromad')} label={t('cat.stat_mvp')} />
+        <Stat value={sectors.length} label={t('cat.stat_sectors')} />
       </div>
 
       {all.length > 0 && (
         <details className="card insight">
-          <summary>Katalog tahlili</summary>
+          <summary>{t('cat.insight')}</summary>
           <div className="dash-row insight-body">
             <div>
-              <h3>Bosqichlar bo&apos;yicha</h3>
+              <h3>{t('cat.by_stage')}</h3>
               <Donut
-                title="Startaplar bosqichlari"
-                centerLabel="startap"
+                title={t('cat.stage_chart')}
+                centerLabel={t('cat.center')}
                 parts={[
-                  { label: "G'oya", value: byStage('goya'), tone: 'muted' },
-                  { label: 'MVP', value: byStage('mvp'), tone: 'warn' },
-                  { label: 'Daromad bor', value: byStage('daromad'), tone: 'ok' },
+                  { label: t('stage.goya'), value: byStage('goya'), tone: 'muted' },
+                  { label: t('stage.mvp'), value: byStage('mvp'), tone: 'warn' },
+                  { label: t('stage.daromad'), value: byStage('daromad'), tone: 'ok' },
                 ]}
               />
             </div>
             <div>
-              <h3>Eng ko&apos;p sohalar</h3>
-              {topSectors.length ? <HBar rows={topSectors} title="Sohalar bo'yicha startaplar" /> : <p className="muted small">Sohalar hali ko&apos;rsatilmagan.</p>}
+              <h3>{t('cat.top_sectors')}</h3>
+              {topSectors.length ? <HBar rows={topSectors} title={t('cat.sectors_chart')} /> : <p className="muted small">{t('cat.no_sectors')}</p>}
             </div>
           </div>
         </details>
@@ -97,15 +99,15 @@ export default async function StartupsPage({ searchParams }) {
       <form className="searchbar" action="/startaplar" role="search">
         {stage && <input type="hidden" name="bosqich" value={stage} />}
         <label className="search-field">
-          <span className="visually-hidden">Qidirish</span>
+          <span className="visually-hidden">{t('cat.search_label')}</span>
           <SearchIcon size={18} />
-          <input name="q" type="search" defaultValue={term} placeholder="Nomi, sohasi yoki tavsifi bo'yicha qidiring" maxLength={60} />
+          <input name="q" type="search" defaultValue={term} placeholder={t('cat.search_ph')} maxLength={60} />
         </label>
         {sectors.length > 0 && (
           <label className="search-select">
-            <span className="visually-hidden">Soha</span>
+            <span className="visually-hidden">{t('cat.sector')}</span>
             <select name="soha" defaultValue={sector}>
-              <option value="">Barcha sohalar</option>
+              <option value="">{t('cat.sector_all')}</option>
               {sectors.map((s) => (
                 <option key={s} value={s}>
                   {s}
@@ -115,51 +117,47 @@ export default async function StartupsPage({ searchParams }) {
           </label>
         )}
         <button className="btn btn-gold" type="submit">
-          Qidirish
+          {t('cat.search_btn')}
         </button>
       </form>
 
-      <div className="filters" role="group" aria-label="Bosqich bo'yicha saralash">
+      <div className="filters" role="group" aria-label={t('cat.filter_aria')}>
         <Link href={href({ bosqich: null })} className={`filter ${!stage ? 'is-on' : ''}`}>
-          Hammasi
+          {t('cat.all')}
         </Link>
-        {Object.entries(STAGES).map(([k, v]) => (
+        {STAGE_KEYS.map((k) => (
           <Link key={k} href={href({ bosqich: k })} className={`filter ${stage === k ? 'is-on' : ''}`}>
-            {v}
+            {t(`stage.${k}`)}
           </Link>
         ))}
         {filtered && (
           <Link href="/startaplar" className="filter filter-clear">
-            Tozalash
+            {t('cat.clear')}
           </Link>
         )}
       </div>
 
       {startups?.length ? (
         <>
-          <p className="muted small results-note">{startups.length} ta startap topildi</p>
+          <p className="muted small results-note">{t('cat.found', { n: startups.length })}</p>
           <div className="grid">
             {startups.map((s) => (
-              <StartupCard key={s.id} s={s} canSave={isInvestor} saved={saved.has(s.id)} back={here} />
+              <StartupCard key={s.id} s={s} t={t} canSave={isInvestor} saved={saved.has(s.id)} back={here} />
             ))}
           </div>
         </>
       ) : (
         <div className="empty">
-          <h3>{filtered ? 'Hech narsa topilmadi' : "Hozircha startaplar yo'q"}</h3>
-          <p>
-            {filtered
-              ? "Qidiruv so'zini o'zgartiring yoki filtrlarni tozalang."
-              : "Birinchi bo'lib profil oching, investorlar sizni birinchi ko'rishadi."}
-          </p>
+          <h3>{filtered ? t('cat.empty_none_title') : t('cat.empty_first_title')}</h3>
+          <p>{filtered ? t('cat.empty_none_text') : t('cat.empty_first_text')}</p>
           {filtered ? (
             <Link className="btn btn-ghost" href="/startaplar">
-              Barcha startaplar
+              {t('cat.empty_all')}
             </Link>
           ) : (
             !profile && (
               <Link className="btn btn-gold" href="/royxat?rol=startup">
-                Startap profilini yaratish
+                {t('cat.empty_create')}
               </Link>
             )
           )}

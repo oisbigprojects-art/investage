@@ -6,9 +6,9 @@ const ICON = { request: ClockIcon, approved: UnlockIcon, rejected: LockIcon, rev
 const TONE = { request: 'warn', approved: 'ok', rejected: 'bad', revoked: 'muted', saved: 'gold' };
 
 // Vaqt bo'yicha faollik tasmasi
-export default function ActivityFeed({ events, limit = 6, empty = 'Hozircha faollik yo‘q.', showUnread = 0 }) {
+export default function ActivityFeed({ events, t, limit = 6, empty, showUnread = 0 }) {
   const list = events.slice(0, limit);
-  if (!list.length) return <p className="muted small">{empty}</p>;
+  if (!list.length) return <p className="muted small">{empty || t('feed.empty')}</p>;
   return (
     <ol className="feed">
       {list.map((e) => {
@@ -22,7 +22,7 @@ export default function ActivityFeed({ events, limit = 6, empty = 'Hozircha faol
             <Link href={e.href} className="feed-body">
               <span>{e.text}</span>
               <time className="muted small" dateTime={new Date(e.at).toISOString()}>
-                {timeAgo(e.at)}
+                {timeAgo(e.at, t)}
               </time>
             </Link>
           </li>

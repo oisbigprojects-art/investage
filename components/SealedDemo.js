@@ -3,10 +3,22 @@
 import { useEffect, useRef, useState } from 'react';
 import { LockIcon, UnlockIcon, ClockIcon, CheckIcon } from './icons';
 import { Monogram, ScoreRing, StageBadge, Verified } from './ui';
+import { stringsT } from '@/lib/i18n/client';
+
+// Serverdan uzatiladigan matn kalitlari (client faqat shularni oladi)
+export const DEMO_KEYS = [
+  'stage.mvp',
+  'ui.verified',
+  'ui.verified_title',
+  'ui.score_label',
+  'ui.score_none',
+  ...['aria', 'name', 'sector', 'desc', 'badge', 'sealed', 'opened', 'waiting', 'closed', 'funding', 'equity', 'contact', 'cap_pending', 'cap_locked', 'again', 'send', 'sent', 'st_none', 'st_wait', 'st_ok'].map((k) => `demo.${k}`),
+];
 
 // Bosh sahifadagi namuna: yopiq ma'lumot so'rov → tasdiq orqali ochiladi.
 // Bu haqiqiy startap emas — faqat jarayonni ko'rsatadi.
-export default function SealedDemo() {
+export default function SealedDemo({ strings, lang }) {
+  const t = stringsT(strings, lang);
   const [phase, setPhase] = useState('locked'); // locked | pending | open
   const timer = useRef(null);
 
@@ -24,55 +36,50 @@ export default function SealedDemo() {
   }
 
   const open = phase === 'open';
-  const status =
-    phase === 'locked'
-      ? "So'rov yuborilmagan"
-      : phase === 'pending'
-        ? 'Startap javobini kutyapsiz'
-        : 'Startap ruxsat berdi';
+  const status = phase === 'locked' ? t('demo.st_none') : phase === 'pending' ? t('demo.st_wait') : t('demo.st_ok');
 
   return (
-    <div className="demo" aria-label="Namuna: yopiq ma'lumot qanday ochiladi">
+    <div className="demo" aria-label={t('demo.aria')}>
       <div className="demo-top">
-        <Monogram name="N" size={48} />
+        <Monogram name={t('demo.name')} size={48} />
         <div className="grow">
-          <h3>Namunaviy startap</h3>
-          <span className="muted small">Agrotexnologiya</span>
+          <h3>{t('demo.name')}</h3>
+          <span className="muted small">{t('demo.sector')}</span>
         </div>
-        <ScoreRing value={78} size={48} />
+        <ScoreRing value={78} size={48} t={t} />
       </div>
 
-      <p className="demo-desc">Tuproq namligini kuzatuvchi datchiklar va fermerlar uchun ilova.</p>
+      <p className="demo-desc">{t('demo.desc')}</p>
 
       <div className="demo-meta">
-        <StageBadge stage="mvp" />
-        <Verified on />
-        <span className="chip chip-muted">Namuna</span>
+        <StageBadge stage="mvp" t={t} />
+        <Verified on t={t} />
+        <span className="chip chip-muted">{t('demo.badge')}</span>
       </div>
 
       <div className={`sealed ${open ? 'is-open' : ''}`}>
         <div className="sealed-head">
-          <b>Yopiq ma&apos;lumot</b>
+          <b>{t('demo.sealed')}</b>
           <span className={`chip ${open ? 'chip-ok' : phase === 'pending' ? 'chip-warn' : 'chip-muted'}`}>
             <i aria-hidden="true" />
-            {open ? 'Ochildi' : phase === 'pending' ? 'Kutilmoqda' : 'Yopiq'}
+            {open ? t('demo.opened') : phase === 'pending' ? t('demo.waiting') : t('demo.closed')}
           </span>
         </div>
 
         <div className="srow">
-          <span>Kerakli mablag&apos;</span>
+          <span>{t('demo.funding')}</span>
           <b className="val" aria-hidden={!open}>
             $50,000
           </b>
         </div>
         <div className="srow">
-          <span>Ulush</span>
+          <span>{t('demo.equity')}</span>
           <b className="val" aria-hidden={!open}>
             10%
           </b>
         </div>
         <div className="srow">
-          <span>Kontakt</span>
+          <span>{t('demo.contact')}</span>
           <b className="val" aria-hidden={!open}>
             @namuna_startap
           </b>
@@ -80,23 +87,23 @@ export default function SealedDemo() {
 
         <div className="seal-cap" aria-hidden="true">
           {phase === 'pending' ? <ClockIcon size={18} /> : <LockIcon size={18} />}
-          <span>{phase === 'pending' ? "So'rov ko'rib chiqilmoqda" : "Ruxsatsiz ko'rinmaydi"}</span>
+          <span>{phase === 'pending' ? t('demo.cap_pending') : t('demo.cap_locked')}</span>
         </div>
       </div>
 
       <div className="demo-foot">
         {open ? (
           <button type="button" className="btn btn-ghost btn-sm" onClick={reset}>
-            Qaytadan ko&apos;rish
+            {t('demo.again')}
           </button>
         ) : (
           <button type="button" className="btn btn-gold btn-sm" onClick={send} aria-disabled={phase === 'pending'}>
             {phase === 'pending' ? (
               <>
-                <ClockIcon size={16} /> So&apos;rov yuborildi
+                <ClockIcon size={16} /> {t('demo.sent')}
               </>
             ) : (
-              "Kirish so'rovini yuborish"
+              t('demo.send')
             )}
           </button>
         )}

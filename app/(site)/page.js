@@ -1,6 +1,7 @@
 import { Suspense } from 'react';
 import Link from 'next/link';
 import { getSession } from '@/lib/supabase/server';
+import { getPlatformStats, getLatestStartups, safe } from '@/lib/public-data';
 import { getT } from '@/lib/i18n/server';
 import { pickStrings } from '@/lib/i18n';
 import StartupCard from '@/components/StartupCard';
@@ -39,8 +40,7 @@ async function HeroActions({ onDark = false }) {
 
 // Platforma raqamlari: haqiqiy sonlar bo'lsa ko'rsatiladi, bo'sh bo'lsa aniq faktlar
 async function StatBand() {
-  const [{ supabase }, t] = await Promise.all([getSession(), getT()]);
-  const { data } = await supabase.rpc('platform_stats');
+  const [data, t] = await Promise.all([safe(getPlatformStats, null), getT()]);
   const n = (k) => Number(data?.[k]) || 0;
   const real = n('startups') + n('investors') > 0;
   const items = real
@@ -74,13 +74,7 @@ async function GuestOnly({ children }) {
 }
 
 async function LatestStartups() {
-  const [{ supabase, profile }, t] = await Promise.all([getSession(), getT()]);
-  const { data: startups } = await supabase
-    .from('startups')
-    .select('id, name, sector, short_desc, stage, score, verified, logo_url')
-    .eq('hidden', false)
-    .order('created_at', { ascending: false })
-    .limit(6);
+  const [startups, { profile }, t] = await Promise.all([safe(getLatestStartups, []), getSession(), getT()]);
 
   return startups?.length ? (
     <div className="grid">

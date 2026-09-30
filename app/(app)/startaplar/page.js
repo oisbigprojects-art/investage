@@ -1,10 +1,11 @@
 import Link from 'next/link';
-import { getSession } from '@/lib/supabase/server';
+import { getAuthUser, getSession } from '@/lib/supabase/server';
 import { getT } from '@/lib/i18n/server';
 import StartupCard from '@/components/StartupCard';
 import { SearchIcon } from '@/components/icons';
 import { Stat, Donut, HBar } from '@/components/charts';
 import { getSaved } from '@/lib/data';
+import { getCatalogFacets, safe } from '@/lib/public-data';
 import { STAGE_KEYS } from '@/lib/labels';
 
 export async function generateMetadata() {
@@ -21,8 +22,7 @@ export default async function StartupsPage({ searchParams }) {
   const stage = STAGE_KEYS.includes(sp?.bosqich) ? sp.bosqich : null;
   const term = clean(sp?.q);
   const sector = String(sp?.soha || '').trim().slice(0, 100); // faqat .eq() ga beriladi, xavfsiz
-  const { supabase, user, profile } = await getSession();
-  const isInvestor = profile?.role === 'investor';
+  const { supabase } = await getAuthUser();
 
   let q = supabase
     .from('startups')
@@ -34,13 +34,10 @@ export default async function StartupsPage({ searchParams }) {
   if (sector) q = q.eq('sector', sector);
   if (term) q = q.or(`name.ilike.%${term}%,sector.ilike.%${term}%,short_desc.ilike.%${term}%`);
 
-  const [{ data: startups }, { data: allSectors }, savedRes] = await Promise.all([
-    q,
-    supabase.from('startups').select('stage, sector, verified').eq('hidden', false),
-    isInvestor ? getSaved() : Promise.resolve([]),
-  ]);
+  // getSaved o'zi rolni tekshiradi (investor bo'lmasa bo'sh); hammasi bir vaqtda ketadi
+  const [{ data: startups }, all, savedRes, { profile }] = await Promise.all([q, safe(getCatalogFacets, []), getSaved(), getSession()]);
+  const isInvestor = profile?.role === 'investor';
 
-  const all = allSectors || [];
   const sectorCount = new Map();
   for (const r of all) if (r.sector) sectorCount.set(r.sector, (sectorCount.get(r.sector) || 0) + 1);
   const sectors = [...sectorCount.keys()].sort((a, b) => a.localeCompare(b));

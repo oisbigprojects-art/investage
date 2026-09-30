@@ -1,7 +1,7 @@
 import { cache } from 'react';
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
-import { getSession } from '@/lib/supabase/server';
+import { getSession, getAuthUser } from '@/lib/supabase/server';
 import { getT } from '@/lib/i18n/server';
 import { Flash, StageBadge, Verified, ScoreRing, StatusBadge, Monogram, Redact } from '@/components/ui';
 import PrivateDetails from '@/components/PrivateDetails';
@@ -12,7 +12,7 @@ import { formatDate } from '@/lib/labels';
 
 // Sarlavha va sahifa bitta so'rovdan foydalanadi
 const getStartup = cache(async (id) => {
-  const { supabase } = await getSession();
+  const { supabase } = await getAuthUser();
   const { data } = await supabase
     .from('startups')
     .select('id, owner_id, name, sector, short_desc, stage, score, verified, created_at, logo_url, hidden')
@@ -30,26 +30,29 @@ export async function generateMetadata({ params }) {
 export default async function StartupDetail({ params, searchParams }) {
   const { id } = await params;
   const sp = await searchParams;
-  const [{ supabase, user, profile }, t] = await Promise.all([getSession(), getT()]);
+  const { supabase, user: authUser } = await getAuthUser();
 
-  const isInvestor = profile?.role === 'investor';
-
-  // Hammasi bir vaqtda: startap, yopiq qism (RLS: egasi yoki tasdiqlangan investor), mening so'rovim, saqlanganmi
-  const [s, { data: priv }, { data: myRequest }, { data: sv }] = await Promise.all([
+  // Hammasi bir vaqtda (profil ham): startap, yopiq qism (RLS: egasi yoki tasdiqlangan investor), mening so'rovim, saqlanganmi.
+  // So'rov va saqlash filtrlari investor_id = o'zim bo'yicha, boshqa rolda bo'sh qaytadi.
+  const [t, { profile }, s, { data: priv }, { data: myRequest }, { data: sv }] = await Promise.all([
+    getT(),
+    getSession(),
     getStartup(id),
-    user ? supabase.from('startup_private').select('*').eq('startup_id', id).maybeSingle() : { data: null },
-    isInvestor
+    authUser ? supabase.from('startup_private').select('*').eq('startup_id', id).maybeSingle() : { data: null },
+    authUser
       ? supabase
           .from('access_requests')
           .select('id, status, created_at, decided_at')
           .eq('startup_id', id)
-          .eq('investor_id', user.id)
+          .eq('investor_id', authUser.id)
           .maybeSingle()
       : { data: null },
-    isInvestor
-      ? supabase.from('saved_startups').select('startup_id').eq('investor_id', user.id).eq('startup_id', id).maybeSingle()
+    authUser
+      ? supabase.from('saved_startups').select('startup_id').eq('investor_id', authUser.id).eq('startup_id', id).maybeSingle()
       : { data: null },
   ]);
+  const user = profile ? authUser : null;
+  const isInvestor = profile?.role === 'investor';
   if (!s) notFound();
   const isOwner = !!user && s.owner_id === user.id;
   const isSaved = !!sv;

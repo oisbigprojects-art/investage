@@ -11,6 +11,12 @@ const num = (v) => {
   return s === '' ? null : Number(s);
 };
 
+// Dollar summasi: "$50,000", "50 000", "50000" — hammasi 50000 bo'ladi
+const money = (v) => {
+  const s = String(v ?? '').replace(/[\s$,_]/g, '');
+  return s === '' ? null : Number(s);
+};
+
 // ---------------- STARTAP: profilni saqlash ----------------
 export async function saveStartup(formData) {
   const { supabase, user, profile } = await getSession();
@@ -50,9 +56,9 @@ export async function saveStartup(formData) {
   const extra = {};
   for (const f of EXTRA_FIELDS) extra[f.key] = String(formData.get(`extra_${f.key}`) || '').trim();
 
-  const funding = num(formData.get('funding_amount'));
+  const funding = money(formData.get('funding_amount'));
   const equity = num(formData.get('equity_percent'));
-  if (funding !== null && (isNaN(funding) || funding < 0)) go('/kabinet/startap', 'xato', "Summa noto'g'ri.");
+  if (funding !== null && (isNaN(funding) || funding < 0)) go('/kabinet/startap', 'xato', "Summa noto'g'ri. Faqat raqam kiriting (AQSH dollarida).");
   if (equity !== null && (isNaN(equity) || equity <= 0 || equity > 100))
     go('/kabinet/startap', 'xato', "Ulush 0 dan katta va 100 dan kichik bo'lishi kerak.");
 

@@ -62,7 +62,7 @@ export default function SealedDemo() {
         <div className="srow">
           <span>Kerakli mablag&apos;</span>
           <b className="val" aria-hidden={!open}>
-            600 000 000 so&apos;m
+            $50,000
           </b>
         </div>
         <div className="srow">

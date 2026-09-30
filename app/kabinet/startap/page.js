@@ -203,8 +203,13 @@ export default async function StartupCabinet({ searchParams }) {
           </div>
           <div className="two">
             <label>
-              Kerakli mablag&apos; (so&apos;m)
-              <input name="funding_amount" inputMode="numeric" defaultValue={p?.funding_amount ?? ''} />
+              Kerakli mablag&apos; (USD, $)
+              <input
+                name="funding_amount"
+                inputMode="numeric"
+                defaultValue={p?.funding_amount ?? ''}
+                placeholder="Masalan: 50000"
+              />
             </label>
             <label>
               Taklif qilinayotgan ulush (%)

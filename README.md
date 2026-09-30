@@ -71,4 +71,4 @@ Hozircha admin panel yo'q: Supabase → **Table Editor → startups** → kerakl
 - **Mirkomil maydonlari:** `lib/labels.js` → `EXTRA_FIELDS` ro'yxati (bazani o'zgartirish shart emas, `extra` jsonb ustunida saqlanadi).
 - **Teaser/yopiq qismni ko'chirish:** ustunni `startups` ↔ `startup_private` jadvallari orasida ko'chiring.
 - **Ranglar va shrift:** `app/globals.css` → `:root` o'zgaruvchilari.
-- **Valyuta:** `lib/labels.js` → `formatMoney` (hozir so'm).
+- **Valyuta:** `lib/labels.js` → `formatMoney` (hozir AQSH dollari, $).

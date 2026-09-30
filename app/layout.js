@@ -3,6 +3,7 @@ import Link from 'next/link';
 import { getSession } from '@/lib/supabase/server';
 import { logout } from './auth-actions';
 import Logo from '@/components/Logo';
+import { CONTACT } from '@/lib/site';
 
 export const metadata = {
   title: 'Investage — startaplar va investorlar platformasi',
@@ -99,6 +100,20 @@ export default async function RootLayout({ children }) {
               <Link href="/kirish">Kirish</Link>
               <Link href="/royxat">Ro&apos;yxatdan o&apos;tish</Link>
             </nav>
+            {(CONTACT.email || CONTACT.phone || CONTACT.telegram || CONTACT.address || CONTACT.hours) && (
+              <address className="footer-contact small">
+                <b>Aloqa</b>
+                {CONTACT.email && <a href={`mailto:${CONTACT.email}`}>{CONTACT.email}</a>}
+                {CONTACT.phone && <a href={`tel:${CONTACT.phone.replace(/\s/g, '')}`}>{CONTACT.phone}</a>}
+                {CONTACT.telegram && (
+                  <a href={`https://t.me/${CONTACT.telegram.replace('@', '')}`} rel="noopener noreferrer">
+                    {CONTACT.telegram}
+                  </a>
+                )}
+                {CONTACT.address && <span className="muted">{CONTACT.address}</span>}
+                {CONTACT.hours && <span className="muted">{CONTACT.hours}</span>}
+              </address>
+            )}
             <p className="footer-note small muted">
               Investage hozircha katalog sifatida ishlaydi: platforma orqali pul o&apos;tkazilmaydi, kelishuv tomonlar
               o&apos;rtasida amalga oshiriladi.

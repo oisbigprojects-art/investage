@@ -34,6 +34,10 @@ export default async function InvestorProfile({ searchParams }) {
           </label>
         </div>
         <label>
+          {t('ip.city')}
+          <input name="city" defaultValue={profile.city || ''} maxLength={80} placeholder={t('ip.city_ph')} />
+        </label>
+        <label>
           {t('ip.interests')}
           <input name="interests" defaultValue={profile.interests || ''} maxLength={200} placeholder={t('sp.sector_ph')} />
         </label>
@@ -47,6 +51,11 @@ export default async function InvestorProfile({ searchParams }) {
             placeholder={t('ip.bio_ph')}
           />
         </label>
+        <label className="check-inline">
+          <input type="checkbox" name="public_profile" defaultChecked={!!profile.public_profile} />
+          <span>{t('ip.public')}</span>
+        </label>
+        <p className="muted small">{t('ip.public_hint')}</p>
         <p className="muted small">{t('ip.email_note', { email: profile.email })}</p>
         <button className="btn btn-gold" type="submit">
           {t('ip.save')}

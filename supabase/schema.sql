@@ -372,3 +372,8 @@ as $$
 $$;
 revoke all on function public.platform_stats() from public;
 grant execute on function public.platform_stats() to anon, authenticated;
+
+-- 10. Fikr/yordam, investorlar katalogi, namuna belgilari (migratsiya "feedback_investor_directory_demo_flags")
+-- profiles: city, public_profile, is_demo; startups: is_demo, logo_url endi '/demo-logos/%' ham bo'lishi mumkin;
+-- jadval feedback (RLS: hamma yozadi, faqat o'zinikini o'qiydi); funksiya investor_directory() (faqat kirganlarga).
+-- Namuna ma'lumotlar: supabase/demo-seed.sql

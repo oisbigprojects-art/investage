@@ -20,6 +20,7 @@ export default function StartupCard({ s, t, canSave = false, saved = false, back
         <div className="scard-meta">
           <StageBadge stage={s.stage} t={t} />
           <Verified on={s.verified} t={t} />
+          {s.is_demo && <span className="chip chip-muted">{t('ui.demo')}</span>}
         </div>
         <div className="scard-seal">
           <LockIcon size={14} />

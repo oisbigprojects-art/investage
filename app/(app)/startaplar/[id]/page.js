@@ -15,7 +15,7 @@ const getStartup = cache(async (id) => {
   const { supabase } = await getAuthUser();
   const { data } = await supabase
     .from('startups')
-    .select('id, owner_id, name, sector, short_desc, stage, score, verified, created_at, logo_url, hidden')
+    .select('id, owner_id, name, sector, short_desc, stage, score, verified, created_at, logo_url, hidden, is_demo')
     .eq('id', id)
     .maybeSingle();
   return data;
@@ -67,6 +67,12 @@ export default async function StartupDetail({ params, searchParams }) {
         <div className="flash flash-warn" role="status">
           {t('detail.hidden_a')} <Link href="/kabinet/startap">{t('detail.hidden_link')}</Link>
           {t('detail.hidden_b')}
+        </div>
+      )}
+
+      {s.is_demo && (
+        <div className="flash flash-warn" role="note">
+          {t('demo.notice')}
         </div>
       )}
 

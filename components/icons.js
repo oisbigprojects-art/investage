@@ -162,3 +162,23 @@ export function PlusIcon({ size = 18 }) {
     </svg>
   );
 }
+
+export function UsersIcon({ size = 18 }) {
+  return (
+    <svg {...base} width={size} height={size}>
+      <circle cx="7.5" cy="7" r="2.8" />
+      <path d="M2.5 16c0-2.8 2.2-4.6 5-4.6s5 1.8 5 4.6" />
+      <circle cx="14" cy="8" r="2.2" />
+      <path d="M14.5 11.8c2 .2 3.2 1.6 3.2 3.6" />
+    </svg>
+  );
+}
+
+export function HelpIcon({ size = 18 }) {
+  return (
+    <svg {...base} width={size} height={size}>
+      <circle cx="10" cy="10" r="7.5" />
+      <path d="M7.7 8a2.4 2.4 0 014.6.8c0 1.6-2.3 1.9-2.3 3.2M10 14.4v.01" />
+    </svg>
+  );
+}

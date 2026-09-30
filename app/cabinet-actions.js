@@ -240,7 +240,10 @@ export async function saveInvestorProfile(formData) {
     company: text(formData, 'company'),
     interests: text(formData, 'interests'),
     bio: text(formData, 'bio'),
+    city: text(formData, 'city'),
+    public_profile: formData.get('public_profile') === 'on',
   };
+  if (patch.city.length > 80) go(PATH, 'xato', t('ip.city_len'));
   if (!patch.full_name) go(PATH, 'xato', t('ac.name_req'));
   if (patch.company.length > 120) go(PATH, 'xato', t('ac.company_len'));
   if (patch.interests.length > 200) go(PATH, 'xato', t('ac.interests_len'));
@@ -260,4 +263,22 @@ export async function markNotificationsSeen(formData) {
   await supabase.from('profiles').update({ notifications_seen_at: new Date().toISOString() }).eq('id', user.id);
   revalidatePath('/', 'layout');
   redirect(PATH);
+}
+
+// ---------------- Fikr va yordam murojaati (mehmon ham yubora oladi) ----------------
+export async function sendFeedback(formData) {
+  const PATH = '/yordam';
+  const t = await getT();
+  // Botlar uchun yashirin maydon: odam to'ldirmaydi
+  if (text(formData, 'website')) go(PATH, 'xabar', t('help.sent'));
+  const kind = ['feedback', 'support', 'bug'].includes(text(formData, 'kind')) ? text(formData, 'kind') : 'feedback';
+  const message = text(formData, 'message');
+  const name = text(formData, 'name').slice(0, 120);
+  const email = text(formData, 'email').slice(0, 200);
+  if (message.length < 5) go(PATH, 'xato', t('help.err_short'));
+  if (message.length > 4000) go(PATH, 'xato', t('help.err_long'));
+  const { supabase, user } = await getSession();
+  const { error } = await supabase.from('feedback').insert({ user_id: user?.id ?? null, kind, name, email, message, page: back(formData, '').slice(0, 300) });
+  if (error) go(PATH, 'xato', t('help.err_fail'));
+  go(PATH, 'xabar', t('help.sent'));
 }

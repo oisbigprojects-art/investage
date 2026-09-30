@@ -43,6 +43,8 @@ export async function Sidebar() {
         items: [
           { href: '/', label: t('nav.home'), icon: 'home', exact: true },
           { href: '/startaplar', label: t('nav.startups'), icon: 'search' },
+          { href: '/investorlar', label: t('nav.investors'), icon: 'users' },
+          { href: '/yordam', label: t('nav.help'), icon: 'help' },
         ],
       },
     ];
@@ -66,7 +68,14 @@ export async function Sidebar() {
           ...(s ? [{ href: `/startaplar/${s.id}`, label: t('shell.public_page'), icon: 'globe', exact: true }] : []),
         ],
       },
-      { title: t('shell.sec_catalog'), items: [{ href: '/startaplar', label: t('nav.startups'), icon: 'search', exact: true }] },
+      {
+        title: t('shell.sec_catalog'),
+        items: [
+          { href: '/startaplar', label: t('nav.startups'), icon: 'search', exact: true },
+          { href: '/investorlar', label: t('nav.investors'), icon: 'users' },
+        ],
+      },
+      { title: t('shell.sec_support'), items: [{ href: '/yordam', label: t('nav.help'), icon: 'help' }] },
     ];
   } else {
     const [requests, saved] = await Promise.all([getRequests(), getSaved()]);
@@ -82,8 +91,20 @@ export async function Sidebar() {
           { href: '/kabinet/bildirishnomalar', label: t('shell.notifications'), icon: 'bell', badge: unread },
         ],
       },
-      { title: t('shell.sec_catalog'), items: [{ href: '/startaplar', label: t('nav.startups'), icon: 'search' }] },
-      { title: t('shell.sec_account'), items: [{ href: '/kabinet/investor/profil', label: t('shell.profile'), icon: 'user' }] },
+      {
+        title: t('shell.sec_catalog'),
+        items: [
+          { href: '/startaplar', label: t('nav.startups'), icon: 'search' },
+          { href: '/investorlar', label: t('nav.investors'), icon: 'users' },
+        ],
+      },
+      {
+        title: t('shell.sec_account'),
+        items: [
+          { href: '/kabinet/investor/profil', label: t('shell.profile'), icon: 'user' },
+          { href: '/yordam', label: t('nav.help'), icon: 'help' },
+        ],
+      },
     ];
   }
 

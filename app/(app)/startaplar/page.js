@@ -26,7 +26,7 @@ export default async function StartupsPage({ searchParams }) {
 
   let q = supabase
     .from('startups')
-    .select('id, name, sector, short_desc, stage, score, verified, logo_url')
+    .select('id, name, sector, short_desc, stage, score, verified, logo_url, is_demo')
     .eq('hidden', false)
     .order('verified', { ascending: false })
     .order('created_at', { ascending: false });

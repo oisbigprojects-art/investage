@@ -739,3 +739,13 @@ input[type='file']::file-selector-button { margin-right: 12px; padding: 6px 12px
 .demo-dots { display: flex; justify-content: center; gap: 6px; margin-top: 16px; }
 .demo-dots button { width: 8px; height: 8px; padding: 0; border: 0; border-radius: 999px; background: var(--line); cursor: pointer; transition: width 0.3s var(--ease), background 0.3s var(--ease); }
 .demo-dots button.is-on { width: 22px; background: var(--gold); }
+
+/* Investorlar katalogi, yordam */
+.inv-card { cursor: default; }
+.inv-card:hover { transform: none; border-color: transparent; }
+.inv-city { margin: 0; color: var(--muted); }
+.inv-city b { color: var(--text); font-weight: 700; }
+.inv-card .scard-desc { -webkit-line-clamp: 6; }
+.help-form { max-width: 720px; }
+.help-form .role-radio { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+@media (max-width: 720px) { .help-form .role-radio { grid-template-columns: minmax(0, 1fr); } }

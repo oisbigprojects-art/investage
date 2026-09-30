@@ -378,3 +378,6 @@ grant execute on function public.platform_stats() to anon, authenticated;
 -- jadval feedback (RLS: hamma yozadi, faqat o'zinikini o'qiydi); funksiya investor_directory() (faqat kirganlarga).
 -- Namuna ma'lumotlar: supabase/demo-seed.sql
 -- 11. Namuna startapga yuborilgan so'rov avtomatik tasdiqlanadi: trigger access_requests_demo_auto -> private.demo_auto_approve()
+-- 12. Yangi murojaat (feedback) Telegram'ga: trigger feedback_telegram -> private.feedback_notify() (pg_net).
+-- Bot: @Investagee_bot. Token Vault'da ('telegram_bot_token'), qabul qiluvchi private.settings ('telegram_username', 'telegram_chat_id').
+-- Qabul qiluvchi botga /start bosishi kerak; chat id private.tg_link() bilan avtomatik topiladi.

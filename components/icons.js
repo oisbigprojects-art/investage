@@ -191,3 +191,46 @@ export function GearIcon({ size = 18 }) {
     </svg>
   );
 }
+
+export function ChatIcon({ size = 18 }) {
+  return (
+    <svg {...base} width={size} height={size}>
+      <path d="M3.5 5.5a2 2 0 012-2h9a2 2 0 012 2v6a2 2 0 01-2 2H9l-3.5 3v-3h0a2 2 0 01-2-2z" />
+      <path d="M7 7.6h6M7 10h4" />
+    </svg>
+  );
+}
+
+export function FileIcon({ size = 18 }) {
+  return (
+    <svg {...base} width={size} height={size}>
+      <path d="M5 2.8h6.2L15 6.6v10.6H5z" />
+      <path d="M11 2.8v4h4M7.6 10.5h4.8M7.6 13.3h4.8" />
+    </svg>
+  );
+}
+
+export function SendIcon({ size = 18 }) {
+  return (
+    <svg {...base} width={size} height={size}>
+      <path d="M3 10l14-6.5-5 14-2.6-5.6z" />
+      <path d="M9.4 11.9L17 3.5" />
+    </svg>
+  );
+}
+
+export function TelegramIcon({ size = 18 }) {
+  return (
+    <svg viewBox="0 0 24 24" width={size} height={size} aria-hidden="true" focusable="false">
+      <path fill="currentColor" d="M21.9 4.3l-3.3 15.6c-.2 1.1-.9 1.4-1.8.9l-5-3.7-2.4 2.3c-.3.3-.5.5-1 .5l.4-5.1 9.3-8.4c.4-.4-.1-.6-.6-.2L5.9 13.4 1 11.9c-1.1-.3-1.1-1.1.2-1.6L20.5 2.9c.9-.3 1.7.2 1.4 1.4z" />
+    </svg>
+  );
+}
+
+export function DownloadIcon({ size = 18 }) {
+  return (
+    <svg {...base} width={size} height={size}>
+      <path d="M10 3v10M6 9.5l4 4 4-4M4 16.5h12" />
+    </svg>
+  );
+}

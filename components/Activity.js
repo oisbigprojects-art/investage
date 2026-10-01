@@ -1,9 +1,9 @@
 import Link from 'next/link';
 import { timeAgo } from '@/lib/labels';
-import { CheckIcon, ClockIcon, LockIcon, BookmarkIcon, UnlockIcon } from './icons';
+import { CheckIcon, ClockIcon, LockIcon, BookmarkIcon, UnlockIcon, SendIcon } from './icons';
 
-const ICON = { request: ClockIcon, approved: UnlockIcon, rejected: LockIcon, revoked: LockIcon, saved: BookmarkIcon };
-const TONE = { request: 'warn', approved: 'ok', rejected: 'bad', revoked: 'muted', saved: 'gold' };
+const ICON = { request: ClockIcon, approved: UnlockIcon, rejected: LockIcon, revoked: LockIcon, saved: BookmarkIcon, offer: SendIcon };
+const TONE = { request: 'warn', approved: 'ok', rejected: 'bad', revoked: 'muted', saved: 'gold', offer: 'gold' };
 
 // Vaqt bo'yicha faollik tasmasi
 export default function ActivityFeed({ events, t, limit = 6, empty, showUnread = 0 }) {

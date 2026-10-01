@@ -4,7 +4,7 @@ import { getT } from '@/lib/i18n/server';
 import LangSwitch from '@/components/LangSwitch';
 import ThemeToggle from '@/components/ThemeToggle';
 import { getTheme } from '@/lib/i18n/server';
-import { getRequests, getSaved, getMyStartup } from '@/lib/data';
+import { getRequests, getSaved, getMyStartup, getUnreadMessages } from '@/lib/data';
 import { buildEvents, notificationsOf } from '@/lib/events';
 import { logout } from '@/app/auth-actions';
 import { markNotificationsSeen } from '@/app/cabinet-actions';
@@ -51,7 +51,7 @@ export async function Sidebar() {
       },
     ];
   } else if (role === 'startup') {
-    const [requests, s] = await Promise.all([getRequests(), getMyStartup(user.id)]);
+    const [requests, s, msgs] = await Promise.all([getRequests(), getMyStartup(user.id), getUnreadMessages()]);
     const pending = requests.filter((r) => r.status === 'pending').length;
     const { unread } = notificationsOf(buildEvents('startup', requests, [], t), profile.notifications_seen_at);
     sections = [
@@ -60,6 +60,7 @@ export async function Sidebar() {
         items: [
           { href: '/kabinet/startap', label: t('shell.overview'), icon: 'grid', exact: true },
           { href: '/kabinet/startap/sorovlar', label: t('shell.requests'), icon: 'inbox', badge: pending },
+          { href: '/kabinet/xabarlar', label: t('shell.messages'), icon: 'chat', badge: msgs },
           { href: '/kabinet/bildirishnomalar', label: t('shell.notifications'), icon: 'bell', badge: unread },
         ],
       },
@@ -67,6 +68,7 @@ export async function Sidebar() {
         title: t('shell.sec_startup'),
         items: [
           { href: '/kabinet/startap/profil', label: t('shell.profile'), icon: 'user' },
+          { href: '/kabinet/startap/hujjatlar', label: t('shell.documents'), icon: 'file' },
           { href: '/kabinet/sozlamalar', label: t('shell.settings'), icon: 'gear' },
           ...(s ? [{ href: `/startaplar/${s.id}`, label: t('shell.public_page'), icon: 'globe', exact: true }] : []),
         ],
@@ -81,7 +83,7 @@ export async function Sidebar() {
       { title: t('shell.sec_support'), items: [{ href: '/yordam', label: t('nav.help'), icon: 'help' }] },
     ];
   } else {
-    const [requests, saved] = await Promise.all([getRequests(), getSaved()]);
+    const [requests, saved, msgs] = await Promise.all([getRequests(), getSaved(), getUnreadMessages()]);
     const pending = requests.filter((r) => r.status === 'pending').length;
     const { unread } = notificationsOf(buildEvents('investor', requests, saved, t), profile.notifications_seen_at);
     sections = [
@@ -90,6 +92,7 @@ export async function Sidebar() {
         items: [
           { href: '/kabinet/investor', label: t('shell.overview'), icon: 'grid', exact: true },
           { href: '/kabinet/investor/sorovlar', label: t('shell.my_requests'), icon: 'inbox', badge: pending },
+          { href: '/kabinet/xabarlar', label: t('shell.messages'), icon: 'chat', badge: msgs },
           { href: '/kabinet/investor/saqlangan', label: t('shell.saved'), icon: 'bookmark', badge: saved.length },
           { href: '/kabinet/bildirishnomalar', label: t('shell.notifications'), icon: 'bell', badge: unread },
         ],

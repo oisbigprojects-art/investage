@@ -3,6 +3,7 @@ import { getAuthUser } from '@/lib/supabase/server';
 import { getT } from '@/lib/i18n/server';
 import { Monogram } from '@/components/ui';
 import { SearchIcon, LockIcon } from '@/components/icons';
+import { checkRange } from '@/lib/investor';
 
 export async function generateMetadata() {
   const t = await getT();
@@ -44,7 +45,7 @@ export default async function InvestorsPage({ searchParams }) {
   const { data } = await supabase.rpc('investor_directory');
   const all = data || [];
   const list = term
-    ? all.filter((p) => [p.full_name, p.company, p.city, p.interests, p.bio].join(' ').toLowerCase().includes(term))
+    ? all.filter((p) => [p.full_name, p.company, p.city, p.interests, p.bio, p.investor_type && t(`ivp.type_${p.investor_type}`)].join(' ').toLowerCase().includes(term))
     : all;
 
   return (
@@ -69,7 +70,7 @@ export default async function InvestorsPage({ searchParams }) {
       {list.length ? (
         <div className="grid">
           {list.map((p) => (
-            <article key={p.id} className="scard inv-card">
+            <Link key={p.id} href={`/investorlar/${p.id}`} className="scard inv-card">
               <div className="scard-head">
                 <Monogram name={p.company || p.full_name} size={48} />
                 <div className="scard-title">
@@ -89,7 +90,12 @@ export default async function InvestorsPage({ searchParams }) {
                 </p>
               )}
               {p.bio && <p className="scard-desc">{p.bio}</p>}
-            </article>
+              <div className="scard-meta">
+                {p.investor_type && <span className="chip">{t(`ivp.type_${p.investor_type}`)}</span>}
+                {checkRange(p, t) && <span className="chip chip-warn">{checkRange(p, t)}</span>}
+                <span className="inv-more">{t('ivp.view')} →</span>
+              </div>
+            </Link>
           ))}
         </div>
       ) : (

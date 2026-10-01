@@ -1,3 +1,4 @@
+import Link from 'next/link';
 import { Monogram, StatusBadge } from './ui';
 import { decideRequest, revokeAccess } from '@/app/cabinet-actions';
 import { formatDate } from '@/lib/labels';
@@ -13,7 +14,7 @@ export default function StartupRequest({ r, back, t }) {
         <Monogram name={inv.full_name} size={44} />
         <div className="req-main">
           <div className="req-name">
-            <strong>{inv.full_name || t('role.investor')}</strong>
+            <Link href={`/investorlar/${r.investor_id}`} className="req-inv-link"><strong>{inv.full_name || t('role.investor')}</strong></Link>
             {r.status !== 'pending' && <StatusBadge status={r.status} t={t} />}
           </div>
           <div className="muted small">
@@ -21,6 +22,7 @@ export default function StartupRequest({ r, back, t }) {
           </div>
           {meta.length > 0 && <div className="req-meta small">{meta.join(' · ')}</div>}
           {inv.bio && <p className="req-bio small">{inv.bio}</p>}
+          <Link href={`/investorlar/${r.investor_id}`} className="small req-profile-link">{t('ivp.full_profile')} →</Link>
           {r.message && (
             <p className="req-msg">
               <span className="muted small">{t('sr.message')}</span>

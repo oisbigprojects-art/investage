@@ -7,6 +7,7 @@ import { Stat, Donut, HBar } from '@/components/charts';
 import { getSaved } from '@/lib/data';
 import { getCatalogFacets, safe } from '@/lib/public-data';
 import { STAGE_KEYS } from '@/lib/labels';
+import { SECTOR_KEYWORDS, sectorFilter } from '@/lib/sectors';
 
 export async function generateMetadata() {
   const t = await getT();
@@ -22,6 +23,7 @@ export default async function StartupsPage({ searchParams }) {
   const stage = STAGE_KEYS.includes(sp?.bosqich) ? sp.bosqich : null;
   const term = clean(sp?.q);
   const sector = String(sp?.soha || '').trim().slice(0, 100); // faqat .eq() ga beriladi, xavfsiz
+  const yonalish = SECTOR_KEYWORDS[sp?.yonalish] ? sp.yonalish : null; // bosh sahifadagi soha kartalari
   const { supabase } = await getAuthUser();
 
   let q = supabase
@@ -32,7 +34,11 @@ export default async function StartupsPage({ searchParams }) {
     .order('created_at', { ascending: false });
   if (stage) q = q.eq('stage', stage);
   if (sector) q = q.eq('sector', sector);
-  if (term) q = q.or(`name.ilike.%${term}%,sector.ilike.%${term}%,short_desc.ilike.%${term}%`);
+  const termF = term ? `name.ilike.%${term}%,sector.ilike.%${term}%,short_desc.ilike.%${term}%` : null;
+  const secF = yonalish ? sectorFilter(yonalish) : null;
+  // ikkala shart birga bo'lsa: and(or(...),or(...))
+  if (termF && secF) q = q.or(`and(or(${termF}),or(${secF}))`);
+  else if (termF || secF) q = q.or(termF || secF);
 
   // getSaved o'zi rolni tekshiradi (investor bo'lmasa bo'sh); hammasi bir vaqtda ketadi
   const [{ data: startups }, all, savedRes, { profile }] = await Promise.all([q, safe(getCatalogFacets, []), getSaved(), getSession()]);
@@ -44,11 +50,11 @@ export default async function StartupsPage({ searchParams }) {
   const topSectors = [...sectorCount.entries()].sort((a, b) => b[1] - a[1]).slice(0, 6).map(([label, value]) => ({ label, value }));
   const byStage = (k) => all.filter((r) => r.stage === k).length;
   const saved = new Set(savedRes.map((r) => r.startup.id));
-  const filtered = !!(stage || term || sector);
+  const filtered = !!(stage || term || sector || yonalish);
 
   const href = (over = {}) => {
     const p = new URLSearchParams();
-    const v = { bosqich: stage, q: term, soha: sector, ...over };
+    const v = { bosqich: stage, q: term, soha: sector, yonalish, ...over };
     for (const [k, val] of Object.entries(v)) if (val) p.set(k, val);
     const qs = p.toString();
     return qs ? `/startaplar?${qs}` : '/startaplar';
@@ -127,6 +133,11 @@ export default async function StartupsPage({ searchParams }) {
             {t(`stage.${k}`)}
           </Link>
         ))}
+        {yonalish && (
+          <Link href={href({ yonalish: null })} className="filter is-on" title={t('cat.clear')}>
+            {t(`sec.${yonalish}`)} ✕
+          </Link>
+        )}
         {filtered && (
           <Link href="/startaplar" className="filter filter-clear">
             {t('cat.clear')}

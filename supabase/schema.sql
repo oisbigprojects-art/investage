@@ -383,3 +383,5 @@ grant execute on function public.platform_stats() to anon, authenticated;
 -- Qabul qiluvchi botga /start bosishi kerak; chat id private.tg_link() bilan avtomatik topiladi.
 -- 13. Kuzatuv: pg_cron -> private.usage_report() (har oy 1-kuni, Telegram'ga hisobot) va private.usage_alert() (har kuni, 80% dan oshsa ogohlantirish).
 -- Vercel Cron har kuni /api/keepalive ni chaqiradi: bepul Supabase loyihasi faolsiz deb to'xtatilmaydi.
+-- 14. Investor profili: investor_type, check_min/max, stages, experience_years, portfolio, website, linkedin, telegram, public_contacts.
+-- investor_directory() kengaytirildi; investor_profile(uuid) — o'zi / ochiq profil / startapingizga so'rov yuborgan bo'lsa ko'rinadi.

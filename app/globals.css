@@ -799,3 +799,23 @@ input[type='file']::file-selector-button { margin-right: 12px; padding: 6px 12px
 :root[data-theme='dark'] .skel { background: linear-gradient(90deg, var(--panel) 25%, var(--panel-2) 50%, var(--panel) 75%); background-size: 200% 100%; }
 .theme-btn svg { transition: transform 0.4s var(--ease); }
 .theme-btn:hover svg { transform: rotate(-20deg); }
+
+/* Investor profili */
+.inv-card { color: var(--text); }
+.inv-card:hover { text-decoration: none; transform: translateY(-3px); border-color: var(--gold); }
+.inv-more { margin-left: auto; font: 700 .85rem var(--display); color: var(--gold-ink); }
+.inv-rel { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; }
+.inv-rel a { margin-left: auto; font-weight: 700; }
+.inv-head .head-top .btn { flex: none; }
+.inv-figures { grid-template-columns: repeat(4, minmax(0, 1fr)); margin-bottom: 20px; }
+.inv-figures .figure { background: var(--panel); box-shadow: var(--shadow); }
+.inv-figures .figure b { font-size: clamp(1rem, 1.7vw, 1.2rem); }
+.inv-stages { font-size: 1rem !important; }
+.chips-row { display: flex; flex-wrap: wrap; gap: 8px; }
+.inv-active { margin: 14px 0 0; }
+.req-inv-link { color: inherit; }
+.req-profile-link { display: inline-block; margin-top: 8px; color: var(--gold-ink); font-weight: 600; }
+.stage-pick { border: 0; padding: 0; margin: 0; display: flex; flex-wrap: wrap; gap: 10px 22px; }
+.stage-pick legend { font-size: 0.875rem; font-weight: 600; color: var(--muted); margin-bottom: 8px; padding: 0; }
+.ip-view { margin-top: 12px; }
+@media (max-width: 900px) { .inv-figures { grid-template-columns: repeat(2, minmax(0, 1fr)); } }

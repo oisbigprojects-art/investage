@@ -220,7 +220,7 @@ export default async function Home() {
         </div>
         <div className="sectors">
           {SECTOR_KEYS.map((k) => (
-            <Link key={k} className="sector" href={`/startaplar?q=${encodeURIComponent(t(`sec.${k}`))}`}>
+            <Link key={k} className="sector" href={`/startaplar?yonalish=${k}`}>
               <span className="sector-ico">
                 <SectorIcon name={k} />
               </span>

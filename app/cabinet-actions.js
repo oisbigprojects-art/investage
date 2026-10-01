@@ -242,7 +242,21 @@ export async function saveInvestorProfile(formData) {
     bio: text(formData, 'bio'),
     city: text(formData, 'city'),
     public_profile: formData.get('public_profile') === 'on',
+    investor_type: ['angel', 'fund', 'corporate', 'family', 'other'].includes(text(formData, 'investor_type')) ? text(formData, 'investor_type') : '',
+    check_min: money(formData.get('check_min')),
+    check_max: money(formData.get('check_max')),
+    stages: formData.getAll('stages').map(String).filter((s) => ['goya', 'mvp', 'daromad'].includes(s)),
+    experience_years: num(formData.get('experience_years')),
+    portfolio: text(formData, 'portfolio'),
+    website: text(formData, 'website').slice(0, 200),
+    linkedin: text(formData, 'linkedin').slice(0, 200),
+    telegram: text(formData, 'telegram').slice(0, 64),
+    public_contacts: formData.get('public_contacts') === 'on',
   };
+  for (const k of ['check_min', 'check_max']) if (patch[k] !== null && (isNaN(patch[k]) || patch[k] < 0)) go(PATH, 'xato', t('ip.err_money'));
+  if (patch.check_min !== null && patch.check_max !== null && patch.check_min > patch.check_max) go(PATH, 'xato', t('ip.err_range'));
+  if (patch.experience_years !== null && (!Number.isInteger(patch.experience_years) || patch.experience_years < 0 || patch.experience_years > 80)) go(PATH, 'xato', t('ip.err_years'));
+  if (patch.portfolio.length > 1500) go(PATH, 'xato', t('ip.err_portfolio'));
   if (patch.city.length > 80) go(PATH, 'xato', t('ip.city_len'));
   if (!patch.full_name) go(PATH, 'xato', t('ac.name_req'));
   if (patch.company.length > 120) go(PATH, 'xato', t('ac.company_len'));

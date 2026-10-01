@@ -2,9 +2,9 @@
 
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { GridIcon, InboxIcon, UserIcon, SearchIcon, BookmarkIcon, GlobeIcon, BellIcon, HomeIcon, PlusIcon, UsersIcon, HelpIcon } from './icons';
+import { GridIcon, InboxIcon, UserIcon, SearchIcon, BookmarkIcon, GlobeIcon, BellIcon, HomeIcon, PlusIcon, UsersIcon, HelpIcon, GearIcon } from './icons';
 
-const ICONS = { grid: GridIcon, inbox: InboxIcon, user: UserIcon, search: SearchIcon, bookmark: BookmarkIcon, globe: GlobeIcon, bell: BellIcon, home: HomeIcon, plus: PlusIcon, users: UsersIcon, help: HelpIcon };
+const ICONS = { grid: GridIcon, inbox: InboxIcon, user: UserIcon, search: SearchIcon, bookmark: BookmarkIcon, globe: GlobeIcon, bell: BellIcon, home: HomeIcon, plus: PlusIcon, users: UsersIcon, help: HelpIcon, gear: GearIcon };
 
 // sections: [{ title, items: [{ href, label, icon, exact?, badge? }] }]
 export default function AppNav({ sections, label }) {

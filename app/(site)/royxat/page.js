@@ -52,6 +52,14 @@ export default async function SignupPage({ searchParams }) {
           {t('signup.password')}
           <input name="password" type="password" minLength={6} required autoComplete="new-password" />
         </label>
+        <label className="agree small">
+          <input type="checkbox" name="agree" required />
+          <span>
+            {t('signup.agree_pre')} <Link href="/shartlar" target="_blank">{t('legal.terms_title')}</Link>{' '}
+            {t('signup.agree_mid')} <Link href="/maxfiylik" target="_blank">{t('legal.privacy_title')}</Link>
+            {t('signup.agree_post')}
+          </span>
+        </label>
         <button className="btn btn-gold" type="submit">
           {t('signup.submit')}
         </button>

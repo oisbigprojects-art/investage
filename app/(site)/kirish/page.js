@@ -30,6 +30,7 @@ export default async function LoginPage({ searchParams }) {
           {t('form.password')}
           <input name="password" type="password" required autoComplete="current-password" />
         </label>
+        <Link href="/parol-tiklash" className="small forgot">{t('login.forgot')}</Link>
         <button className="btn btn-gold" type="submit">
           {t('login.submit')}
         </button>

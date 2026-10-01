@@ -819,3 +819,15 @@ input[type='file']::file-selector-button { margin-right: 12px; padding: 6px 12px
 .stage-pick legend { font-size: 0.875rem; font-weight: 600; color: var(--muted); margin-bottom: 8px; padding: 0; }
 .ip-view { margin-top: 12px; }
 @media (max-width: 900px) { .inv-figures { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+
+/* Kirish, sozlamalar */
+.forgot { align-self: flex-end; margin-top: -8px; color: var(--gold-ink); font-weight: 600; }
+.danger-zone { border-color: rgba(210, 63, 63, 0.35); margin-top: 4px; }
+.danger-zone h2 { color: var(--bad); }
+.agree { flex-direction: row; align-items: flex-start; gap: 10px; font-weight: 400; color: var(--muted); }
+.agree input { width: 18px; height: 18px; min-height: 0; padding: 0; margin-top: 2px; accent-color: var(--gold); flex: none; }
+.legal { max-width: 760px; }
+.legal h2 { font-size: 1.25rem; margin-top: 1.6em; }
+.legal p, .legal li { line-height: 1.7; color: var(--text); }
+.legal ul { padding-left: 1.2em; margin: 0 0 1em; }
+.legal .updated { color: var(--muted); }

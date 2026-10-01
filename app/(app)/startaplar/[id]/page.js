@@ -24,7 +24,16 @@ const getStartup = cache(async (id) => {
 export async function generateMetadata({ params }) {
   const { id } = await params;
   const [data, t] = await Promise.all([getStartup(id), getT()]);
-  return { title: data?.name ? `${data.name} — Investage` : t('meta.startup_default') };
+  if (!data?.name) return { title: t('meta.startup_default') };
+  const title = `${data.name} — Investage`;
+  const description = (data.short_desc || t('meta.site_desc')).slice(0, 200);
+  return {
+    title,
+    description,
+    alternates: { canonical: `/startaplar/${id}` },
+    openGraph: { type: 'article', siteName: 'Investage', title, description, url: `/startaplar/${id}`, images: [{ url: '/og.png', width: 1200, height: 630, alt: data.name }] },
+    twitter: { card: 'summary_large_image', title, description, images: ['/og.png'] },
+  };
 }
 
 export default async function StartupDetail({ params, searchParams }) {

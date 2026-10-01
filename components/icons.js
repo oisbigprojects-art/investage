@@ -182,3 +182,12 @@ export function HelpIcon({ size = 18 }) {
     </svg>
   );
 }
+
+export function GearIcon({ size = 18 }) {
+  return (
+    <svg {...base} width={size} height={size}>
+      <circle cx="10" cy="10" r="2.6" />
+      <path d="M10 2.5v2M10 15.5v2M2.5 10h2M15.5 10h2M4.7 4.7l1.4 1.4M13.9 13.9l1.4 1.4M4.7 15.3l1.4-1.4M13.9 6.1l1.4-1.4" />
+    </svg>
+  );
+}

@@ -67,6 +67,7 @@ export async function Sidebar() {
         title: t('shell.sec_startup'),
         items: [
           { href: '/kabinet/startap/profil', label: t('shell.profile'), icon: 'user' },
+          { href: '/kabinet/sozlamalar', label: t('shell.settings'), icon: 'gear' },
           ...(s ? [{ href: `/startaplar/${s.id}`, label: t('shell.public_page'), icon: 'globe', exact: true }] : []),
         ],
       },
@@ -104,6 +105,7 @@ export async function Sidebar() {
         title: t('shell.sec_account'),
         items: [
           { href: '/kabinet/investor/profil', label: t('shell.profile'), icon: 'user' },
+          { href: '/kabinet/sozlamalar', label: t('shell.settings'), icon: 'gear' },
           { href: '/yordam', label: t('nav.help'), icon: 'help' },
         ],
       },

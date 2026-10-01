@@ -33,6 +33,8 @@ export default async function SiteChrome({ children }) {
               <Link href="/yordam">{t('nav.help')}</Link>
               <Link href="/kirish">{t('nav.login')}</Link>
               <Link href="/royxat">{t('nav.signup')}</Link>
+              <Link href="/shartlar">{t('legal.terms_title')}</Link>
+              <Link href="/maxfiylik">{t('legal.privacy_title')}</Link>
             </nav>
             {(CONTACT.email || CONTACT.phone || CONTACT.telegram || CONTACT.address || CONTACT.hours) && (
               <address className="footer-contact small">

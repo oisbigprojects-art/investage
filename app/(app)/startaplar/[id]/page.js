@@ -5,7 +5,10 @@ import { getSession, getAuthUser } from '@/lib/supabase/server';
 import { getT } from '@/lib/i18n/server';
 import { Flash, StageBadge, Verified, ScoreRing, StatusBadge, Monogram, Redact } from '@/components/ui';
 import PrivateDetails from '@/components/PrivateDetails';
-import { LockIcon, UnlockIcon, ClockIcon } from '@/components/icons';
+import { LockIcon, UnlockIcon, ClockIcon, ChatIcon } from '@/components/icons';
+import DocList from '@/components/DocList';
+import { withLinks } from '@/lib/docs';
+import { getDocuments } from '@/lib/data';
 import SaveButton from '@/components/SaveButton';
 import { requestAccess, withdrawRequest } from '@/app/cabinet-actions';
 import { formatDate } from '@/lib/labels';
@@ -65,6 +68,9 @@ export default async function StartupDetail({ params, searchParams }) {
   if (!s) notFound();
   const isOwner = !!user && s.owner_id === user.id;
   const isSaved = !!sv;
+  // Hujjatlar: egasiga va ruxsat olgan investorga (RLS boshqalarga bo'sh qaytaradi)
+  const canDocs = isOwner || (!!priv && !!user);
+  const docs = canDocs ? await withLinks(supabase, await getDocuments(s.id)) : [];
 
   return (
     <>
@@ -140,6 +146,22 @@ export default async function StartupDetail({ params, searchParams }) {
           />
         </aside>
       </div>
+
+      {/* ---------- HUJJATLAR (pitch deck va boshqalar) ---------- */}
+      {canDocs ? (
+        <section className="card">
+          <div className="section-head sm">
+            <h2>{t('doc.public_title')}</h2>
+            {isOwner && <Link href="/kabinet/startap/hujjatlar">{t('doc.manage')}</Link>}
+          </div>
+          <DocList docs={docs} t={t} empty={isOwner ? t('doc.empty') : t('doc.empty_investor')} />
+        </section>
+      ) : (
+        <section className="card docs-locked">
+          <LockIcon size={18} />
+          <span className="muted">{t('doc.locked')}</span>
+        </section>
+      )}
     </>
   );
 }
@@ -182,6 +204,9 @@ function AccessPanel({ t, user, profile, req, startupId, isOwner, hasAccess }) {
           <Link className="btn btn-ghost" href="/kabinet/startap/sorovlar">
             {t('access.owner_requests')}
           </Link>
+          <Link className="btn btn-ghost" href="/kabinet/xabarlar">
+            {t('shell.messages')}
+          </Link>
         </div>
       </>
     );
@@ -194,6 +219,13 @@ function AccessPanel({ t, user, profile, req, startupId, isOwner, hasAccess }) {
           <UnlockIcon size={20} /> {t('access.granted_title')}
         </h2>
         <p className="muted">{t('access.granted_text', { when: req?.decided_at ? ` (${formatDate(req.decided_at, t)})` : '' })}</p>
+        {req?.id && (
+          <div className="col">
+            <Link className="btn btn-gold" href={`/kabinet/xabarlar/${req.id}`}>
+              <ChatIcon size={18} /> {t('chat.write')}
+            </Link>
+          </div>
+        )}
       </>
     );
   }

@@ -3,8 +3,10 @@ import { notFound } from 'next/navigation';
 import { cache } from 'react';
 import { getAuthUser, getSession } from '@/lib/supabase/server';
 import { getT } from '@/lib/i18n/server';
-import { Monogram, StatusBadge } from '@/components/ui';
-import { LockIcon } from '@/components/icons';
+import { Flash, Monogram, StatusBadge } from '@/components/ui';
+import { LockIcon, SendIcon, ChatIcon } from '@/components/icons';
+import { getMyStartup } from '@/lib/data';
+import { offerToInvestor } from '@/app/connect-actions';
 import { formatDate, STAGE_KEYS } from '@/lib/labels';
 import { checkRange, splitTags } from '@/lib/investor';
 
@@ -22,9 +24,10 @@ export async function generateMetadata({ params }) {
 }
 
 // Investorning to'liq profili (faqat tizimga kirganlarga; ko'rish huquqi bazada tekshiriladi)
-export default async function InvestorProfilePage({ params }) {
+export default async function InvestorProfilePage({ params, searchParams }) {
   const { id } = await params;
-  const [{ user }, t] = await Promise.all([getSession(), getT()]);
+  const sp = await searchParams;
+  const [{ supabase, user, profile }, t] = await Promise.all([getSession(), getT()]);
 
   if (!user) {
     return (
@@ -40,8 +43,14 @@ export default async function InvestorProfilePage({ params }) {
     );
   }
 
-  const p = await getInvestor(id);
+  const isStartup = profile?.role === 'startup';
+  const [p, mine] = await Promise.all([getInvestor(id), isStartup ? getMyStartup(user.id) : null]);
   if (!p) notFound();
+  // Startapning shu investor bilan mavjud aloqasi (so'rov yoki taklif)
+  const { data: rel } =
+    isStartup && mine
+      ? await supabase.from('access_requests').select('id, status, initiated_by').eq('startup_id', mine.id).eq('investor_id', id).maybeSingle()
+      : { data: null };
 
   const range = checkRange(p, t);
   const sectors = splitTags(p.interests);
@@ -57,6 +66,7 @@ export default async function InvestorProfilePage({ params }) {
   return (
     <>
       <Link href="/investorlar" className="back">{t('ivp.back')}</Link>
+      <Flash searchParams={sp} />
 
       {p.is_demo && (
         <div className="flash flash-warn" role="note">{t('ivp.demo_note')}</div>
@@ -118,7 +128,9 @@ export default async function InvestorProfilePage({ params }) {
           </section>
         </div>
 
-        <aside className="card access">
+        <aside className="access inv-side">
+          {isStartup && !p.is_me && <OfferBox t={t} investorId={id} mine={mine} rel={rel} isDemo={p.is_demo} />}
+          <section className="card">
           <h2 className="access-title">{t('ivp.contacts')}</h2>
           {p.contacts_visible && contacts.length ? (
             <ul className="contacts">
@@ -135,8 +147,53 @@ export default async function InvestorProfilePage({ params }) {
             </p>
           )}
           {p.last_active && <p className="muted small inv-active">{t('ivp.last_active', { date: formatDate(p.last_active, t) })}</p>}
+          </section>
         </aside>
       </div>
     </>
+  );
+}
+
+// Startap investorga o'zi taklif yuboradi: yopiq ma'lumotlar va hujjatlar shu investorga ochiladi, chat boshlanadi
+function OfferBox({ t, investorId, mine, rel, isDemo }) {
+  if (!mine) {
+    return (
+      <section className="card offer-box">
+        <h2 className="access-title"><SendIcon size={20} /> {t('of.title')}</h2>
+        <p className="muted small">{t('of.need_profile')}</p>
+        <div className="col">
+          <Link className="btn btn-gold" href="/kabinet/startap/profil">{t('of.fill_profile')}</Link>
+        </div>
+      </section>
+    );
+  }
+  if (rel?.status === 'approved') {
+    return (
+      <section className="card offer-box is-open">
+        <h2 className="access-title access-open"><ChatIcon size={20} /> {rel.initiated_by === 'startup' ? t('of.sent_title') : t('of.open_title')}</h2>
+        <p className="muted small">{t('of.open_text')}</p>
+        <div className="col">
+          <Link className="btn btn-gold" href={`/kabinet/xabarlar/${rel.id}`}>{t('chat.write')}</Link>
+        </div>
+      </section>
+    );
+  }
+  const declined = rel?.status === 'rejected' && rel?.initiated_by === 'startup';
+  return (
+    <section className="card offer-box">
+      <h2 className="access-title"><SendIcon size={20} /> {t('of.title')}</h2>
+      <p className="muted small">
+        {rel?.status === 'pending' ? t('of.text_pending') : declined ? t('of.text_declined') : t('of.text')}
+      </p>
+      {isDemo && <p className="muted small">{t('of.demo')}</p>}
+      <form action={offerToInvestor} className="form">
+        <input type="hidden" name="investor_id" value={investorId} />
+        <label>
+          {t('of.message')}
+          <textarea name="message" rows={4} maxLength={1000} placeholder={t('of.message_ph')} />
+        </label>
+        <button className="btn btn-gold" type="submit">{rel?.status === 'pending' ? t('of.send_pending') : t('of.send')}</button>
+      </form>
+    </section>
   );
 }

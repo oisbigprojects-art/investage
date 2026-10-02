@@ -15,17 +15,22 @@ export default function StartupRequest({ r, back, t }) {
         <div className="req-main">
           <div className="req-name">
             <Link href={`/investorlar/${r.investor_id}`} className="req-inv-link"><strong>{inv.full_name || t('role.investor')}</strong></Link>
+            {r.initiated_by === 'startup' && <span className="chip chip-warn">{t('sr.offer_chip')}</span>}
             {r.status !== 'pending' && <StatusBadge status={r.status} t={t} />}
           </div>
           <div className="muted small">
-            {inv.email} · {r.status === 'pending' ? t('sr.requested', { date: formatDate(r.created_at, t) }) : t('sr.answered', { date: formatDate(r.decided_at, t) })}
+            {inv.email} · {r.initiated_by === 'startup'
+              ? t('sr.offered', { date: formatDate(r.created_at, t) })
+              : r.status === 'pending'
+                ? t('sr.requested', { date: formatDate(r.created_at, t) })
+                : t('sr.answered', { date: formatDate(r.decided_at, t) })}
           </div>
           {meta.length > 0 && <div className="req-meta small">{meta.join(' · ')}</div>}
           {inv.bio && <p className="req-bio small">{inv.bio}</p>}
           <Link href={`/investorlar/${r.investor_id}`} className="small req-profile-link">{t('ivp.full_profile')} →</Link>
           {r.message && (
             <p className="req-msg">
-              <span className="muted small">{t('sr.message')}</span>
+              <span className="muted small">{r.initiated_by === 'startup' ? t('sr.your_message') : t('sr.message')}</span>
               {r.message}
             </p>
           )}
@@ -54,6 +59,9 @@ export default function StartupRequest({ r, back, t }) {
       )}
       {r.status === 'approved' && (
         <div className="req-actions">
+          <Link className="btn btn-gold btn-sm" href={`/kabinet/xabarlar/${r.id}`}>
+            {t('chat.write')}
+          </Link>
           <form action={revokeAccess}>
             <input type="hidden" name="request_id" value={r.id} />
             <input type="hidden" name="back" value={back} />

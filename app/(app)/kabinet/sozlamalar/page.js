@@ -4,6 +4,9 @@ import { getSession } from '@/lib/supabase/server';
 import { getT } from '@/lib/i18n/server';
 import { Flash } from '@/components/ui';
 import { changePassword, changeEmail, deleteAccount } from '@/app/auth-actions';
+import { connectTelegram, disconnectTelegram } from '@/app/connect-actions';
+import { TelegramIcon } from '@/components/icons';
+import { formatDate } from '@/lib/labels';
 
 export async function generateMetadata() {
   const t = await getT();
@@ -13,8 +16,9 @@ export async function generateMetadata() {
 // Hisob sozlamalari: parol, email, hisobni o'chirish
 export default async function SettingsPage({ searchParams }) {
   const sp = await searchParams;
-  const [{ user, profile }, t] = await Promise.all([getSession(), getT()]);
+  const [{ supabase, user, profile }, t] = await Promise.all([getSession(), getT()]);
   if (!user) redirect('/kirish');
+  const { data: tg } = await supabase.rpc('tg_status');
   const profileHref = profile.role === 'startup' ? '/kabinet/startap/profil' : '/kabinet/investor/profil';
 
   return (
@@ -25,6 +29,31 @@ export default async function SettingsPage({ searchParams }) {
         <p className="muted">{t('set.sub')} <Link href={profileHref}>{t('set.profile_link')}</Link></p>
       </div>
       <Flash searchParams={sp} />
+
+      {/* Telegram xabarnomalari */}
+      <section className={`card tg-card ${tg?.linked ? 'is-on' : ''}`}>
+        <span className="tg-ico" aria-hidden="true"><TelegramIcon size={26} /></span>
+        <div className="tg-main">
+          <h2>{t('tg.title')}</h2>
+          {tg?.linked ? (
+            <p className="muted">
+              {t('tg.on_text', { who: tg.username ? `@${tg.username}` : 'Telegram' })}
+              {tg.linked_at && <> · {formatDate(tg.linked_at, t)}</>}
+            </p>
+          ) : (
+            <p className="muted">{t(profile.role === 'startup' ? 'tg.off_text_startup' : 'tg.off_text_investor')}</p>
+          )}
+        </div>
+        {tg?.linked ? (
+          <form action={disconnectTelegram}>
+            <button className="btn btn-ghost" type="submit">{t('tg.off_btn')}</button>
+          </form>
+        ) : (
+          <form action={connectTelegram}>
+            <button className="btn btn-gold" type="submit">{t('tg.on_btn')}</button>
+          </form>
+        )}
+      </section>
 
       <div className="cab-cols cab-cols-even settings">
         <section className="card">

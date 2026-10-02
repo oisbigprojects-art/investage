@@ -3,59 +3,55 @@
 import { useEffect, useLayoutEffect, useRef, useState } from 'react';
 import Link from 'next/link';
 import { SendIcon } from './icons';
+import { findAnswer, isGreeting, related } from '@/lib/bot/match';
 
-const MAX = 1000;
+const MAX = 300;
 
-// Sayt yordamchisi. Rol serverda aniqlanadi; bu yerda faqat ko'rinish.
-// Yozishmalar hech qayerda saqlanmaydi — sahifa yangilansa, suhbat tozalanadi.
-export default function Bot({ greeting, suggestions, labels: L }) {
+// Sayt yordamchisi. Javoblar tayyor bazadan olinadi — tashqi xizmat ishlatilmaydi va
+// bot o'zidan javob to'qimaydi. Rol serverda aniqlanadi, shuning uchun mavzular aralashmaydi.
+export default function Bot({ faq, starters, greeting, labels: L }) {
   const [open, setOpen] = useState(false);
   const [msgs, setMsgs] = useState([]);
   const [text, setText] = useState('');
-  const [busy, setBusy] = useState(false);
-  const [err, setErr] = useState('');
+  const [chips, setChips] = useState(starters);
   const listRef = useRef(null);
   const boxRef = useRef(null);
-  const panelRef = useRef(null);
+  const asked = useRef([]);
 
   useLayoutEffect(() => {
     const el = listRef.current;
     if (el) el.scrollTop = el.scrollHeight;
-  }, [msgs, busy, open]);
+  }, [msgs, open]);
 
   useEffect(() => {
     if (!open) return;
     boxRef.current?.focus();
-    const onKey = (e) => {
-      if (e.key === 'Escape') setOpen(false);
-    };
+    const onKey = (e) => e.key === 'Escape' && setOpen(false);
     document.addEventListener('keydown', onKey);
     return () => document.removeEventListener('keydown', onKey);
   }, [open]);
 
-  async function ask(question) {
-    const q = (question ?? text).trim();
-    if (!q || busy) return;
-    const next = [...msgs, { role: 'user', content: q }];
-    setMsgs(next);
+  function ask(question) {
+    const q = (question ?? text).trim().slice(0, MAX);
+    if (!q) return;
     setText('');
-    setErr('');
-    setBusy(true);
     if (boxRef.current) boxRef.current.style.height = 'auto';
 
-    try {
-      const res = await fetch('/api/bot', {
-        method: 'POST',
-        headers: { 'content-type': 'application/json' },
-        body: JSON.stringify({ messages: next }),
-      });
-      const data = await res.json().catch(() => null);
-      if (!res.ok || !data?.text) setErr(data?.error || L.fail);
-      else setMsgs((p) => [...p, { role: 'assistant', content: data.text }]);
-    } catch {
-      setErr(L.fail);
+    let answer;
+    if (isGreeting(q)) {
+      answer = { text: greeting, kind: 'ok' };
+    } else {
+      const hit = findAnswer(q, faq);
+      if (hit) {
+        asked.current = [...asked.current, hit.id];
+        answer = { text: hit.a, kind: 'ok' };
+      } else {
+        answer = { text: L.no_match, kind: 'miss' };
+      }
     }
-    setBusy(false);
+
+    setMsgs((p) => [...p, { role: 'user', text: q }, { role: 'bot', ...answer }]);
+    setChips(related(faq, asked.current, 3));
     boxRef.current?.focus();
   }
 
@@ -68,7 +64,7 @@ export default function Bot({ greeting, suggestions, labels: L }) {
 
   const grow = (el) => {
     el.style.height = 'auto';
-    el.style.height = `${Math.min(el.scrollHeight, 120)}px`;
+    el.style.height = `${Math.min(el.scrollHeight, 110)}px`;
   };
 
   return (
@@ -84,7 +80,7 @@ export default function Bot({ greeting, suggestions, labels: L }) {
         {open ? <CloseGlyph /> : <BotGlyph />}
       </button>
 
-      <div id="bot-panel" className={`bot-panel ${open ? 'is-open' : ''}`} ref={panelRef} role="dialog" aria-label={L.title} aria-hidden={!open}>
+      <div id="bot-panel" className={`bot-panel ${open ? 'is-open' : ''}`} role="dialog" aria-label={L.title} aria-hidden={!open}>
         <header className="bot-head">
           <span className="bot-ava" aria-hidden="true"><BotGlyph small /></span>
           <div>
@@ -102,23 +98,21 @@ export default function Bot({ greeting, suggestions, labels: L }) {
           </div>
 
           {msgs.map((m, i) => (
-            <div key={i} className={`bot-msg ${m.role === 'user' ? 'bot-me' : 'bot-them'}`}>
-              <p>{m.content}</p>
+            <div key={i} className={`bot-msg ${m.role === 'user' ? 'bot-me' : 'bot-them'} ${m.kind === 'miss' ? 'is-miss' : ''}`}>
+              <p>{m.text}</p>
+              {m.kind === 'miss' && (
+                <p className="bot-miss-link">
+                  <Link href="/yordam">{L.ask_team}</Link>
+                </p>
+              )}
             </div>
           ))}
 
-          {busy && (
-            <div className="bot-msg bot-them bot-typing" aria-label={L.thinking}>
-              <i /><i /><i />
-            </div>
-          )}
-
-          {err && <p className="bot-err small" role="alert">{err}</p>}
-
-          {msgs.length === 0 && !busy && (
+          {chips.length > 0 && (
             <div className="bot-chips">
-              {suggestions.map((s) => (
-                <button key={s} type="button" className="bot-chip" onClick={() => ask(s)}>{s}</button>
+              <span className="muted small">{msgs.length ? L.more : L.pick}</span>
+              {chips.map((c) => (
+                <button key={c.id} type="button" className="bot-chip" onClick={() => ask(c.q)}>{c.q}</button>
               ))}
             </div>
           )}
@@ -144,7 +138,7 @@ export default function Bot({ greeting, suggestions, labels: L }) {
             }}
             onKeyDown={onKeyDown}
           />
-          <button className="btn btn-gold bot-send" type="submit" disabled={busy || !text.trim()} aria-label={L.send}>
+          <button className="btn btn-gold bot-send" type="submit" disabled={!text.trim()} aria-label={L.send}>
             <SendIcon size={17} />
           </button>
         </form>

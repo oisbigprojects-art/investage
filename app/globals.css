@@ -860,3 +860,6 @@ input[type='file']::file-selector-button { margin-right: 12px; padding: 6px 12px
   .admin-row, .admin-fb { grid-template-columns: minmax(0, 1fr); }
   .admin-flags, .admin-actions { justify-content: flex-start; }
 }
+
+/* Katta ekranda admin bo'limlari chap menyuda bor; sahifadagi qator faqat tor ekranlar uchun */
+@media (min-width: 901px) { .admin-tabs { display: none; } }

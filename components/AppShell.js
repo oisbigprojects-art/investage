@@ -5,6 +5,7 @@ import LangSwitch from '@/components/LangSwitch';
 import ThemeToggle from '@/components/ThemeToggle';
 import { getTheme } from '@/lib/i18n/server';
 import { getRequests, getSaved, getMyStartup, getUnreadMessages } from '@/lib/data';
+import { getIsAdmin } from '@/lib/admin';
 import { buildEvents, notificationsOf } from '@/lib/events';
 import { logout } from '@/app/auth-actions';
 import { markNotificationsSeen } from '@/app/cabinet-actions';
@@ -34,7 +35,7 @@ export function SidebarFallback() {
 }
 
 export async function Sidebar() {
-  const [{ user, profile }, t] = await Promise.all([getSession(), getT()]);
+  const [{ user, profile }, t, isAdmin] = await Promise.all([getSession(), getT(), getIsAdmin()]);
   const role = profile?.role;
 
   let sections;
@@ -113,6 +114,18 @@ export async function Sidebar() {
         ],
       },
     ];
+  }
+
+  if (user && isAdmin) {
+    sections.push({
+      title: 'Admin',
+      items: [
+        { href: '/admin', label: "Umumiy ko'rinish", icon: 'grid', exact: true },
+        { href: '/admin/startaplar', label: 'Startaplar', icon: 'search' },
+        { href: '/admin/foydalanuvchilar', label: 'Foydalanuvchilar', icon: 'users' },
+        { href: '/admin/murojaatlar', label: 'Murojaatlar', icon: 'inbox' },
+      ],
+    });
   }
 
   return (

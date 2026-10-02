@@ -897,3 +897,82 @@ input[type='file']::file-selector-button { margin-right: 12px; padding: 6px 12px
   .bot-fab { right: 14px; bottom: 14px; }
   .bot-panel { right: 10px; left: 10px; bottom: 76px; width: auto; max-height: 70vh; }
 }
+
+/* ---------- Suhbatlar ro'yxati ---------- */
+.conv-list { padding: 6px 20px; }
+.conv { display: flex; gap: 14px; align-items: center; padding: 16px 0; border-bottom: 1px solid var(--line-soft); color: inherit; }
+.conv:last-child { border-bottom: 0; }
+.conv:hover { text-decoration: none; }
+.conv:hover .conv-top strong { color: var(--gold-ink); }
+.conv-main { flex: 1; min-width: 0; }
+.conv-top { display: flex; gap: 8px; align-items: baseline; flex-wrap: wrap; }
+.conv-top strong { font-size: 1rem; }
+.conv-top time { margin-left: auto; white-space: nowrap; }
+.conv-last { color: var(--muted); margin-top: 3px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.conv.is-unread .conv-last { color: var(--text); font-weight: 500; }
+.conv-badge { flex: none; min-width: 22px; height: 22px; padding: 0 6px; border-radius: 11px; background: var(--gold); color: #1d1d1d; font: 600 0.75rem/22px var(--font); font-style: normal; text-align: center; }
+
+/* ---------- Suhbat (chat) ---------- */
+.chat-card { padding: 0; overflow: hidden; }
+.chat-head { display: flex; gap: 12px; align-items: center; padding: 18px 22px; border-bottom: 1px solid var(--line-soft); flex-wrap: wrap; }
+.chat-who { flex: 1; min-width: 0; display: flex; flex-direction: column; }
+.chat-who strong { font-size: 1.05rem; }
+.chat-who a:hover { text-decoration: none; color: var(--gold-ink); }
+.chat-note { margin: 0; padding: 10px 22px; background: var(--gold-wash); border-bottom: 1px solid var(--gold-line); color: var(--gold-ink); }
+.chat { display: flex; flex-direction: column; }
+.chat-list { display: flex; flex-direction: column; gap: 10px; padding: 20px 22px; min-height: 280px; max-height: 56vh; overflow-y: auto; }
+.chat-empty { margin: auto; }
+.chat-day { align-self: center; margin: 6px 0; }
+.chat-day span { font-size: 0.78rem; color: var(--muted); background: var(--panel-2); border: 1px solid var(--line-soft); border-radius: 999px; padding: 3px 12px; }
+.msg { max-width: 76%; padding: 10px 14px; border-radius: 18px; }
+.msg p { margin: 0; white-space: pre-wrap; overflow-wrap: anywhere; line-height: 1.5; }
+.msg-them { align-self: flex-start; background: var(--panel-2); border: 1px solid var(--line-soft); border-bottom-left-radius: 6px; }
+.msg-me { align-self: flex-end; background: var(--gold-wash); border: 1px solid var(--gold-line); border-bottom-right-radius: 6px; }
+.msg.is-temp { opacity: 0.6; }
+.msg-meta { display: block; margin-top: 4px; font-size: 0.72rem; color: var(--muted); }
+.msg-me .msg-meta { text-align: right; }
+.chat-below { align-self: center; margin: -4px 0 4px; padding: 6px 14px; border-radius: 999px; border: 1px solid var(--gold-line); background: var(--gold-wash); color: var(--gold-ink); font: 500 0.82rem var(--font); cursor: pointer; }
+.chat-form { display: flex; gap: 10px; align-items: flex-end; padding: 14px 22px 8px; border-top: 1px solid var(--line-soft); }
+.chat-form textarea { flex: 1; resize: none; min-height: 44px; padding: 11px 14px; }
+.chat-send { flex: none; display: inline-flex; align-items: center; gap: 8px; }
+.chat-closed { margin: 0; padding: 16px 22px; border-top: 1px solid var(--line-soft); color: var(--muted); background: var(--panel-2); }
+.chat-hint { margin: 0; padding: 0 22px 14px; font-size: 0.78rem; }
+.chat-err { color: var(--bad); }
+
+/* ---------- Hujjatlar ---------- */
+.docs-cols { grid-template-columns: minmax(0, 1.25fr) minmax(0, 1fr); }
+.docs { list-style: none; margin: 0; padding: 0; }
+.doc { display: flex; gap: 14px; align-items: center; padding: 14px 0; border-bottom: 1px solid var(--line-soft); }
+.doc:last-child { border-bottom: 0; }
+.doc-ico { position: relative; flex: none; width: 42px; height: 42px; border-radius: 12px; display: grid; place-items: center; background: var(--panel-2); border: 1px solid var(--line-soft); color: var(--muted); }
+.doc-ico em { position: absolute; bottom: -5px; right: -5px; font: 600 0.55rem/1 var(--font); font-style: normal; letter-spacing: 0.02em; background: var(--gold); color: #1d1d1d; border-radius: 5px; padding: 3px 4px; }
+.doc-pitch { color: var(--gold-ink); border-color: var(--gold-line); background: var(--gold-wash); }
+.doc-main { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 2px; }
+.doc-title { font-weight: 600; overflow-wrap: anywhere; }
+.doc-actions { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; }
+.doc-actions form { margin: 0; }
+.doc-actions .btn { display: inline-flex; align-items: center; gap: 6px; }
+.doc-upload .two { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; }
+.drop { display: flex; flex-direction: column; align-items: center; gap: 4px; text-align: center; padding: 26px 18px; border: 1px dashed var(--faint); border-radius: 18px; background: var(--panel-2); cursor: pointer; transition: border-color 0.2s var(--ease), background 0.2s var(--ease); }
+.drop:hover { border-color: var(--gold-line); background: var(--gold-wash); }
+.drop.has-file { border-style: solid; border-color: var(--gold-line); background: var(--gold-wash); }
+.drop input[type='file'] { position: absolute; width: 1px; height: 1px; opacity: 0; pointer-events: none; }
+.drop strong { overflow-wrap: anywhere; }
+.doc-privacy { margin-top: 20px; padding-top: 16px; border-top: 1px solid var(--line-soft); }
+.doc-privacy p { margin: 4px 0 8px; }
+.docs-locked { display: flex; gap: 10px; align-items: center; color: var(--muted); }
+
+/* ---------- Investor profilidagi taklif ---------- */
+.inv-side { display: flex; flex-direction: column; gap: 0; }
+.inv-side .card { margin-bottom: 20px; }
+.inv-side .card:last-child { margin-bottom: 0; }
+.offer-box.is-open { border-color: var(--ok); }
+.offer-box .form { margin-top: 12px; }
+.offer-box .col { margin-top: 12px; }
+
+@media (max-width: 900px) {
+  .docs-cols { grid-template-columns: minmax(0, 1fr); }
+  .doc-upload .two { grid-template-columns: minmax(0, 1fr); }
+  .msg { max-width: 88%; }
+  .chat-list { max-height: none; }
+}

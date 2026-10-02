@@ -1,7 +1,9 @@
 import './globals.css';
+import { Suspense } from 'react';
 import { Inter, Manrope } from 'next/font/google';
 import { getLang, getT, getTheme } from '@/lib/i18n/server';
 import { SITE_URL } from '@/lib/site-url';
+import BotMount from '@/components/BotMount';
 
 // Shriftlar build vaqtida yuklab olinib saytning o'zidan beriladi (Google'ga so'rov yo'q)
 const inter = Inter({ subsets: ['latin', 'latin-ext', 'cyrillic'], variable: '--font-inter', display: 'swap' });
@@ -42,6 +44,9 @@ export default async function RootLayout({ children }) {
     <html lang={lang} data-theme={theme} className={`${inter.variable} ${display.variable}`}>
       <body>
         {children}
+        <Suspense fallback={null}>
+          <BotMount />
+        </Suspense>
       </body>
     </html>
   );

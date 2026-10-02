@@ -2,7 +2,8 @@ import Link from 'next/link';
 import { getSession } from '@/lib/supabase/server';
 import { getT } from '@/lib/i18n/server';
 import { Flash } from '@/components/ui';
-import { setNewPassword } from '@/app/auth-actions';
+import { setNewPassword} from '@/app/auth-actions';
+import { MIN_PW } from '@/lib/password';
 
 export async function generateMetadata() {
   const t = await getT();
@@ -22,11 +23,11 @@ export default async function NewPasswordPage({ searchParams }) {
           <p className="muted small">{t('reset.for', { email: user.email })}</p>
           <label>
             {t('reset.new')}
-            <input name="password" type="password" required minLength={6} autoComplete="new-password" />
+            <input name="password" type="password" required minLength={MIN_PW} autoComplete="new-password" />
           </label>
           <label>
             {t('reset.new2')}
-            <input name="password2" type="password" required minLength={6} autoComplete="new-password" />
+            <input name="password2" type="password" required minLength={MIN_PW} autoComplete="new-password" />
           </label>
           <button className="btn btn-gold" type="submit">{t('reset.save')}</button>
         </form>

@@ -7,6 +7,7 @@ import { changePassword, changeEmail, deleteAccount } from '@/app/auth-actions';
 import { connectTelegram, disconnectTelegram } from '@/app/connect-actions';
 import { TelegramIcon } from '@/components/icons';
 import { formatDate } from '@/lib/labels';
+import { MIN_PW } from '@/lib/password';
 
 export async function generateMetadata() {
   const t = await getT();
@@ -65,11 +66,11 @@ export default async function SettingsPage({ searchParams }) {
             </label>
             <label>
               {t('reset.new')}
-              <input name="password" type="password" required minLength={6} autoComplete="new-password" />
+              <input name="password" type="password" required minLength={MIN_PW} autoComplete="new-password" />
             </label>
             <label>
               {t('reset.new2')}
-              <input name="password2" type="password" required minLength={6} autoComplete="new-password" />
+              <input name="password2" type="password" required minLength={MIN_PW} autoComplete="new-password" />
             </label>
             <button className="btn btn-gold" type="submit">{t('set.pw_save')}</button>
           </form>

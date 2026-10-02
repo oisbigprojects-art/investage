@@ -3,7 +3,8 @@ import { redirect } from 'next/navigation';
 import { getSession } from '@/lib/supabase/server';
 import { getT } from '@/lib/i18n/server';
 import { Flash } from '@/components/ui';
-import { signup } from '@/app/auth-actions';
+import { signup} from '@/app/auth-actions';
+import { MIN_PW } from '@/lib/password';
 
 export async function generateMetadata() {
   const t = await getT();
@@ -50,7 +51,7 @@ export default async function SignupPage({ searchParams }) {
         </label>
         <label>
           {t('signup.password')}
-          <input name="password" type="password" minLength={6} required autoComplete="new-password" />
+          <input name="password" type="password" minLength={MIN_PW} required autoComplete="new-password" />
         </label>
         <label className="agree small">
           <input type="checkbox" name="agree" required />

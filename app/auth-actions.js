@@ -4,6 +4,8 @@ import { redirect } from 'next/navigation';
 import { createClient, getSession } from '@/lib/supabase/server';
 import { originUrl } from '@/lib/site-url';
 import { getT } from '@/lib/i18n/server';
+import { MIN_PW } from '@/lib/password';
+
 
 const back = (path, key, msg) => redirect(`${path}?${key}=${encodeURIComponent(msg)}`);
 
@@ -14,8 +16,8 @@ export async function signup(formData) {
   const full_name = String(formData.get('full_name') || '').trim();
   const role = formData.get('role') === 'startup' ? 'startup' : 'investor';
 
-  if (!email || password.length < 6 || !full_name) {
-    back('/royxat', 'xato', t('auth.err_fields'));
+  if (!email || password.length < MIN_PW || !full_name) {
+    back('/royxat', 'xato', t('auth.err_fields', { n: MIN_PW }));
   }
   if (formData.get('agree') !== 'on') back('/royxat', 'xato', t('auth.err_agree'));
 
@@ -67,7 +69,7 @@ export async function setNewPassword(formData) {
   const t = await getT();
   const p1 = String(formData.get('password') || '');
   const p2 = String(formData.get('password2') || '');
-  if (p1.length < 6) back('/yangi-parol', 'xato', t('reset.err_short'));
+  if (p1.length < MIN_PW) back('/yangi-parol', 'xato', t('reset.err_short', { n: MIN_PW }));
   if (p1 !== p2) back('/yangi-parol', 'xato', t('reset.err_match'));
   const { supabase, user } = await getSession();
   if (!user) back('/parol-tiklash', 'xato', t('reset.err_expired'));
@@ -86,12 +88,13 @@ export async function changePassword(formData) {
   const current = String(formData.get('current') || '');
   const p1 = String(formData.get('password') || '');
   const p2 = String(formData.get('password2') || '');
-  if (p1.length < 6) back(SETTINGS, 'xato', t('reset.err_short'));
+  if (p1.length < MIN_PW) back(SETTINGS, 'xato', t('reset.err_short', { n: MIN_PW }));
   if (p1 !== p2) back(SETTINGS, 'xato', t('reset.err_match'));
   // Joriy parolni tekshiramiz (sessiya o'g'irlangan bo'lsa ham parol almashtirib bo'lmasin)
   const { error: e1 } = await supabase.auth.signInWithPassword({ email: user.email, password: current });
   if (e1) back(SETTINGS, 'xato', t('set.err_current'));
-  const { error } = await supabase.auth.updateUser({ password: p1 });
+  // current_password ham yuboriladi: Supabase'da "joriy parolni talab qilish" yoqilgan bo'lsa ham ishlaydi
+  const { error } = await supabase.auth.updateUser({ password: p1, current_password: current });
   if (error) back(SETTINGS, 'xato', error.message);
   back(SETTINGS, 'xabar', t('set.pw_changed'));
 }

@@ -8,6 +8,7 @@ const TABS = [
   { href: '/admin/startaplar', label: 'Startaplar' },
   { href: '/admin/foydalanuvchilar', label: 'Foydalanuvchilar' },
   { href: '/admin/murojaatlar', label: 'Murojaatlar' },
+  { href: '/admin/agent', label: 'Agent' },
 ];
 
 export default function AdminTabs() {

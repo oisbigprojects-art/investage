@@ -134,6 +134,14 @@ export async function deleteAccount(formData) {
   // Yuklangan logotiplarni o'chiramiz, keyin hisobning o'zini (bog'liq ma'lumotlar bazada birga o'chadi)
   const { data: files } = await supabase.storage.from('logos').list(user.id);
   if (files?.length) await supabase.storage.from('logos').remove(files.map((f) => `${user.id}/${f.name}`));
+  // Maxfiy hujjatlar (pitch, moliyaviy...) ham o'chadi: baza qatorlari cascade bilan o'chadi, storage fayllari esa o'zicha qolardi.
+  // O'chmasa, hisob ham o'chirilmaydi: egasiz maxfiy fayl qolib ketmasin.
+  const { data: own } = await supabase.from('startups').select('id').eq('owner_id', user.id).maybeSingle();
+  if (own) {
+    const { data: docs, error: le } = await supabase.storage.from('docs').list(own.id, { limit: 1000 });
+    const { error: re } = docs?.length ? await supabase.storage.from('docs').remove(docs.map((f) => `${own.id}/${f.name}`)) : {};
+    if (le || re) back(SETTINGS, 'xato', t('set.err_docs'));
+  }
   const { error } = await supabase.rpc('delete_my_account');
   if (error) back(SETTINGS, 'xato', error.message);
   await supabase.auth.signOut();

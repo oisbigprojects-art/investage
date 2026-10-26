@@ -3,7 +3,7 @@ import { redirect } from 'next/navigation';
 import { getSession } from '@/lib/supabase/server';
 import { getT } from '@/lib/i18n/server';
 import { Flash } from '@/components/ui';
-import { login } from '@/app/auth-actions';
+import { login, resendConfirmation } from '@/app/auth-actions';
 
 export async function generateMetadata() {
   const t = await getT();
@@ -35,6 +35,18 @@ export default async function LoginPage({ searchParams }) {
           {t('login.submit')}
         </button>
       </form>
+      {sp?.tasdiq === '1' && (
+        <form action={resendConfirmation} className="card form">
+          <p className="muted small">{t('auth.resend_text')}</p>
+          <label>
+            {t('form.email')}
+            <input name="email" type="email" required autoComplete="email" placeholder="name@company.com" />
+          </label>
+          <button className="btn btn-ghost" type="submit">
+            {t('auth.resend_submit')}
+          </button>
+        </form>
+      )}
       <p className="muted center">
         {t('login.no_account')} <Link href="/royxat">{t('login.no_account_link')}</Link>
       </p>

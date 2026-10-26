@@ -42,8 +42,21 @@ export async function login(formData) {
   const password = String(formData.get('password') || '');
   const supabase = await createClient();
   const { error } = await supabase.auth.signInWithPassword({ email, password });
+  // Email tasdiqlanmagan bo'lsa, kirish sahifasida xatni qayta yuborish formasi ochiladi (tasdiq=1)
+  if (error?.code === 'email_not_confirmed') redirect(`/kirish?xato=${encodeURIComponent(t('auth.err_unconfirmed'))}&tasdiq=1`);
   if (error) back('/kirish', 'xato', t('auth.err_creds'));
   redirect('/kabinet');
+}
+
+// Tasdiqlash xatini qayta yuborish. Javob har doim bir xil: bunday email bor-yo'qligini oshkor qilmaymiz
+export async function resendConfirmation(formData) {
+  const t = await getT();
+  const email = String(formData.get('email') || '').trim().slice(0, 200);
+  if (!email.includes('@')) redirect(`/kirish?xato=${encodeURIComponent(t('reset.err_email'))}&tasdiq=1`);
+  const origin = await originUrl();
+  const supabase = await createClient();
+  await supabase.auth.resend({ type: 'signup', email, options: { emailRedirectTo: `${origin}/auth/callback` } });
+  back('/kirish', 'xabar', t('auth.resend_sent'));
 }
 
 export async function logout() {

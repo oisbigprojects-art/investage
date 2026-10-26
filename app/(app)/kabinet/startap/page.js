@@ -3,7 +3,7 @@ import { startupContext } from '@/lib/cabinet';
 import { getRequests } from '@/lib/data';
 import { getSession } from '@/lib/supabase/server';
 import { getT } from '@/lib/i18n/server';
-import { completeness } from '@/lib/completeness';
+import { completeness, listingMissing } from '@/lib/completeness';
 import { buildEvents, notificationsOf } from '@/lib/events';
 import { weeklyCounts, statusCounts, acceptRate, avgResponseHours, formatHours } from '@/lib/metrics';
 import { Flash, StageBadge, Verified, ScoreRing, Monogram, Progress } from '@/components/ui';
@@ -34,6 +34,7 @@ export default async function StartupOverview({ searchParams }) {
   const events = buildEvents('startup', requests, [], t);
   const { seen } = notificationsOf(events, profile.notifications_seen_at);
   const c = completeness(s, p);
+  const missing = s.listed ? [] : listingMissing(s, p);
 
   return (
     <>
@@ -49,6 +50,12 @@ export default async function StartupOverview({ searchParams }) {
               <span className="chip chip-warn">
                 <i aria-hidden="true" />
                 {t('ui.hidden_chip')}
+              </span>
+            )}
+            {!s.hidden && !s.listed && (
+              <span className="chip chip-warn">
+                <i aria-hidden="true" />
+                {t('ui.unlisted_chip')}
               </span>
             )}
           </div>
@@ -121,7 +128,20 @@ export default async function StartupOverview({ searchParams }) {
               <p className="muted small">{t('vis.admin_hidden_text')}</p>
             ) : (
               <>
-                <p className="muted small">{s.hidden ? t('vis.hidden_text') : t('vis.shown_text')}</p>
+                {!s.listed && (
+                  <div className="flash flash-warn" role="status">
+                    <p className="small">{t('vis.unlisted_text')}</p>
+                    <ul className="small">
+                      {missing.map((i) => (
+                        <li key={i.key}>{t(`comp.${i.key}`)}</li>
+                      ))}
+                    </ul>
+                    <Link className="btn btn-gold btn-sm" href="/kabinet/startap/profil">
+                      {t('comp.fill')}
+                    </Link>
+                  </div>
+                )}
+                <p className="muted small">{s.hidden ? t('vis.hidden_text') : s.listed ? t('vis.shown_text') : t('vis.unlisted_note')}</p>
                 <form action={setVisibility}>
                   <input type="hidden" name="hidden" value={s.hidden ? 'false' : 'true'} />
                   <input type="hidden" name="back" value="/kabinet/startap" />

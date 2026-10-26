@@ -30,6 +30,7 @@ export default async function StartupsPage({ searchParams }) {
     .from('startups')
     .select('id, name, sector, short_desc, stage, score, verified, logo_url, is_demo')
     .eq('hidden', false)
+    .eq('listed', true)
     // Haqiqiy startaplar avval, namunaviylar oxirida
     .order('is_demo', { ascending: true })
     .order('verified', { ascending: false })

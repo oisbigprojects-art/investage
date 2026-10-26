@@ -148,6 +148,9 @@ export async function setVisibility(formData) {
   const { supabase, user, profile } = await getSession();
   if (!user || profile?.role !== 'startup') redirect('/kirish');
   const hidden = formData.get('hidden') === 'true';
+  // Moderator yashirgan profilni egasi ocha olmaydi (bazadagi trigger ham shuni ta'minlaydi)
+  const { data: cur } = await supabase.from('startups').select('admin_hidden').eq('owner_id', user.id).maybeSingle();
+  if (cur?.admin_hidden) go(PATH, 'xato', t('ac.admin_hidden'));
   const { error } = await supabase.from('startups').update({ hidden }).eq('owner_id', user.id);
   if (error) go(PATH, 'xato', error.message);
   revalidatePath('/', 'layout');

@@ -117,15 +117,21 @@ export default async function StartupOverview({ searchParams }) {
             <div className="section-head sm">
               <h2>{t('vis.title')}</h2>
             </div>
-            <p className="muted small">{s.hidden ? t('vis.hidden_text') : t('vis.shown_text')}</p>
-            <form action={setVisibility}>
-              <input type="hidden" name="hidden" value={s.hidden ? 'false' : 'true'} />
-              <input type="hidden" name="back" value="/kabinet/startap" />
-              <button className={`btn btn-sm ${s.hidden ? 'btn-gold' : 'btn-ghost'}`} type="submit">
-                {s.hidden ? <GlobeIcon size={16} /> : <EyeOffIcon size={16} />}
-                {s.hidden ? t('vis.show') : t('vis.hide')}
-              </button>
-            </form>
+            {s.admin_hidden ? (
+              <p className="muted small">{t('vis.admin_hidden_text')}</p>
+            ) : (
+              <>
+                <p className="muted small">{s.hidden ? t('vis.hidden_text') : t('vis.shown_text')}</p>
+                <form action={setVisibility}>
+                  <input type="hidden" name="hidden" value={s.hidden ? 'false' : 'true'} />
+                  <input type="hidden" name="back" value="/kabinet/startap" />
+                  <button className={`btn btn-sm ${s.hidden ? 'btn-gold' : 'btn-ghost'}`} type="submit">
+                    {s.hidden ? <GlobeIcon size={16} /> : <EyeOffIcon size={16} />}
+                    {s.hidden ? t('vis.show') : t('vis.hide')}
+                  </button>
+                </form>
+              </>
+            )}
           </section>
         </div>
 

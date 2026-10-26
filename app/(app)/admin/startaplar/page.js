@@ -65,7 +65,11 @@ export default async function AdminStartups({ searchParams }) {
               <div className="admin-flags">
                 {s.is_demo && <span className="chip chip-muted">Namuna</span>}
                 {s.verified && <span className="chip chip-ok">Tasdiqlangan</span>}
-                {s.hidden && <span className="chip chip-warn">Yashirin</span>}
+                {s.admin_hidden ? (
+                  <span className="chip chip-warn">Admin yashirgan</span>
+                ) : (
+                  s.hidden && <span className="chip chip-muted">Egasi yashirgan</span>
+                )}
               </div>
               <div className="admin-actions">
                 <form action={setStartup}>
@@ -77,8 +81,8 @@ export default async function AdminStartups({ searchParams }) {
                 <form action={setStartup}>
                   <input type="hidden" name="id" value={s.id} />
                   <input type="hidden" name="back" value={here} />
-                  <input type="hidden" name="hidden" value={s.hidden ? '0' : '1'} />
-                  <button className="btn btn-ghost btn-sm" type="submit">{s.hidden ? "Qayta ko'rsatish" : 'Yashirish'}</button>
+                  <input type="hidden" name="hidden" value={s.admin_hidden ? '0' : '1'} />
+                  <button className="btn btn-ghost btn-sm" type="submit">{s.admin_hidden ? "Qayta ko'rsatish" : 'Yashirish'}</button>
                 </form>
                 <form action={setStartup} className="admin-score">
                   <input type="hidden" name="id" value={s.id} />

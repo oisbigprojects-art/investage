@@ -11,7 +11,7 @@ Next.js 15 + Supabase + Netlify. Hammasi bepul tariflarda ishlaydi.
 | Baza | Supabase loyihasi `investage` (Frankfurt, bepul), ref `fuklumjbymmkaflzndxp` |
 | Hosting | Netlify loyihasi `investage-j3av` (bepul) |
 
-**Email tasdiqlash vaqtincha o'chiq.** Supabase'ning bepul email xizmati faqat jamoa a'zolariga xat yuboradi. Ommaga ochishdan oldin alohida email xizmati (SMTP, masalan Resend) ulanib, Authentication → Sign In / Providers → "Confirm email" qayta yoqilishi kerak. Shunda Authentication → URL Configuration → Site URL ga sayt manzilini yozing.
+**Email tasdiqlash yoqilgan (2026-10-26).** Xatlar Resend orqali `noreply@investage.uz` dan ketadi (Supabase → Authentication → Emails → SMTP Settings). Xat shablonlari `supabase/email-templates/` da: ular `/auth/confirm` ga token_hash bilan havola beradi, shuning uchun xat boshqa qurilmada ochilsa ham ishlaydi. Shablonni o'zgartirsangiz, Supabase → Authentication → Emails → Templates ga ham qo'ying. Custom SMTP bilan Supabase standart holatda soatiga ~30 ta xat yuboradi (Authentication → Rate Limits).
 
 ## Nima bor
 

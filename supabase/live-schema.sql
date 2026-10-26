@@ -2,7 +2,8 @@
 -- Faqat ma'lumot uchun: bazada aslida nima turganini ko'rsatadi (schema.sql va agent.sql bundan orqada qolgan).
 -- Bu faylni SQL Editor'da to'g'ridan-to'g'ri ishga tushirmang.
 -- Kalitlar va parollar bu yerda yo'q: Telegram tokeni va webhook siri Supabase Vault'da saqlanadi.
--- Nusxa olingandan keyin qo'llangan: 2026-10-26-profil-va-moderatsiya.sql (admin_hidden, investor profili ruxsatlari).
+-- Nusxa olingandan keyin qo'llangan: 2026-10-26-profil-va-moderatsiya.sql (admin_hidden, investor profili ruxsatlari),
+-- 2026-10-26-xavfsizlik-va-tezlik.sql (submit_feedback, tezlik cheklovlari, indekslar), 2026-10-26-tg-webhook-yopish.sql.
 
 -- TABLES
 

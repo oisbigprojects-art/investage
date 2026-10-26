@@ -294,8 +294,9 @@ export async function sendFeedback(formData) {
   const email = text(formData, 'email').slice(0, 200);
   if (message.length < 5) go(PATH, 'xato', t('help.err_short'));
   if (message.length > 4000) go(PATH, 'xato', t('help.err_long'));
-  const { supabase, user } = await getSession();
-  const { error } = await supabase.from('feedback').insert({ user_id: user?.id ?? null, kind, name, email, message, page: back(formData, '').slice(0, 300) });
-  if (error) go(PATH, 'xato', t('help.err_fail'));
+  const { supabase } = await getSession();
+  // Bazada tezlik cheklovi bor: bitta foydalanuvchi yoki manzildan soatiga 5 ta
+  const { error } = await supabase.rpc('submit_feedback', { p_kind: kind, p_name: name, p_email: email, p_message: message, p_page: back(formData, '').slice(0, 300) });
+  if (error) go(PATH, 'xato', /juda ko/.test(error.message) ? t('help.err_rate') : t('help.err_fail'));
   go(PATH, 'xabar', t('help.sent'));
 }

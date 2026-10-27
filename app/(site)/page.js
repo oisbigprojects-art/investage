@@ -13,6 +13,8 @@ import Splash from '@/components/Splash';
 import ValuationCalc from '@/components/ValuationCalc';
 import { CALC_KEYS } from '@/lib/i18n/calc-keys';
 import { SectorIcon, ArrowIcon, SECTOR_KEYS } from '@/components/SectorIcons';
+import { SITE_URL } from '@/lib/site-url';
+import { CONTACT } from '@/lib/site';
 
 // Rolga bog'liq tugmalar (sessiya keyin keladi, matn esa darrov ko'rinadi)
 async function HeroActions({ onDark = false }) {
@@ -39,11 +41,13 @@ async function HeroActions({ onDark = false }) {
   );
 }
 
-// Platforma raqamlari: haqiqiy sonlar bo'lsa ko'rsatiladi, bo'sh bo'lsa aniq faktlar
+// Platforma raqamlari: startaplar soni ishonarli bo'lgandagina ko'rsatiladi ("1 startap, 0 tasdiqlangan"
+// yangi tashrif buyuruvchiga bo'sh platformadek ko'rinadi), aks holda platforma haqidagi aniq faktlar
+const STATS_MIN_STARTUPS = 10;
 async function StatBand() {
   const [data, t] = await Promise.all([safe(getPlatformStats, null), getT()]);
   const n = (k) => Number(data?.[k]) || 0;
-  const real = n('startups') + n('investors') > 0;
+  const real = n('startups') >= STATS_MIN_STARTUPS;
   const items = real
     ? [
         [n('startups'), t('home.stat_startups')],
@@ -99,8 +103,20 @@ async function LatestStartups() {
 export default async function Home() {
   const t = await getT();
   const points = (role) => [1, 2, 3, 4].map((i) => t(`home.${role}_p${i}`));
+  // Qidiruv tizimlari uchun tashkilot haqida tuzilgan ma'lumot (schema.org)
+  const orgLd = {
+    '@context': 'https://schema.org',
+    '@type': 'Organization',
+    name: 'Investage',
+    url: SITE_URL,
+    logo: `${SITE_URL}/logo.webp`,
+    description: t('meta.site_desc'),
+    areaServed: 'UZ',
+    contactPoint: [{ '@type': 'ContactPoint', contactType: 'customer support', email: CONTACT.email, telephone: CONTACT.phone, availableLanguage: ['uz', 'ru', 'en'] }],
+  };
   return (
     <>
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(orgLd).replace(/</g, '\\u003c') }} />
       <Splash />
       <section className="hero">
         <div className="hero-copy">

@@ -33,17 +33,64 @@ VOICE_TAIL = 0.7                  # ovoz tugagach sahna yana shuncha davom etadi
 AISHA_URL = 'https://back.aisha.group'
 
 
+VOICELAB_URL = 'https://api.voicelab.uz'
+
+
 def aisha_key():
-    """API kalit marketing/reels/.env faylidan (AISHA_API_KEY=...) yoki muhit o'zgaruvchisidan olinadi. Fayl gitga tushmaydi."""
-    key = os.environ.get('AISHA_API_KEY')
+    """API kalit marketing/reels/.env faylidan (VOICELAB_API_KEY=... yoki AISHA_API_KEY=...) yoki muhit o'zgaruvchisidan olinadi.
+    Fayl gitga tushmaydi. VoiceLab (Aisha dasturchilar platformasi) kalitlari "vlk_" bilan boshlanadi."""
+    names = ('VOICELAB_API_KEY', 'AISHA_API_KEY')
+    key = next((os.environ[n] for n in names if os.environ.get(n)), None)
     env = os.path.join(HERE, '.env')
     if not key and os.path.exists(env):
         for line in open(env, encoding='utf-8'):
-            if line.strip().startswith('AISHA_API_KEY='):
-                key = line.split('=', 1)[1].strip().strip('"\'')
+            name, _, val = line.strip().partition('=')
+            if name in names and val.strip():
+                key = val.strip().strip('"\'')
     if not key:
-        raise SystemExit('AISHA_API_KEY topilmadi: marketing/reels/.env fayliga AISHA_API_KEY=... deb yozing')
+        raise SystemExit('Kalit topilmadi: marketing/reels/.env fayliga VOICELAB_API_KEY=vlk_... deb yozing')
     return key
+
+
+def voicelab_voices(language='uz'):
+    """Kalit bilan ochiq ovozlar ro'yxati: [(voice_id, nom, til), ...]."""
+    import requests
+    r = requests.get(f'{VOICELAB_URL}/v1/voices', headers={'Authorization': 'Bearer ' + aisha_key()}, timeout=60)
+    if r.status_code != 200:
+        raise SystemExit(f'VoiceLab ovozlar ro\'yxati xatosi {r.status_code}: {r.text[:200]}')
+    body = r.json()
+    items = body if isinstance(body, list) else next((body[k] for k in ('data', 'voices', 'items', 'results') if isinstance(body.get(k), list)), [])
+    out = []
+    for v in items:
+        langs = v.get('language') or v.get('languages') or ''
+        if not language or language in (langs if isinstance(langs, list) else str(langs)):
+            out.append((v.get('id') or v.get('voice_id'), v.get('name'), langs))
+    return out
+
+
+def voicelab_tts(text, voice_id, speed, path):
+    """VoiceLab TTS: 24 kHz WAV qaytaradi. 202 bo'lsa status_url so'rab kutadi."""
+    import time
+    import uuid
+    import requests
+    hdr = {'Authorization': 'Bearer ' + aisha_key(), 'Idempotency-Key': str(uuid.uuid4())}
+    body = {'text': text, 'language': 'uz', 'voice_id': voice_id}
+    if speed:
+        body['speed'] = float(speed)
+    r = requests.post(f'{VOICELAB_URL}/v1/tts', headers=hdr, json=body, timeout=180)
+    if r.status_code == 202:
+        status_url = r.json()['status_url']
+        if status_url.startswith('/'):
+            status_url = VOICELAB_URL + status_url
+        for _ in range(60):
+            time.sleep(2)
+            r = requests.get(status_url, headers={'Authorization': hdr['Authorization']}, timeout=60)
+            if r.status_code == 200 and r.headers.get('content-type', '').startswith('audio'):
+                break
+    if r.status_code != 200 or not r.headers.get('content-type', '').startswith('audio'):
+        raise SystemExit(f'VoiceLab TTS xatosi {r.status_code}: {r.text[:300]}')
+    with open(path, 'wb') as fh:
+        fh.write(r.content)
 
 
 def aisha_tts(text, model, mood, speed, path):
@@ -68,7 +115,11 @@ def tts(text, voice, rate):
     """Matnni ovozga aylantiradi; (n, 2) float massiv qaytaradi.
     voice: "aisha:Gulnoza:Cheerful" — Aisha AI (tavsiya); "uz-UZ-...Neural" — Microsoft (aksent bor, faqat sinov uchun)."""
     key = zlib.crc32((voice + str(rate) + text).encode())
-    if voice.startswith('aisha'):
+    if voice.startswith('voicelab:'):
+        src = os.path.join(tempfile.gettempdir(), f'investage_tts_{key}.wav')
+        if not os.path.exists(src):
+            voicelab_tts(text, voice.split(':', 1)[1], rate if isinstance(rate, (int, float)) else 0, src)
+    elif voice.startswith('aisha'):
         _, model, mood = (voice.split(':') + ['Gulnoza', 'Neutral'])[:3]
         src = os.path.join(tempfile.gettempdir(), f'investage_tts_{key}.wav')
         if not os.path.exists(src):
@@ -150,6 +201,21 @@ def preview(spec, outdir):
 
 
 if __name__ == '__main__':
+    if len(sys.argv) >= 2 and sys.argv[1] == '--voices':
+        # Kalit bilan ochiq o'zbekcha ovozlar (ssenariyda "voice": "voicelab:<id>" deb ishlatiladi)
+        for vid, name, langs in voicelab_voices(sys.argv[2] if len(sys.argv) > 2 else 'uz'):
+            print(vid, '|', name, '|', langs)
+        sys.exit(0)
+    if len(sys.argv) >= 3 and sys.argv[1] == '--say':
+        # Bitta jumlani ovozlashtirib WAV ga yozadi (ovozni tanlash uchun): --say voicelab:<id> "matn" chiqish.wav
+        voice, text, out = sys.argv[2], sys.argv[3], sys.argv[4]
+        sig = tts(text, voice, 0)
+        import wave
+        with wave.open(out, 'wb') as w:
+            w.setnchannels(2); w.setsampwidth(2); w.setframerate(SR)
+            w.writeframes((np.clip(sig, -1, 1) * 32767).astype(np.int16).tobytes())
+        print(out, f'{len(sig) / SR:.1f}s')
+        sys.exit(0)
     if len(sys.argv) < 3:
         raise SystemExit(__doc__)
     with open(sys.argv[1], encoding='utf-8') as fh:

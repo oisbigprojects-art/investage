@@ -11,6 +11,7 @@ import { logout } from '@/app/auth-actions';
 import { markNotificationsSeen } from '@/app/cabinet-actions';
 import Logo from '@/components/Logo';
 import AppNav from '@/components/AppNav';
+import MobileNav from '@/components/MobileNav';
 import { BellIcon, SearchIcon, LogoutIcon } from '@/components/icons';
 import { timeAgo } from '@/lib/labels';
 
@@ -39,7 +40,14 @@ export async function Sidebar() {
   const role = profile?.role;
 
   let sections;
+  let tabs; // telefondagi pastki panel: 4 ta asosiy bo'lim (qolgani "Menyu" ichida)
   if (!user) {
+    tabs = [
+      { href: '/', label: t('nav.home'), icon: 'home', exact: true },
+      { href: '/startaplar', label: t('nav.startups'), icon: 'search' },
+      { href: '/investorlar', label: t('nav.investors'), icon: 'users' },
+      { href: '/kirish', label: t('nav.login'), icon: 'user' },
+    ];
     sections = [
       {
         title: t('shell.sec_site'),
@@ -55,6 +63,12 @@ export async function Sidebar() {
     const [requests, s, msgs] = await Promise.all([getRequests(), getMyStartup(user.id), getUnreadMessages()]);
     const pending = requests.filter((r) => r.status === 'pending').length;
     const { unread } = notificationsOf(buildEvents('startup', requests, [], t), profile.notifications_seen_at);
+    tabs = [
+      { href: '/kabinet/startap', label: t('tab.panel'), icon: 'grid', exact: true },
+      { href: '/kabinet/startap/sorovlar', label: t('shell.requests'), icon: 'inbox', badge: pending },
+      { href: '/kabinet/xabarlar', label: t('shell.messages'), icon: 'chat', badge: msgs },
+      { href: '/kabinet/startap/profil', label: t('shell.profile'), icon: 'user' },
+    ];
     sections = [
       {
         title: t('shell.sec_panel'),
@@ -87,6 +101,12 @@ export async function Sidebar() {
     const [requests, saved, msgs] = await Promise.all([getRequests(), getSaved(), getUnreadMessages()]);
     const pending = requests.filter((r) => r.status === 'pending').length;
     const { unread } = notificationsOf(buildEvents('investor', requests, saved, t), profile.notifications_seen_at);
+    tabs = [
+      { href: '/kabinet/investor', label: t('tab.panel'), icon: 'grid', exact: true },
+      { href: '/startaplar', label: t('nav.startups'), icon: 'search' },
+      { href: '/kabinet/xabarlar', label: t('shell.messages'), icon: 'chat', badge: msgs },
+      { href: '/kabinet/investor/saqlangan', label: t('tab.saved'), icon: 'bookmark', badge: saved.length },
+    ];
     sections = [
       {
         title: t('shell.sec_panel'),
@@ -128,7 +148,32 @@ export async function Sidebar() {
     });
   }
 
+  const theme = await getTheme();
   return (
+    <>
+    <MobileNav tabs={tabs} label={t('nav.main')} menuLabel={t('nav.menu')} closeLabel={t('nav.close')}>
+      <AppNav sections={sections} label={t('nav.main')} />
+      <div className="sheet-tools">
+        <LangSwitch current={t.lang} label={t('lang.label')} />
+        <ThemeToggle initial={theme} labels={{ dark: t('theme.dark'), light: t('theme.light') }} />
+      </div>
+      {user ? (
+        <form action={logout} className="sheet-actions">
+          <button type="submit" className="btn btn-ghost">
+            <LogoutIcon size={18} /> {t('nav.logout')}
+          </button>
+        </form>
+      ) : (
+        <div className="sheet-actions">
+          <Link className="btn btn-gold" href="/royxat">
+            {t('nav.signup')}
+          </Link>
+          <Link className="btn btn-ghost" href="/kirish">
+            {t('nav.login')}
+          </Link>
+        </div>
+      )}
+    </MobileNav>
     <aside className="side">
       <Link href="/" className="side-logo" aria-label={t('brand.home_aria')}>
         <Logo height={24} />
@@ -163,6 +208,7 @@ export async function Sidebar() {
         </div>
       )}
     </aside>
+    </>
   );
 }
 
@@ -182,6 +228,10 @@ export async function TopActions() {
 
   return (
     <div className="app-top-inner">
+      {/* Telefonda yon menyu yo'q: logotip yuqori satrga chiqadi */}
+      <Link href="/" className="top-logo" aria-label={t('brand.home_aria')}>
+        <Logo height={22} />
+      </Link>
       <form className="top-search" action="/startaplar" role="search">
         <label>
           <span className="visually-hidden">{t('top.search')}</span>

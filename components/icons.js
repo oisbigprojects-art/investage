@@ -9,6 +9,22 @@ const base = {
   focusable: 'false',
 };
 
+export function MenuIcon({ size = 16 }) {
+  return (
+    <svg {...base} width={size} height={size}>
+      <path d="M3 6h14M3 10h14M3 14h14" />
+    </svg>
+  );
+}
+
+export function CloseIcon({ size = 16 }) {
+  return (
+    <svg {...base} width={size} height={size}>
+      <path d="M5 5l10 10M15 5L5 15" />
+    </svg>
+  );
+}
+
 export function LockIcon({ size = 16 }) {
   return (
     <svg {...base} width={size} height={size}>

@@ -71,7 +71,7 @@ export default async function StartupsPage({ searchParams }) {
         <p className="muted">{t('cat.sub')}</p>
       </div>
 
-      <div className="stats stats-4">
+      <div className="stats stats-4 stats-strip">
         <Stat value={all.length} label={t('cat.stat_total')} />
         <Stat value={all.filter((r) => r.verified).length} label={t('cat.stat_verified')} tone="gold" />
         <Stat value={byStage('mvp') + byStage('daromad')} label={t('cat.stat_mvp')} />
@@ -127,7 +127,7 @@ export default async function StartupsPage({ searchParams }) {
         </button>
       </form>
 
-      <div className="filters" role="group" aria-label={t('cat.filter_aria')}>
+      <div className="filters filters-scroll" role="group" aria-label={t('cat.filter_aria')}>
         <Link href={href({ bosqich: null })} className={`filter ${!stage ? 'is-on' : ''}`}>
           {t('cat.all')}
         </Link>

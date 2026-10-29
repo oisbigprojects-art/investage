@@ -71,6 +71,13 @@ export default async function StartupDetail({ params, searchParams }) {
   // Hujjatlar: egasiga va ruxsat olgan investorga (RLS boshqalarga bo'sh qaytaradi)
   const canDocs = isOwner || (!!priv && !!user);
   const docs = canDocs ? await withLinks(supabase, await getDocuments(s.id)) : [];
+  const hasAccess = !!priv && !isOwner;
+  // Telefonda pastda doim ko'rinadigan asosiy harakat (ruxsat paneli sahifaning ancha pastida qoladi)
+  let dock = null;
+  if (!user) dock = { href: '/kirish', label: t('nav.login') };
+  else if (hasAccess && myRequest?.id) dock = { href: `/kabinet/xabarlar/${myRequest.id}`, label: t('chat.write') };
+  else if (isInvestor && !hasAccess && myRequest?.status !== 'pending')
+    dock = { href: '#ruxsat', label: ['rejected', 'revoked'].includes(myRequest?.status) ? t('access.send_again') : t('access.send') };
 
   return (
     <>
@@ -139,7 +146,7 @@ export default async function StartupDetail({ params, searchParams }) {
         </section>
 
         {/* ---------- RUXSAT HOLATI / HARAKAT ---------- */}
-        <aside className="card access">
+        <aside className="card access" id="ruxsat">
           <AccessPanel
             t={t}
             user={user}
@@ -147,7 +154,7 @@ export default async function StartupDetail({ params, searchParams }) {
             req={myRequest}
             startupId={s.id}
             isOwner={isOwner}
-            hasAccess={!!priv && !isOwner}
+            hasAccess={hasAccess}
           />
         </aside>
       </div>
@@ -166,6 +173,14 @@ export default async function StartupDetail({ params, searchParams }) {
           <LockIcon size={18} />
           <span className="muted">{t('doc.locked')}</span>
         </section>
+      )}
+
+      {dock && (
+        <div className="dock">
+          <Link className="btn btn-gold" href={dock.href}>
+            {dock.label}
+          </Link>
+        </div>
       )}
     </>
   );

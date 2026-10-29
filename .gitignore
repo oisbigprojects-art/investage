@@ -7,3 +7,5 @@ node_modules
 # Reels render natijalari (joylanadigan nusxasi public/reels/ da)
 marketing/reels/out/
 __pycache__/
+# Reels uchun maxfiy kalitlar (Aisha TTS va boshqalar)
+marketing/reels/.env

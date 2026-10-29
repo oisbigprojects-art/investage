@@ -25,24 +25,67 @@ from music import SR, make_audio
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 FPS = 30
-VOICE = 'uz-UZ-SardorNeural'      # yoki uz-UZ-MadinaNeural; ssenariyda "voice" bilan almashtiriladi
+VOICE = 'aisha:Gulnoza:Cheerful'  # ssenariyda "voice" bilan almashtiriladi; "rate" — Aisha uchun tezlik (0 = standart, 0.5–2.0)
 VOICE_LEAD = 0.35                 # sahna boshlangach ovoz shuncha soniyadan keyin kiradi
 VOICE_TAIL = 0.7                  # ovoz tugagach sahna yana shuncha davom etadi
 
 
+AISHA_URL = 'https://back.aisha.group'
+
+
+def aisha_key():
+    """API kalit marketing/reels/.env faylidan (AISHA_API_KEY=...) yoki muhit o'zgaruvchisidan olinadi. Fayl gitga tushmaydi."""
+    key = os.environ.get('AISHA_API_KEY')
+    env = os.path.join(HERE, '.env')
+    if not key and os.path.exists(env):
+        for line in open(env, encoding='utf-8'):
+            if line.strip().startswith('AISHA_API_KEY='):
+                key = line.split('=', 1)[1].strip().strip('"\'')
+    if not key:
+        raise SystemExit('AISHA_API_KEY topilmadi: marketing/reels/.env fayliga AISHA_API_KEY=... deb yozing')
+    return key
+
+
+def aisha_tts(text, model, mood, speed, path):
+    """Aisha AI (o'zbek ona tilidagi ovoz). Sinxron so'rov, javobda audio_path qaytadi; faylni yuklab olamiz."""
+    import requests
+    hdr = {'X-Api-Key': aisha_key()}
+    r = requests.post(f'{AISHA_URL}/api/v1/tts/post/', headers=hdr, timeout=120,
+                      data={'transcript': text, 'language': 'uz', 'model': model, 'mood': mood, 'speed': speed})
+    if r.status_code == 402:
+        raise SystemExit('Aisha: balans yetarli emas (402). aisha.group da hisobni to\'ldiring.')
+    if r.status_code not in (200, 201):
+        raise SystemExit(f'Aisha TTS xatosi {r.status_code}: {r.text[:300]}')
+    audio = r.json()['audio_path']
+    url = audio if audio.startswith('http') else AISHA_URL + audio
+    a = requests.get(url, headers=hdr, timeout=120)
+    a.raise_for_status()
+    with open(path, 'wb') as fh:
+        fh.write(a.content)
+
+
 def tts(text, voice, rate):
-    """Matnni o'zbekcha neyron ovozga aylantiradi; (n, 2) float massiv qaytaradi."""
-    mp3 = os.path.join(tempfile.gettempdir(), f'investage_tts_{zlib.crc32((voice + rate + text).encode())}.mp3')
-    if not os.path.exists(mp3):
-        asyncio.run(edge_tts.Communicate(text, voice, rate=rate).save(mp3))
-    raw = subprocess.run([imageio_ffmpeg.get_ffmpeg_exe(), '-loglevel', 'error', '-i', mp3, '-f', 's16le', '-ac', '2', '-ar', str(SR), '-'],
+    """Matnni ovozga aylantiradi; (n, 2) float massiv qaytaradi.
+    voice: "aisha:Gulnoza:Cheerful" — Aisha AI (tavsiya); "uz-UZ-...Neural" — Microsoft (aksent bor, faqat sinov uchun)."""
+    key = zlib.crc32((voice + str(rate) + text).encode())
+    if voice.startswith('aisha'):
+        _, model, mood = (voice.split(':') + ['Gulnoza', 'Neutral'])[:3]
+        src = os.path.join(tempfile.gettempdir(), f'investage_tts_{key}.wav')
+        if not os.path.exists(src):
+            aisha_tts(text, model or 'Gulnoza', mood or 'Neutral', rate if isinstance(rate, (int, float)) else 0, src)
+    else:
+        src = os.path.join(tempfile.gettempdir(), f'investage_tts_{key}.mp3')
+        if not os.path.exists(src):
+            asyncio.run(edge_tts.Communicate(text, voice, rate=rate).save(src))
+    raw = subprocess.run([imageio_ffmpeg.get_ffmpeg_exe(), '-loglevel', 'error', '-i', src, '-f', 's16le', '-ac', '2', '-ar', str(SR), '-'],
                          capture_output=True, check=True).stdout
     return np.frombuffer(raw, dtype=np.int16).reshape(-1, 2).astype(np.float32) / 32768
 
 
 def prepare_voice(spec):
     """Har sahnadagi "say" matnini ovozlashtiradi va sahna uzunligini ovozga moslaydi."""
-    voice, rate = spec.get('voice', VOICE), spec.get('rate', '+6%')
+    voice = spec.get('voice', VOICE)
+    rate = spec.get('rate', 0 if voice.startswith('aisha') else '+6%')
     clips = []
     for s in spec['scenes']:
         if s.get('say'):

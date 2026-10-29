@@ -3,3 +3,7 @@ node_modules
 .env
 .env.local
 .vercel
+
+# Reels render natijalari (joylanadigan nusxasi public/reels/ da)
+marketing/reels/out/
+__pycache__/

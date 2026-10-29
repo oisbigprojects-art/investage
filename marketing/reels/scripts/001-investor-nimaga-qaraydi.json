@@ -1,0 +1,10 @@
+{
+  "caption": "Investor sizning startapingizda nimaga qaraydi? 👀\n\n1️⃣ Jamoa — kim quryapti, tajribangiz qanday.\n2️⃣ Raqamlar — mijozlar, daromad, o‘sish. Taxmin emas, fakt.\n3️⃣ Ochiqlik — kerakli summa, ulush va hujjatlar aniq bo‘lsin.\n\nShu uchtasi tayyor bo‘lsa, investor bilan suhbat ancha oson kechadi.\n\n🚀 Investage — O‘zbekistondagi startaplar va investorlarni bog‘laydigan platforma. Profilingizni oching: investage.uz (havola profilda)\n\nSaqlab qo‘ying va startapchi do‘stingizga yuboring 👇\n\n#startap #startup #investitsiya #investor #biznes #uzbekistan #ozbekiston #toshkent #tadbirkorlik #investage",
+  "scenes": [
+    {"type": "hook", "eyebrow": "Startapchilar uchun", "title": "Investor sizning startapingizda nimaga qaraydi?", "highlight": ["nimaga"], "dur": 3.4},
+    {"type": "point", "num": "01", "title": "Jamoa", "body": "Kim quryapti? Tajriba va mas’uliyat — investorning birinchi savoli.", "dur": 4.4},
+    {"type": "point", "num": "02", "title": "Raqamlar", "body": "Mijozlar, daromad, o‘sish sur’ati. Taxmin emas — fakt.", "dur": 4.4},
+    {"type": "point", "num": "03", "title": "Ochiqlik", "body": "Kerakli summa, ulush va hujjatlar aniq bo‘lsin.", "dur": 4.4},
+    {"type": "cta", "title": "Startapingizni investorlarga ko‘rsating", "highlight": ["investorlarga"], "body": "Investage — O‘zbekistondagi startaplar va investorlarni bog‘laydigan platforma.", "button": "investage.uz", "note": "Ro‘yxatdan o‘tish bepul", "dur": 4.9}
+  ]
+}

@@ -22,8 +22,14 @@ TASDIQ_KERAK: ha
 - Video `render2.py` bilan yasaladi: `template.html` dagi motion-grafika (kinetik matn, sahna o'tishlari,
   zarralar, kamera harakati) + `music.py` dagi original sintez musiqa. Eski `render.py` ishlatilmaydi.
 - Sahna turlari: hook, point, stat, quote, cta (format render.py boshidagi izohda). 20–30 soniya.
-- OVOZ (diktor): hozircha O'CHIQ — sahnalarga `say` maydonini YOZMANG. Microsoft ovozi aksent bilan gapirgani uchun
-  egasi rad etdi; tabiiy o'zbek ovozi xizmati ulanguncha video faqat musiqa bilan chiqadi.
+- OVOZ (diktor): YOQILGAN — VoiceLab (Aisha) "Javohir — Bright presenter" ovozi. Ssenariy boshida:
+  `"voice": "voicelab:voice_fa56cecf-9b0b-45ba-9ec3-494efb5b301f", "rate": 1.08`.
+  Har sahnaga `say` yozing — o'sha sahnada aytiladigan 1–2 qisqa gap (ekrandagi matnga mos, lekin og'zaki tilda).
+  Brend nomi `say` ichida doim "Investeyj", sayt — "Investeyj nuqta uz" deb yoziladi (ekranda esa investage.uz).
+  `say` da apostrof oddiy ' bilan (o'sish, ko'rsating). Jami nutq ~45–60 so'z bo'lsin, video 22–30 soniya chiqadi.
+  Kalit marketing/reels/.env da (VOICELAB_API_KEY yoki AISHA_API_KEY), uni hech qachon chiqarmang va commit qilmang.
+  VoiceLab xatosi chiqsa (balans 402, ruxsat 403): ovozsiz joylamang — to'xtab, foydalanuvchiga yozing.
+  Real odamlarning ismi bilan atalgan klon ovozlarni (masalan, Abdulhay Otaxo'jayev, Firdavs Urinov) ishlatmang.
 
 ## Kunlik ish tartibi
 1. `marketing/reels/posted.json` va `content-plan.md` ni o'qing; navbatdagi ishlatilmagan mavzuni tanlang.

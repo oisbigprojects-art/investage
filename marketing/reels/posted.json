@@ -1,10 +1,18 @@
 [
   {
     "date": "2026-10-29",
-    "topic": "Investor startapingizda nimaga qaraydi: jamoa, raqamlar, ochiqlik",
+    "topic": "Investor startapingizda nimaga qaraydi: jamoa, raqamlar, ochiqlik (eski sodda versiya, ovozsiz — arxivlash kerak)",
     "script": "scripts/001-investor-nimaga-qaraydi.json",
     "video": "public/reels/001-investor-nimaga-qaraydi.mp4",
     "media_id": "17889541029687350",
     "permalink": "https://www.instagram.com/reel/DfFMrBKDvql/"
+  },
+  {
+    "date": "2026-10-29",
+    "topic": "Investor startapingizda nimaga qaraydi: jamoa, raqamlar, ochiqlik (Reels 2.0, Javohir ovozi)",
+    "script": "scripts/002-investor-nimaga-qaraydi-ovozli.json",
+    "video": "public/reels/002-investor-nimaga-qaraydi-ovozli.mp4",
+    "media_id": "18110036324617958",
+    "permalink": "https://www.instagram.com/reel/DfFU1LZDzZ8/"
   }
 ]

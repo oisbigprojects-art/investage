@@ -3,7 +3,10 @@
 `.github/workflows/db-backup.yml` har kuni 02:00 da (Toshkent) `public`, `private` va `auth` sxemalarining nusxasini oladi,
 toza bazaga tiklab sinaydi, AES-256 bilan shifrlaydi va GitHub Actions'da 30 kun saqlaydi. Ish xato bilan tugasa, GitHub email yuboradi.
 
-**Nusxaga kirmaydi:** Storage fayllari (logotip, hujjatlar), Vault maxfiy qiymatlari, Edge Function'lar.
+`.github/workflows/files-backup.yml` har kuni 02:30 da `docs` va `logos` bucket'larini shifrlab saqlaydi.
+Ochish: `gpg --output files.tar.gz --decrypt investage-files.tar.gz.gpg`, keyin `tar -xzf files.tar.gz`.
+
+**Nusxaga kirmaydi:** Vault maxfiy qiymatlari, Edge Function'lar.
 
 ## Tiklash
 

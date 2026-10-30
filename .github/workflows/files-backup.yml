@@ -1,0 +1,48 @@
+# Har kuni Storage fayllari zaxirasi: logotip va startap hujjatlari yuklab olinadi, shifrlanib 30 kun saqlanadi.
+# Repo ochiq, shuning uchun fayl nomlari loglarga chiqarilmaydi va shifrlanmagan fayl yuklanmaydi.
+# Tiklash yo'riqnomasi: supabase/zaxira-tiklash.md
+name: Fayllar zaxirasi
+
+on:
+  schedule:
+    - cron: '30 21 * * *' # Toshkent vaqti bilan 02:30
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  backup:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 30
+    env:
+      AWS_ACCESS_KEY_ID: ${{ secrets.SUPABASE_S3_KEY_ID }}
+      AWS_SECRET_ACCESS_KEY: ${{ secrets.SUPABASE_S3_SECRET }}
+      AWS_DEFAULT_REGION: eu-central-1
+      S3_ENDPOINT: https://fuklumjbymmkaflzndxp.storage.supabase.co/storage/v1/s3
+    steps:
+      - name: Fayllarni yuklab olish
+        run: |
+          mkdir -p files/docs files/logos
+          aws s3 sync s3://docs files/docs --endpoint-url "$S3_ENDPOINT" --only-show-errors --no-progress
+          aws s3 sync s3://logos files/logos --endpoint-url "$S3_ENDPOINT" --only-show-errors --no-progress
+          echo "Yuklandi: $(find files -type f | wc -l) ta fayl"
+
+      - name: Shifrlash
+        env:
+          BACKUP_PASSPHRASE: ${{ secrets.BACKUP_PASSPHRASE }}
+        run: |
+          if [ "${#BACKUP_PASSPHRASE}" -lt 32 ]; then echo "BACKUP_PASSPHRASE juda qisqa"; exit 1; fi
+          tar -czf files.tar.gz files
+          printf '%s' "$BACKUP_PASSPHRASE" | gpg --batch --yes --pinentry-mode loopback --passphrase-fd 0 \
+            --symmetric --cipher-algo AES256 --output investage-files.tar.gz.gpg files.tar.gz
+          rm -rf files files.tar.gz
+
+      - name: Saqlash
+        uses: actions/upload-artifact@v4
+        with:
+          name: investage-files-${{ github.run_number }}
+          path: investage-files.tar.gz.gpg
+          retention-days: 30
+          compression-level: 0
+          if-no-files-found: error

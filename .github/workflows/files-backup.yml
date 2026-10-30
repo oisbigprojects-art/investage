@@ -20,12 +20,21 @@ jobs:
       AWS_SECRET_ACCESS_KEY: ${{ secrets.SUPABASE_S3_SECRET }}
       AWS_DEFAULT_REGION: eu-central-1
       S3_ENDPOINT: https://fuklumjbymmkaflzndxp.storage.supabase.co/storage/v1/s3
+      # Supabase S3 yangi AWS tekshiruv rejimini qabul qilmaydi
+      AWS_RESPONSE_CHECKSUM_VALIDATION: when_required
+      AWS_REQUEST_CHECKSUM_CALCULATION: when_required
     steps:
       - name: Fayllarni yuklab olish
         run: |
           mkdir -p files/docs files/logos
-          aws s3 sync s3://docs files/docs --endpoint-url "$S3_ENDPOINT" --only-show-errors --no-progress
-          aws s3 sync s3://logos files/logos --endpoint-url "$S3_ENDPOINT" --only-show-errors --no-progress
+          # Fayl nomlari loglarga chiqmaydi: xatoda faqat soni va sababi ko'rinadi
+          for bucket in docs logos; do
+            if ! aws s3 sync "s3://$bucket" "files/$bucket" --endpoint-url "$S3_ENDPOINT" --only-show-errors --no-progress 2> sync.err; then
+              echo "$bucket: $(wc -l < sync.err) ta xato"
+              sed -E 's#s3://[^ ]+#<fayl>#g; s#files/[^ ]+#<fayl>#g' sync.err | sort -u | head -5
+              exit 1
+            fi
+          done
           echo "Yuklandi: $(find files -type f | wc -l) ta fayl"
 
       - name: Shifrlash

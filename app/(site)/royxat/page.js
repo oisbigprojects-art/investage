@@ -6,6 +6,7 @@ import { Flash } from '@/components/ui';
 import { signup} from '@/app/auth-actions';
 import { MIN_PW } from '@/lib/password';
 import Turnstile from '@/components/Turnstile';
+import GoogleButton from '@/components/GoogleButton';
 
 export async function generateMetadata() {
   const t = await getT();
@@ -24,6 +25,7 @@ export default async function SignupPage({ searchParams }) {
       <h1>{t('signup.title')}</h1>
       <p className="muted">{t('signup.sub')}</p>
       <Flash searchParams={sp} />
+      <GoogleButton label={t('auth.google')} orLabel={t('auth.or')} />
       <form action={signup} className="card form">
         <fieldset className="role-radio">
           <legend>{t('signup.who')}</legend>

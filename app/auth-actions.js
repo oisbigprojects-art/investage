@@ -68,6 +68,27 @@ export async function login(formData) {
   redirect('/kabinet');
 }
 
+// Google bilan kirish: Supabase Google sahifasiga yo'naltiradi, qaytishda /auth/callback sessiya ochadi
+export async function googleSignIn() {
+  const t = await getT();
+  const origin = await originUrl();
+  const supabase = await createClient();
+  const { data, error } = await supabase.auth.signInWithOAuth({ provider: 'google', options: { redirectTo: `${origin}/auth/callback` } });
+  if (error || !data?.url) back('/kirish', 'xato', t('auth.err_google'));
+  redirect(data.url);
+}
+
+// Google bilan birinchi kirish: rol tanlanadi va shartlarga rozilik beriladi
+export async function finishOnboarding(formData) {
+  const t = await getT();
+  const role = String(formData.get('role') || '');
+  if (formData.get('agree') !== 'on') back('/xush-kelibsiz', 'xato', t('auth.err_agree'));
+  const supabase = await createClient();
+  const { error } = await supabase.rpc('finish_onboarding', { p_role: role });
+  if (error) back('/xush-kelibsiz', 'xato', t('auth.err_google'));
+  redirect('/kabinet');
+}
+
 // Ikkinchi bosqich: ilovadagi kodni tekshiradi (urinishlar sonini Supabase cheklaydi)
 export async function verifyMfa(formData) {
   const t = await getT();

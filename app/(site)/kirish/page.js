@@ -5,6 +5,7 @@ import { getT } from '@/lib/i18n/server';
 import { Flash } from '@/components/ui';
 import { login, resendConfirmation } from '@/app/auth-actions';
 import Turnstile from '@/components/Turnstile';
+import GoogleButton from '@/components/GoogleButton';
 
 export async function generateMetadata() {
   const t = await getT();
@@ -22,6 +23,7 @@ export default async function LoginPage({ searchParams }) {
       <h1>{t('login.title')}</h1>
       <p className="muted">{t('login.sub')}</p>
       <Flash searchParams={sp} />
+      <GoogleButton label={t('auth.google')} orLabel={t('auth.or')} />
       <form action={login} className="card form">
         <label>
           {t('form.email')}

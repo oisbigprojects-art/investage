@@ -22,7 +22,7 @@ const csp = [
   `media-src 'self' ${SUPABASE}`,
   "object-src 'none'",
   "base-uri 'self'",
-  "form-action 'self'",
+  `form-action 'self' ${SUPABASE} https://accounts.google.com`,
   "frame-ancestors 'none'",
   cspReport(),
 ].filter(Boolean).join('; ');

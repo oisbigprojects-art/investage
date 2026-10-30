@@ -963,6 +963,9 @@ html.menu-open { overflow: hidden; }
 .pitch-progress { width: 100%; height: 8px; accent-color: var(--gold); }
 .ip-score { margin-bottom: 20px; display: grid; gap: 10px; }
 .ip-score p { margin: 0; }
+.google-form { margin-bottom: 14px; }
+.google-btn { width: 100%; justify-content: center; gap: 10px; min-height: 50px; }
+.google-or { margin: 12px 0 0; }
 .mfa-card { margin-bottom: 20px; }
 .mfa-qr { display: block; padding: 10px; background: #fff; border-radius: 16px; }
 .mfa-secret { display: block; margin-top: 8px; font: 600 0.95rem var(--mono); word-break: break-all; user-select: all; }

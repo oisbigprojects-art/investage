@@ -16,22 +16,23 @@ jobs:
     runs-on: ubuntu-24.04
     timeout-minutes: 30
     env:
-      AWS_ACCESS_KEY_ID: ${{ secrets.SUPABASE_S3_KEY_ID }}
-      AWS_SECRET_ACCESS_KEY: ${{ secrets.SUPABASE_S3_SECRET }}
-      AWS_DEFAULT_REGION: eu-central-1
-      S3_ENDPOINT: https://fuklumjbymmkaflzndxp.storage.supabase.co/storage/v1/s3
-      # Supabase S3 yangi AWS tekshiruv rejimini qabul qilmaydi
-      AWS_RESPONSE_CHECKSUM_VALIDATION: when_required
-      AWS_REQUEST_CHECKSUM_CALCULATION: when_required
+      RCLONE_CONFIG_SB_TYPE: s3
+      RCLONE_CONFIG_SB_PROVIDER: Other
+      RCLONE_CONFIG_SB_ACCESS_KEY_ID: ${{ secrets.SUPABASE_S3_KEY_ID }}
+      RCLONE_CONFIG_SB_SECRET_ACCESS_KEY: ${{ secrets.SUPABASE_S3_SECRET }}
+      RCLONE_CONFIG_SB_REGION: eu-central-1
+      RCLONE_CONFIG_SB_ENDPOINT: https://fuklumjbymmkaflzndxp.storage.supabase.co/storage/v1/s3
+      RCLONE_CONFIG_SB_FORCE_PATH_STYLE: 'true'
     steps:
       - name: Fayllarni yuklab olish
         run: |
+          sudo apt-get install -y -qq rclone > /dev/null
           mkdir -p files/docs files/logos
           # Fayl nomlari loglarga chiqmaydi: xatoda faqat soni va sababi ko'rinadi
           for bucket in docs logos; do
-            if ! aws s3 sync "s3://$bucket" "files/$bucket" --endpoint-url "$S3_ENDPOINT" --only-show-errors --no-progress 2> sync.err; then
+            if ! rclone copy "SB:$bucket" "files/$bucket" --multi-thread-streams 0 --log-level ERROR 2> sync.err; then
               echo "$bucket: $(wc -l < sync.err) ta xato"
-              sed -E 's#s3://[^ ]+#<fayl>#g; s#files/[^ ]+#<fayl>#g' sync.err | sort -u | head -5
+              sed -E 's#^[0-9/]+ [0-9:]+ ##; s#[0-9a-f-]{36}[^ :]*#<fayl>#g' sync.err | sort -u | head -5
               exit 1
             fi
           done

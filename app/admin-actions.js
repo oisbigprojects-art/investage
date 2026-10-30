@@ -33,6 +33,18 @@ export async function setStartup(formData) {
   go(back, 'xabar', 'Saqlandi');
 }
 
+export async function setBlocked(formData) {
+  const supabase = await ctx();
+  const id = String(formData.get('id') || '');
+  if (!isId(id)) go('/admin/foydalanuvchilar', 'xato', 'Foydalanuvchi topilmadi');
+  const back = `/admin/foydalanuvchilar/${id}`;
+  const blocked = formData.get('blocked') === '1';
+  const { error } = await supabase.rpc('admin_set_blocked', { p_id: id, p_blocked: blocked });
+  if (error) go(back, 'xato', error.message);
+  revalidatePath('/', 'layout');
+  go(back, 'xabar', blocked ? 'Bloklandi' : 'Blokdan chiqarildi');
+}
+
 export async function setFeedback(formData) {
   const back = internal(formData.get('back'), '/admin/murojaatlar');
   const supabase = await ctx();

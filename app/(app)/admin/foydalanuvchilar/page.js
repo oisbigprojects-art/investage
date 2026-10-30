@@ -59,6 +59,7 @@ export default async function AdminUsers({ searchParams }) {
               </div>
               <div className="admin-actions">
                 <span className="muted small">{fmt(u.created_at)}</span>
+                <Link className="btn btn-gold btn-sm" href={`/admin/foydalanuvchilar/${u.id}`}>Batafsil</Link>
                 {u.startup_id && <Link className="btn btn-ghost btn-sm" href={`/startaplar/${u.startup_id}`}>Startap sahifasi</Link>}
                 {u.role === 'investor' && <Link className="btn btn-ghost btn-sm" href={`/investorlar/${u.id}`}>Profil</Link>}
               </div>

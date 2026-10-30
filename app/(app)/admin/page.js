@@ -10,6 +10,8 @@ const ACT = {
     if (d?.score && d.score[0] !== d.score[1]) bits.push(`ball ${d.score[0]} → ${d.score[1]}`);
     return bits.join(', ') || "o'zgarish yo'q";
   },
+  user_block: () => 'bloklandi',
+  user_unblock: () => 'blokdan chiqarildi',
 };
 
 const fmt = (iso) => new Date(iso).toLocaleString('uz-UZ', { day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit', hour12: false, timeZone: 'Asia/Tashkent' });
@@ -25,6 +27,7 @@ export default async function AdminHome({ searchParams }) {
     { b: n('users'), l: 'Foydalanuvchilar', s: `${n('startup_users')} startap · ${n('investor_users')} investor`, href: '/admin/foydalanuvchilar' },
     { b: n('users_7d'), l: "Oxirgi 7 kunda qo'shilgan", s: `30 kunda: ${n('users_30d')}`, href: '/admin/foydalanuvchilar' },
     { b: n('startups'), l: 'Startaplar', s: `${n('startups_verified')} tasdiqlangan · ${n('startups_hidden')} yashirin`, href: '/admin/startaplar?filtr=real' },
+    { b: Math.max(0, n('startups') - n('startups_verified') - n('startups_hidden')), l: 'Tekshiruv kutmoqda', s: 'tasdiqlanmagan startaplar', href: '/admin/startaplar?filtr=unverified' },
     { b: n('req_pending'), l: "Kutilayotgan so'rovlar", s: `${n('req_approved')} ruxsat berilgan · ${n('req_rejected')} rad/yopilgan` },
     { b: n('messages'), l: 'Xabarlar (chat)', s: 'faqat soni, mazmuni ko\'rinmaydi' },
     { b: n('documents'), l: 'Yuklangan hujjatlar', s: 'faqat soni' },

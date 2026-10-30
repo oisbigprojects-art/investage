@@ -8,6 +8,9 @@ import { connectTelegram, disconnectTelegram } from '@/app/connect-actions';
 import { TelegramIcon } from '@/components/icons';
 import { formatDate } from '@/lib/labels';
 import { MIN_PW } from '@/lib/password';
+import MfaSetup from '@/components/MfaSetup';
+import { pickStrings } from '@/lib/i18n';
+import { MFA_KEYS } from '@/lib/i18n/mfa-keys';
 
 export async function generateMetadata() {
   const t = await getT();
@@ -55,6 +58,8 @@ export default async function SettingsPage({ searchParams }) {
           </form>
         )}
       </section>
+
+      <MfaSetup strings={pickStrings(t, MFA_KEYS)} lang={t.lang} />
 
       <div className="cab-cols cab-cols-even settings">
         <section className="card">

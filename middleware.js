@@ -38,6 +38,17 @@ export async function middleware(request) {
     return NextResponse.redirect(url);
   }
 
+  // Ikki bosqichli kirish yoqilgan, lekin kod kiritilmagan bo'lsa, kabinet va admin ochilmaydi
+  if (session && /^\/(kabinet|admin)(\/|$)/.test(request.nextUrl.pathname)) {
+    const { data: aal } = await supabase.auth.mfa.getAuthenticatorAssuranceLevel();
+    if (aal?.nextLevel === 'aal2' && aal.currentLevel !== 'aal2') {
+      const url = request.nextUrl.clone();
+      url.pathname = '/kirish/kod';
+      url.search = '';
+      return NextResponse.redirect(url);
+    }
+  }
+
   return response;
 }
 

@@ -45,6 +45,22 @@ export async function login(formData) {
   // Email tasdiqlanmagan bo'lsa, kirish sahifasida xatni qayta yuborish formasi ochiladi (tasdiq=1)
   if (error?.code === 'email_not_confirmed') redirect(`/kirish?xato=${encodeURIComponent(t('auth.err_unconfirmed'))}&tasdiq=1`);
   if (error) back('/kirish', 'xato', t('auth.err_creds'));
+  // Ikki bosqichli kirish yoqilgan bo'lsa, kod so'raladi
+  const { data: aal } = await supabase.auth.mfa.getAuthenticatorAssuranceLevel();
+  if (aal?.nextLevel === 'aal2' && aal.currentLevel !== 'aal2') redirect('/kirish/kod');
+  redirect('/kabinet');
+}
+
+// Ikkinchi bosqich: ilovadagi kodni tekshiradi (urinishlar sonini Supabase cheklaydi)
+export async function verifyMfa(formData) {
+  const t = await getT();
+  const code = String(formData.get('code') || '').trim();
+  const supabase = await createClient();
+  const { data: factors } = await supabase.auth.mfa.listFactors();
+  const factor = factors?.totp?.[0];
+  if (!factor) redirect('/kabinet');
+  const { error } = await supabase.auth.mfa.challengeAndVerify({ factorId: factor.id, code });
+  if (error) back('/kirish/kod', 'xato', t('mfa.err_code'));
   redirect('/kabinet');
 }
 

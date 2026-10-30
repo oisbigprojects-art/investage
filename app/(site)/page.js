@@ -12,6 +12,8 @@ import { ScoreRing } from '@/components/ui';
 import { CheckIcon, LockIcon, SealIcon } from '@/components/icons';
 import Splash from '@/components/Splash';
 import ValuationCalc from '@/components/ValuationCalc';
+import HomeStory from '@/components/HomeStory';
+import RoleSwitch from '@/components/RoleSwitch';
 import { CALC_KEYS } from '@/lib/i18n/calc-keys';
 import { SectorIcon, ArrowIcon, SECTOR_KEYS } from '@/components/SectorIcons';
 import { SITE_URL } from '@/lib/site-url';
@@ -153,7 +155,7 @@ export default async function Home() {
           </p>
 
           <Suspense fallback={<div className="row"><span className="skel skel-btn" /><span className="skel skel-btn" /></div>}>
-            <HeroActions />
+            <HeroActions onDark />
           </Suspense>
 
           <p className="hero-note">
@@ -163,6 +165,8 @@ export default async function Home() {
         </div>
 
         <div className="hero-visual">
+          <span className="vault-ring" aria-hidden="true" />
+          <span className="vault-ring vault-ring-2" aria-hidden="true" />
           <span className="float float-a">
             <ScoreRing value={78} size={40} t={t} />
             <b>{t('ui.score')}</b>
@@ -173,12 +177,12 @@ export default async function Home() {
           </span>
           <SealedDemo strings={pickStrings(t, DEMO_KEYS)} lang={t.lang} />
         </div>
-      </section>
 
-      <section className="section section-tight">
-        <Suspense fallback={<div className="statband"><span className="skel skel-stat" /></div>}>
-          <StatBand />
-        </Suspense>
+        <div className="hero-stats">
+          <Suspense fallback={<div className="statband"><span className="skel skel-stat" /></div>}>
+            <StatBand />
+          </Suspense>
+        </div>
       </section>
 
       <section className="section">
@@ -195,35 +199,23 @@ export default async function Home() {
         <LatestNews />
       </Suspense>
 
-      <section className="section">
+      <section className="section section-dark">
         <div className="section-head">
           <h2>{t('home.how_title')}</h2>
           <p className="muted">{t('home.how_sub')}</p>
         </div>
-        <ol className="steps">
-          <li>
-            <span className="step-n">1</span>
-            <h3>{t('home.step1_t')}</h3>
-            <p className="muted">{t('home.step1_d')}</p>
-          </li>
-          <li>
-            <span className="step-n">2</span>
-            <h3>{t('home.step2_t')}</h3>
-            <p className="muted">{t('home.step2_d')}</p>
-          </li>
-          <li>
-            <span className="step-n">3</span>
-            <h3>{t('home.step3_t')}</h3>
-            <p className="muted">{t('home.step3_d')}</p>
-          </li>
-        </ol>
+        <HomeStory
+          steps={[1, 2, 3].map((i) => ({ title: t(`home.step${i}_t`), text: t(`home.step${i}_d`) }))}
+          strings={pickStrings(t, DEMO_KEYS)}
+          lang={t.lang}
+        />
       </section>
 
       <section className="section">
         <div className="section-head">
           <h2>{t('home.roles_title')}</h2>
         </div>
-        <div className="split">
+        <RoleSwitch tabs={[t('home.startup_title'), t('home.investor_title')]}>
           <div className="panel">
             <h3>{t('home.startup_title')}</h3>
             <p className="sub muted">{t('home.startup_sub')}</p>
@@ -262,7 +254,7 @@ export default async function Home() {
               </GuestOnly>
             </Suspense>
           </div>
-        </div>
+        </RoleSwitch>
       </section>
 
       <section className="section">
@@ -270,16 +262,17 @@ export default async function Home() {
           <h2>{t('home.sectors_title')}</h2>
           <p className="muted">{t('home.sectors_sub')}</p>
         </div>
-        <div className="sectors">
-          {SECTOR_KEYS.map((k) => (
-            <Link key={k} className="sector" href={`/startaplar?yonalish=${k}`}>
-              <span className="sector-ico">
-                <SectorIcon name={k} />
-              </span>
-              <b>{t(`sec.${k}`)}</b>
-              <ArrowIcon size={18} />
-            </Link>
-          ))}
+        <div className="sector-lane">
+          <div className="sector-track">
+            {[0, 1].map((copy) =>
+              SECTOR_KEYS.map((k) => (
+                <Link key={`${copy}-${k}`} className="sector-chip" href={`/startaplar?yonalish=${k}`} aria-hidden={copy === 1} tabIndex={copy === 1 ? -1 : undefined}>
+                  <SectorIcon name={k} />
+                  <b>{t(`sec.${k}`)}</b>
+                </Link>
+              ))
+            )}
+          </div>
         </div>
       </section>
 
@@ -297,7 +290,7 @@ export default async function Home() {
             <p>{t('home.cta_text')}</p>
           </div>
           <Suspense fallback={<div className="row"><span className="skel skel-btn" /></div>}>
-            <HeroActions onDark />
+            <HeroActions />
           </Suspense>
         </div>
       </section>

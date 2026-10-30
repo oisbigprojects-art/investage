@@ -2,6 +2,7 @@
 
 import { useEffect } from 'react';
 import Link from 'next/link';
+import * as Sentry from '@sentry/nextjs';
 
 // Kutilmagan xato (500) sahifasi. Klient komponenti bo'lgani uchun matnlar shu yerda, til <html lang> dan olinadi.
 const TEXT = {
@@ -13,6 +14,7 @@ const TEXT = {
 export default function Error({ error, reset }) {
   useEffect(() => {
     console.error(error);
+    Sentry.captureException(error);
   }, [error]);
   const lang = typeof document !== 'undefined' ? document.documentElement.lang : 'uz';
   const t = TEXT[lang] || TEXT.uz;

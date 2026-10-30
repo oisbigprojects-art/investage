@@ -1,8 +1,14 @@
 'use client';
 
+import { useEffect } from 'react';
+import * as Sentry from '@sentry/nextjs';
+
 // Butun sayt (shu jumladan asosiy layout) ishlamay qolganda ko'rinadigan oxirgi zaxira sahifa.
 // Layout ishlamagani uchun stil va matn shu yerda, uch tilda birga.
-export default function GlobalError({ reset }) {
+export default function GlobalError({ error, reset }) {
+  useEffect(() => {
+    Sentry.captureException(error);
+  }, [error]);
   return (
     <html lang="uz">
       <body style={{ margin: 0, fontFamily: 'system-ui, sans-serif', background: '#F5F5F3', color: '#1d1d1b' }}>

@@ -1,0 +1,9 @@
+import * as Sentry from '@sentry/nextjs';
+import { sentryOptions } from '@/lib/sentry-options';
+
+// Serverdagi xatolarni kuzatish
+export function register() {
+  Sentry.init(sentryOptions);
+}
+
+export const onRequestError = Sentry.captureRequestError;

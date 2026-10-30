@@ -1,3 +1,5 @@
+import { withSentryConfig } from '@sentry/nextjs/config';
+
 /** @type {import('next').NextConfig} */
 
 // Har bir javobga xavfsizlik sarlavhalari: clickjacking, MIME almashtirish, ortiqcha referer va
@@ -10,7 +12,7 @@ const csp = [
   "style-src 'self' 'unsafe-inline'",
   `img-src 'self' data: blob: ${SUPABASE}`,
   "font-src 'self'",
-  `connect-src 'self' ${SUPABASE} wss://fuklumjbymmkaflzndxp.supabase.co`,
+  `connect-src 'self' ${SUPABASE} wss://fuklumjbymmkaflzndxp.supabase.co https://*.ingest.de.sentry.io https://*.ingest.sentry.io`,
   "media-src 'self'",
   "object-src 'none'",
   "base-uri 'self'",
@@ -35,4 +37,5 @@ const nextConfig = {
   },
 };
 
-export default nextConfig;
+// Manba xaritalari yuklanmaydi: token kerak emas, Sentry telemetriyasi o'chiq
+export default withSentryConfig(nextConfig, { silent: true, telemetry: false, sourcemaps: { disable: true }, bundleSizeOptimizations: { excludeDebugStatements: true, excludeTracing: true, excludeReplayIframe: true, excludeReplayShadowDom: true, excludeReplayWorker: true } });

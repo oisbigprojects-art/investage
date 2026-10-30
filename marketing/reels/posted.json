@@ -14,5 +14,13 @@
     "video": "public/reels/002-investor-nimaga-qaraydi-ovozli.mp4",
     "media_id": "18110036324617958",
     "permalink": "https://www.instagram.com/reel/DfFU1LZDzZ8/"
+  },
+  {
+    "date": "2026-10-30",
+    "topic": "Agar...? 1-qism: birinchi investorga 51% berish va ulush kichrayishi (2D qahramonlar, 5 ovoz)",
+    "script": "scripts/003-agar-51-foiz.json",
+    "video": "public/reels/003-agar-51-foiz.mp4",
+    "media_id": "18129753272488195",
+    "permalink": "https://www.instagram.com/reel/DfHqy2gDJjV/"
   }
 ]

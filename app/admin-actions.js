@@ -1,7 +1,7 @@
 'use server';
 
 import { redirect } from 'next/navigation';
-import { revalidatePath } from 'next/cache';
+import { revalidatePath, revalidateTag } from 'next/cache';
 import { getAuthUser } from '@/lib/supabase/server';
 
 // Admin amallari. Ruxsat bazada tekshiriladi; bu yerda faqat natijani ko'rsatamiz.
@@ -57,6 +57,32 @@ export async function clearVideo(formData) {
   if (path) await supabase.storage.from('videos').remove([path]);
   revalidatePath('/', 'layout');
   go(back, 'xabar', "Video o'chirildi");
+}
+
+export async function saveNews(formData) {
+  const supabase = await ctx();
+  const id = String(formData.get('id') || '');
+  const title = String(formData.get('title') || '').trim();
+  const body = String(formData.get('body') || '').trim();
+  const back = '/admin/yangiliklar';
+  if (title.length < 3 || title.length > 140 || body.length < 10 || body.length > 6000) go(back, 'xato', "Sarlavha 3–140, matn 10–6000 belgi bo'lishi kerak");
+  const { error } = await supabase.rpc('admin_news_save', { p_id: isId(id) ? id : null, p_title: title, p_body: body });
+  if (error) go(back, 'xato', error.message);
+  revalidateTag('news');
+  revalidatePath('/', 'layout');
+  go(back, 'xabar', 'Saqlandi');
+}
+
+export async function deleteNews(formData) {
+  const supabase = await ctx();
+  const id = String(formData.get('id') || '');
+  const back = '/admin/yangiliklar';
+  if (!isId(id)) go(back, 'xato', 'Yangilik topilmadi');
+  const { error } = await supabase.rpc('admin_news_delete', { p_id: id });
+  if (error) go(back, 'xato', error.message);
+  revalidateTag('news');
+  revalidatePath('/', 'layout');
+  go(back, 'xabar', "O'chirildi");
 }
 
 export async function setFeedback(formData) {

@@ -7,6 +7,7 @@ const TABS = [
   { href: '/admin', label: "Umumiy ko'rinish", exact: true },
   { href: '/admin/startaplar', label: 'Startaplar' },
   { href: '/admin/foydalanuvchilar', label: 'Foydalanuvchilar' },
+  { href: '/admin/yangiliklar', label: 'Yangiliklar' },
   { href: '/admin/murojaatlar', label: 'Murojaatlar' },
   { href: '/admin/agent', label: 'Agent' },
   { href: '/admin/sorovnoma', label: "So'rovnoma" },

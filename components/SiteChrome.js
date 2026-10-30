@@ -30,6 +30,7 @@ export default async function SiteChrome({ children }) {
             <nav className="footer-links" aria-label={t('nav.footer')}>
               <Link href="/startaplar">{t('nav.startups')}</Link>
               <Link href="/investorlar">{t('nav.investors')}</Link>
+              <Link href="/yangiliklar">{t('news.title')}</Link>
               <Link href="/yordam">{t('nav.help')}</Link>
               <Link href="/kirish">{t('nav.login')}</Link>
               <Link href="/royxat">{t('nav.signup')}</Link>

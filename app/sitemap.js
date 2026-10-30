@@ -5,7 +5,7 @@ export const revalidate = 3600;
 
 export default async function sitemap() {
   const now = new Date();
-  const pages = ['', '/startaplar', '/investorlar', '/yordam', '/royxat', '/kirish', '/shartlar', '/maxfiylik'].map((p) => ({
+  const pages = ['', '/startaplar', '/investorlar', '/yangiliklar', '/yordam', '/royxat', '/kirish', '/shartlar', '/maxfiylik'].map((p) => ({
     url: `${SITE_URL}${p}`,
     lastModified: now,
     changeFrequency: p === '' || p === '/startaplar' ? 'daily' : 'monthly',

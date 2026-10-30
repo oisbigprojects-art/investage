@@ -2,7 +2,8 @@ import { redirect } from 'next/navigation';
 import { getSession } from '@/lib/supabase/server';
 import { getT } from '@/lib/i18n/server';
 import { getRequests, getSaved } from '@/lib/data';
-import { buildEvents, notificationsOf } from '@/lib/events';
+import { buildEvents, notificationsOf, withNews } from '@/lib/events';
+import { getNews, safe } from '@/lib/public-data';
 import { markNotificationsSeen } from '@/app/cabinet-actions';
 import ActivityFeed from '@/components/Activity';
 import { Flash } from '@/components/ui';
@@ -16,10 +17,10 @@ export default async function Notifications({ searchParams }) {
   const sp = await searchParams;
   const [{ user, profile }, t] = await Promise.all([getSession(), getT()]);
   if (!user) redirect('/kirish');
-  const [requests, saved] = await Promise.all([getRequests(), getSaved()]);
+  const [requests, saved, news] = await Promise.all([getRequests(), getSaved(), safe(() => getNews(10), [])]);
 
   const role = profile.role;
-  const events = buildEvents(role, requests, saved, t);
+  const events = withNews(buildEvents(role, requests, saved, t), news);
   const { list, unread, seen } = notificationsOf(events, profile.notifications_seen_at);
 
   return (

@@ -14,6 +14,8 @@ const ACT = {
   },
   users_export: (d) => `${d?.rows ?? 0} ta yozuv eksport qilindi`,
   video_remove: () => "video o'chirildi",
+  news_save: () => 'yangilik saqlandi',
+  news_delete: () => "yangilik o'chirildi",
   user_block: () => 'bloklandi',
   user_unblock: () => 'blokdan chiqarildi',
 };

@@ -6,7 +6,8 @@ import ThemeToggle from '@/components/ThemeToggle';
 import { getTheme } from '@/lib/i18n/server';
 import { getRequests, getSaved, getMyStartup, getUnreadMessages } from '@/lib/data';
 import { getIsAdmin } from '@/lib/admin';
-import { buildEvents, notificationsOf } from '@/lib/events';
+import { buildEvents, notificationsOf, withNews } from '@/lib/events';
+import { getNews, safe } from '@/lib/public-data';
 import { logout } from '@/app/auth-actions';
 import { markNotificationsSeen } from '@/app/cabinet-actions';
 import Logo from '@/components/Logo';
@@ -62,7 +63,7 @@ export async function Sidebar() {
   } else if (role === 'startup') {
     const [requests, s, msgs] = await Promise.all([getRequests(), getMyStartup(user.id), getUnreadMessages()]);
     const pending = requests.filter((r) => r.status === 'pending').length;
-    const { unread } = notificationsOf(buildEvents('startup', requests, [], t), profile.notifications_seen_at);
+    const { unread } = notificationsOf(withNews(buildEvents('startup', requests, [], t), await safe(() => getNews(10), [])), profile.notifications_seen_at);
     tabs = [
       { href: '/kabinet/startap', label: t('tab.panel'), icon: 'grid', exact: true },
       { href: '/kabinet/startap/sorovlar', label: t('shell.requests'), icon: 'inbox', badge: pending },
@@ -100,7 +101,7 @@ export async function Sidebar() {
   } else {
     const [requests, saved, msgs] = await Promise.all([getRequests(), getSaved(), getUnreadMessages()]);
     const pending = requests.filter((r) => r.status === 'pending').length;
-    const { unread } = notificationsOf(buildEvents('investor', requests, saved, t), profile.notifications_seen_at);
+    const { unread } = notificationsOf(withNews(buildEvents('investor', requests, saved, t), await safe(() => getNews(10), [])), profile.notifications_seen_at);
     tabs = [
       { href: '/kabinet/investor', label: t('tab.panel'), icon: 'grid', exact: true },
       { href: '/startaplar', label: t('nav.startups'), icon: 'search' },
@@ -223,7 +224,7 @@ export async function TopActions() {
   let notif = { list: [], unread: 0 };
   if (user) {
     const [requests, saved] = await Promise.all([getRequests(), getSaved()]);
-    notif = notificationsOf(buildEvents(role, requests, saved, t), profile.notifications_seen_at);
+    notif = notificationsOf(withNews(buildEvents(role, requests, saved, t), await safe(() => getNews(10), [])), profile.notifications_seen_at);
   }
 
   return (

@@ -1,7 +1,8 @@
 import { Suspense } from 'react';
 import Link from 'next/link';
 import { getSession } from '@/lib/supabase/server';
-import { getPlatformStats, getLatestStartups, safe } from '@/lib/public-data';
+import { getPlatformStats, getLatestStartups, getNews, safe } from '@/lib/public-data';
+import { formatDate } from '@/lib/labels';
 import { getT } from '@/lib/i18n/server';
 import { pickStrings } from '@/lib/i18n';
 import StartupCard from '@/components/StartupCard';
@@ -100,6 +101,27 @@ async function LatestStartups() {
   );
 }
 
+async function LatestNews() {
+  const [news, t] = await Promise.all([safe(() => getNews(3), []), getT()]);
+  if (!news.length) return null;
+  return (
+    <section className="section">
+      <div className="section-head">
+        <h2>{t('news.title')}</h2>
+        <Link href="/yangiliklar">{t('home.see_all')}</Link>
+      </div>
+      <div className="news-list news-row">
+        {news.map((n) => (
+          <Link key={n.id} href={`/yangiliklar/${n.id}`} className="card news-card">
+            <time className="muted small">{formatDate(n.published_at, t)}</time>
+            <h3>{n.title}</h3>
+          </Link>
+        ))}
+      </div>
+    </section>
+  );
+}
+
 export default async function Home() {
   const t = await getT();
   const points = (role) => [1, 2, 3, 4].map((i) => t(`home.${role}_p${i}`));
@@ -158,6 +180,20 @@ export default async function Home() {
           <StatBand />
         </Suspense>
       </section>
+
+      <section className="section">
+        <div className="section-head">
+          <h2>{t('home.latest')}</h2>
+          <Link href="/startaplar">{t('home.see_all')}</Link>
+        </div>
+        <Suspense fallback={<div className="skel-row"><span className="skel skel-card" /><span className="skel skel-card" /><span className="skel skel-card" /></div>}>
+          <LatestStartups />
+        </Suspense>
+      </section>
+
+      <Suspense fallback={null}>
+        <LatestNews />
+      </Suspense>
 
       <section className="section">
         <div className="section-head">
@@ -248,40 +284,10 @@ export default async function Home() {
       </section>
 
       <section className="section">
-        <ValuationCalc strings={pickStrings(t, CALC_KEYS)} lang={t.lang} />
-      </section>
-
-      <section className="section">
-        <div className="trust">
-          <div>
-            <h2>{t('home.trust_title')}</h2>
-            <p className="muted">{t('home.trust_text')}</p>
-          </div>
-          <div className="trust-visual">
-            <div className="tile">
-              <ScoreRing value={78} size={64} t={t} />
-              <b>{t('ui.score')}</b>
-              <span className="muted small">{t('home.trust_score_sub')}</span>
-            </div>
-            <div className="tile">
-              <span className="tile-seal">
-                <SealIcon size={40} />
-              </span>
-              <b>{t('ui.verified')}</b>
-              <span className="muted small">{t('home.trust_verified_sub')}</span>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      <section className="section">
-        <div className="section-head">
-          <h2>{t('home.latest')}</h2>
-          <Link href="/startaplar">{t('home.see_all')}</Link>
-        </div>
-        <Suspense fallback={<div className="skel-row"><span className="skel skel-card" /><span className="skel skel-card" /><span className="skel skel-card" /></div>}>
-          <LatestStartups />
-        </Suspense>
+        <details className="card calc-fold">
+          <summary>{t('calc.title')}</summary>
+          <ValuationCalc strings={pickStrings(t, CALC_KEYS)} lang={t.lang} />
+        </details>
       </section>
 
       <section className="section">

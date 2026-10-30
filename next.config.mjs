@@ -12,7 +12,7 @@ const csp = [
   "style-src 'self' 'unsafe-inline'",
   `img-src 'self' data: blob: ${SUPABASE}`,
   "font-src 'self'",
-  `connect-src 'self' ${SUPABASE} wss://fuklumjbymmkaflzndxp.supabase.co https://*.ingest.de.sentry.io https://*.ingest.sentry.io`,
+  `connect-src 'self' ${SUPABASE} wss://fuklumjbymmkaflzndxp.supabase.co https://*.sentry.io`,
   "media-src 'self'",
   "object-src 'none'",
   "base-uri 'self'",

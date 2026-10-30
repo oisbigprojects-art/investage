@@ -4,8 +4,13 @@ import { withSentryConfig } from '@sentry/nextjs/config';
 
 // Har bir javobga xavfsizlik sarlavhalari: clickjacking, MIME almashtirish, ortiqcha referer va
 // brauzer ruxsatlaridan himoya; HTTPS majburiy. CSP hozircha report-only: hech narsani to'smaydi, faqat
-// buzilishlarni brauzer konsoliga yozadi. Sinovdan o'tgach, sarlavha nomidan "-Report-Only" olib tashlanadi.
+// buzilishlarni Sentry'ga yuboradi (kabinetlardagi haqiqiy foydalanish shu yerda ko'rinadi).
+// Sinovdan o'tgach, sarlavha nomidan "-Report-Only" olib tashlanadi.
 const SUPABASE = 'https://fuklumjbymmkaflzndxp.supabase.co';
+function cspReport() {
+  const m = /^https:\/\/([0-9a-f]+)@([^/]+)\/(\d+)$/.exec(process.env.NEXT_PUBLIC_SENTRY_DSN || '');
+  return m ? `report-uri https://${m[2]}/api/${m[3]}/security/?sentry_key=${m[1]}` : '';
+}
 const csp = [
   "default-src 'self'",
   "script-src 'self' 'unsafe-inline'",
@@ -18,7 +23,8 @@ const csp = [
   "base-uri 'self'",
   "form-action 'self'",
   "frame-ancestors 'none'",
-].join('; ');
+  cspReport(),
+].filter(Boolean).join('; ');
 const securityHeaders = [
   { key: 'Strict-Transport-Security', value: 'max-age=63072000; includeSubDomains; preload' },
   { key: 'X-Content-Type-Options', value: 'nosniff' },

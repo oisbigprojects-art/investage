@@ -50,7 +50,7 @@ export default async function SignupPage({ searchParams }) {
           <input name="email" type="email" required autoComplete="email" placeholder="name@company.com" />
         </label>
         <label>
-          {t('signup.password')}
+          {t('signup.password', { n: MIN_PW })}
           <input name="password" type="password" minLength={MIN_PW} required autoComplete="new-password" />
         </label>
         <label className="agree small">

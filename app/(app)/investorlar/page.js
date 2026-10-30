@@ -1,9 +1,11 @@
 import Link from 'next/link';
-import { getAuthUser } from '@/lib/supabase/server';
+import { getSession } from '@/lib/supabase/server';
 import { getT } from '@/lib/i18n/server';
 import { Monogram } from '@/components/ui';
 import { SearchIcon, LockIcon } from '@/components/icons';
-import { checkRange } from '@/lib/investor';
+import { checkRange, INVESTOR_TYPES } from '@/lib/investor';
+import { getMyStartup } from '@/lib/data';
+import { STAGE_KEYS } from '@/lib/labels';
 
 export async function generateMetadata() {
   const t = await getT();
@@ -15,7 +17,7 @@ const clean = (v) => String(v || '').replace(/\s+/g, ' ').trim().slice(0, 60).to
 // Investorlar katalogi: faqat tizimga kirganlarga va faqat o'zi ochiq qilgan profillar (email ko'rinmaydi)
 export default async function InvestorsPage({ searchParams }) {
   const sp = await searchParams;
-  const [{ supabase, user }, t] = await Promise.all([getAuthUser(), getT()]);
+  const [{ supabase, user, profile }, t] = await Promise.all([getSession(), getT()]);
 
   if (!user) {
     return (
@@ -42,11 +44,21 @@ export default async function InvestorsPage({ searchParams }) {
   }
 
   const term = clean(sp?.q);
-  const { data } = await supabase.rpc('investor_directory');
+  const type = INVESTOR_TYPES.includes(sp?.tur) ? sp.tur : null;
+  const stage = STAGE_KEYS.includes(sp?.bosqich) ? sp.bosqich : null;
+  const [{ data }, mine] = await Promise.all([supabase.rpc('investor_directory'), profile?.role === 'startup' ? getMyStartup(user.id) : null]);
   const all = data || [];
-  const list = term
-    ? all.filter((p) => [p.full_name, p.company, p.city, p.interests, p.bio, p.investor_type && t(`ivp.type_${p.investor_type}`)].join(' ').toLowerCase().includes(term))
-    : all;
+  const list = all.filter((p) =>
+    (!term || [p.full_name, p.company, p.city, p.interests, p.bio, p.investor_type && t(`ivp.type_${p.investor_type}`)].join(' ').toLowerCase().includes(term))
+    && (!type || p.investor_type === type)
+    && (!stage || (p.stages || []).includes(stage))
+  );
+  const href = (over) => {
+    const q = new URLSearchParams();
+    for (const [k, v] of Object.entries({ q: term, tur: type, bosqich: stage, ...over })) if (v) q.set(k, v);
+    const s = q.toString();
+    return s ? `/investorlar?${s}` : '/investorlar';
+  };
 
   return (
     <>
@@ -65,6 +77,18 @@ export default async function InvestorsPage({ searchParams }) {
           {t('cat.search_btn')}
         </button>
       </form>
+      <div className="filters filters-scroll" role="group" aria-label={t('ip.type')}>
+        <Link href={href({ tur: null })} className={`filter ${!type ? 'is-on' : ''}`}>{t('cat.all')}</Link>
+        {INVESTOR_TYPES.map((k) => (
+          <Link key={k} href={href({ tur: k })} className={`filter ${type === k ? 'is-on' : ''}`}>{t(`ivp.type_${k}`)}</Link>
+        ))}
+      </div>
+      <div className="filters filters-scroll" role="group" aria-label={t('ip.stages')}>
+        <Link href={href({ bosqich: null })} className={`filter ${!stage ? 'is-on' : ''}`}>{t('cat.all')}</Link>
+        {STAGE_KEYS.map((k) => (
+          <Link key={k} href={href({ bosqich: k })} className={`filter ${stage === k ? 'is-on' : ''}`}>{t(`stage.${k}`)}</Link>
+        ))}
+      </div>
       <p className="muted small results-note">{t('inv.found', { n: list.length })}</p>
 
       {list.length ? (
@@ -93,6 +117,7 @@ export default async function InvestorsPage({ searchParams }) {
               <div className="scard-meta">
                 {p.investor_type && <span className="chip">{t(`ivp.type_${p.investor_type}`)}</span>}
                 {checkRange(p, t) && <span className="chip chip-warn">{checkRange(p, t)}</span>}
+                {mine?.stage && (p.stages || []).includes(mine.stage) && <span className="chip chip-ok">{t('inv.match')}</span>}
                 <span className="inv-more">{t('ivp.view')} →</span>
               </div>
             </Link>

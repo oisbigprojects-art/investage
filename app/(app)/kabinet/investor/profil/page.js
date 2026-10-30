@@ -1,5 +1,6 @@
 import { investorContext } from '@/lib/cabinet';
 import { getT } from '@/lib/i18n/server';
+import { investorCompleteness } from '@/lib/investor';
 import { Flash } from '@/components/ui';
 import Link from 'next/link';
 import { saveInvestorProfile } from '@/app/cabinet-actions';
@@ -16,6 +17,8 @@ export default async function InvestorProfile({ searchParams }) {
   const t = await getT();
   const { profile } = await investorContext();
 
+  const score = investorCompleteness(profile);
+
   return (
     <>
       <div className="page-head">
@@ -25,6 +28,11 @@ export default async function InvestorProfile({ searchParams }) {
         <Link className="btn btn-ghost btn-sm ip-view" href={`/investorlar/${profile.id}`}>{t('ip.view_public')} →</Link>
       </div>
       <Flash searchParams={sp} />
+      <section className="card ip-score">
+        <b>{t('ip.score', { n: score })}</b>
+        <div className="hbar-track"><i style={{ width: `${score}%` }} /></div>
+        <p className="muted small">{profile.public_profile ? t('ip.score_hint') : t('ip.not_public')}</p>
+      </section>
 
       <form action={saveInvestorProfile} className="card form">
         <div className="two">

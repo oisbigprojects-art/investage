@@ -9,6 +9,7 @@ import { TelegramIcon } from '@/components/icons';
 import { formatDate } from '@/lib/labels';
 import { MIN_PW } from '@/lib/password';
 import MfaSetup from '@/components/MfaSetup';
+import Turnstile from '@/components/Turnstile';
 import { pickStrings } from '@/lib/i18n';
 import { MFA_KEYS } from '@/lib/i18n/mfa-keys';
 
@@ -77,6 +78,7 @@ export default async function SettingsPage({ searchParams }) {
               {t('reset.new2')}
               <input name="password2" type="password" required minLength={MIN_PW} autoComplete="new-password" />
             </label>
+            <Turnstile key={Date.now()} />
             <button className="btn btn-gold" type="submit">{t('set.pw_save')}</button>
           </form>
         </section>
@@ -109,6 +111,7 @@ export default async function SettingsPage({ searchParams }) {
               <input name="password" type="password" required autoComplete="current-password" />
             </label>
           </div>
+          <Turnstile key={Date.now()} />
           <button className="btn btn-danger" type="submit">{t('set.del_btn')}</button>
         </form>
       </section>

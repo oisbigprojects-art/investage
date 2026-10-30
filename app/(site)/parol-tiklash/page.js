@@ -2,6 +2,7 @@ import Link from 'next/link';
 import { getT } from '@/lib/i18n/server';
 import { Flash } from '@/components/ui';
 import { requestReset } from '@/app/auth-actions';
+import Turnstile from '@/components/Turnstile';
 
 export async function generateMetadata() {
   const t = await getT();
@@ -21,6 +22,7 @@ export default async function ResetPage({ searchParams }) {
           {t('form.email')}
           <input name="email" type="email" required autoComplete="email" placeholder="name@company.com" />
         </label>
+        <Turnstile key={Date.now()} />
         <button className="btn btn-gold" type="submit">{t('reset.submit')}</button>
       </form>
       <p className="muted center"><Link href="/kirish">{t('reset.back')}</Link></p>

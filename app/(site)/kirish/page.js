@@ -4,6 +4,7 @@ import { getSession } from '@/lib/supabase/server';
 import { getT } from '@/lib/i18n/server';
 import { Flash } from '@/components/ui';
 import { login, resendConfirmation } from '@/app/auth-actions';
+import Turnstile from '@/components/Turnstile';
 
 export async function generateMetadata() {
   const t = await getT();
@@ -31,6 +32,7 @@ export default async function LoginPage({ searchParams }) {
           <input name="password" type="password" required autoComplete="current-password" />
         </label>
         <Link href="/parol-tiklash" className="small forgot">{t('login.forgot')}</Link>
+        <Turnstile key={Date.now()} />
         <button className="btn btn-gold" type="submit">
           {t('login.submit')}
         </button>
@@ -42,6 +44,7 @@ export default async function LoginPage({ searchParams }) {
             {t('form.email')}
             <input name="email" type="email" required autoComplete="email" placeholder="name@company.com" />
           </label>
+          <Turnstile key={Date.now()} />
           <button className="btn btn-ghost" type="submit">
             {t('auth.resend_submit')}
           </button>

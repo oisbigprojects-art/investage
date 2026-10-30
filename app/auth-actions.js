@@ -11,11 +11,14 @@ import { MIN_PW } from '@/lib/password';
 
 const back = (path, key, msg) => redirect(`${path}?${key}=${encodeURIComponent(msg)}`);
 
+// Turnstile tokeni: Supabase tekshiradi (Authentication → Attack Protection)
+const captcha = (formData) => String(formData.get('cf-turnstile-response') || '') || undefined;
+
 // Joriy parolni tekshirish uchun alohida mijoz: asosiy sessiyaga tegmaydi, aks holda
 // ikki bosqichli kirishdan o'tgan sessiya pastga tushib, parol almashtirish rad etiladi
-async function passwordOk(email, password) {
+async function passwordOk(email, password, captchaToken) {
   const client = createPlainClient(SUPABASE_URL, SUPABASE_ANON_KEY, { auth: { persistSession: false, autoRefreshToken: false } });
-  const { error } = await client.auth.signInWithPassword({ email, password });
+  const { error } = await client.auth.signInWithPassword({ email, password, options: { captchaToken } });
   if (error) return false;
   await client.auth.signOut({ scope: 'local' });
   return true;
@@ -39,8 +42,9 @@ export async function signup(formData) {
   const { data, error } = await supabase.auth.signUp({
     email,
     password,
-    options: { data: { role, full_name }, emailRedirectTo: `${origin}/auth/callback` },
+    options: { data: { role, full_name }, emailRedirectTo: `${origin}/auth/callback`, captchaToken: captcha(formData) },
   });
+  if (error?.code === 'captcha_failed') back('/royxat', 'xato', t('auth.err_captcha'));
   if (error) back('/royxat', 'xato', error.message);
 
   // Email tasdiqlash o'chirilgan bo'lsa — darhol kabinetga
@@ -53,7 +57,8 @@ export async function login(formData) {
   const email = String(formData.get('email') || '').trim();
   const password = String(formData.get('password') || '');
   const supabase = await createClient();
-  const { error } = await supabase.auth.signInWithPassword({ email, password });
+  const { error } = await supabase.auth.signInWithPassword({ email, password, options: { captchaToken: captcha(formData) } });
+  if (error?.code === 'captcha_failed') back('/kirish', 'xato', t('auth.err_captcha'));
   // Email tasdiqlanmagan bo'lsa, kirish sahifasida xatni qayta yuborish formasi ochiladi (tasdiq=1)
   if (error?.code === 'email_not_confirmed') redirect(`/kirish?xato=${encodeURIComponent(t('auth.err_unconfirmed'))}&tasdiq=1`);
   if (error) back('/kirish', 'xato', t('auth.err_creds'));
@@ -84,7 +89,7 @@ export async function resendConfirmation(formData) {
   if (!email.includes('@')) redirect(`/kirish?xato=${encodeURIComponent(t('reset.err_email'))}&tasdiq=1`);
   const origin = await originUrl();
   const supabase = await createClient();
-  await supabase.auth.resend({ type: 'signup', email, options: { emailRedirectTo: `${origin}/auth/callback` } });
+  await supabase.auth.resend({ type: 'signup', email, options: { emailRedirectTo: `${origin}/auth/callback`, captchaToken: captcha(formData) } });
   back('/kirish', 'xabar', t('auth.resend_sent'));
 }
 
@@ -102,7 +107,7 @@ export async function requestReset(formData) {
   const origin = await originUrl();
   const supabase = await createClient();
   // Natija har doim bir xil ko'rsatiladi: bunday email bor-yo'qligini oshkor qilmaymiz
-  await supabase.auth.resetPasswordForEmail(email, { redirectTo: `${origin}/auth/callback?next=/yangi-parol` });
+  await supabase.auth.resetPasswordForEmail(email, { redirectTo: `${origin}/auth/callback?next=/yangi-parol`, captchaToken: captcha(formData) });
   back('/parol-tiklash', 'xabar', t('reset.sent'));
 }
 
@@ -135,7 +140,7 @@ export async function changePassword(formData) {
   if (p1.length < MIN_PW) back(SETTINGS, 'xato', t('reset.err_short', { n: MIN_PW }));
   if (p1 !== p2) back(SETTINGS, 'xato', t('reset.err_match'));
   // Joriy parolni tekshiramiz (sessiya o'g'irlangan bo'lsa ham parol almashtirib bo'lmasin)
-  if (!(await passwordOk(user.email, current))) back(SETTINGS, 'xato', t('set.err_current'));
+  if (!(await passwordOk(user.email, current, captcha(formData)))) back(SETTINGS, 'xato', t('set.err_current'));
   // current_password ham yuboriladi: Supabase'da "joriy parolni talab qilish" yoqilgan bo'lsa ham ishlaydi
   const { error } = await supabase.auth.updateUser({ password: p1, current_password: current });
   if (error) back(SETTINGS, 'xato', error.message);
@@ -159,7 +164,7 @@ export async function deleteAccount(formData) {
   const { supabase, user } = await getSession();
   if (!user) redirect('/kirish');
   if (String(formData.get('confirm') || '').trim().toUpperCase() !== t('set.del_word').toUpperCase()) back(SETTINGS, 'xato', t('set.err_del_word'));
-  if (!(await passwordOk(user.email, String(formData.get('password') || '')))) back(SETTINGS, 'xato', t('set.err_current'));
+  if (!(await passwordOk(user.email, String(formData.get('password') || ''), captcha(formData)))) back(SETTINGS, 'xato', t('set.err_current'));
   // Yuklangan logotiplarni o'chiramiz, keyin hisobning o'zini (bog'liq ma'lumotlar bazada birga o'chadi)
   const { data: files } = await supabase.storage.from('logos').list(user.id);
   if (files?.length) await supabase.storage.from('logos').remove(files.map((f) => `${user.id}/${f.name}`));

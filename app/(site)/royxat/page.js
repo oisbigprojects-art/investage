@@ -5,6 +5,7 @@ import { getT } from '@/lib/i18n/server';
 import { Flash } from '@/components/ui';
 import { signup} from '@/app/auth-actions';
 import { MIN_PW } from '@/lib/password';
+import Turnstile from '@/components/Turnstile';
 
 export async function generateMetadata() {
   const t = await getT();
@@ -61,6 +62,7 @@ export default async function SignupPage({ searchParams }) {
             {t('signup.agree_post')}
           </span>
         </label>
+        <Turnstile key={Date.now()} />
         <button className="btn btn-gold" type="submit">
           {t('signup.submit')}
         </button>

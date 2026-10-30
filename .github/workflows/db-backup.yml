@@ -1,0 +1,73 @@
+# Har kuni baza zaxirasi: nusxa olinadi, toza bazaga tiklab sinaladi, shifrlanib 30 kun saqlanadi.
+# Repo ochiq, shuning uchun loglarga ma'lumot chiqarilmaydi va shifrlanmagan fayl yuklanmaydi.
+# Tiklash yo'riqnomasi: supabase/zaxira-tiklash.md
+name: Baza zaxirasi
+
+on:
+  schedule:
+    - cron: '0 21 * * *' # Toshkent vaqti bilan 02:00
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  backup:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 20
+    services:
+      # Tiklash sinovi uchun vaqtinchalik baza: ish tugashi bilan yo'qoladi
+      test-db:
+        image: postgres:17
+        env:
+          POSTGRES_PASSWORD: restore-test
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd pg_isready --health-interval 5s --health-timeout 5s --health-retries 10
+    env:
+      PGCLIENT: /usr/lib/postgresql/17/bin
+      TEST_DB: postgresql://postgres:restore-test@localhost:5432/postgres
+    steps:
+      - name: PostgreSQL 17 vositalarini o'rnatish
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y -qq postgresql-common > /dev/null
+          sudo /usr/share/postgresql-common/pgdg/apt.postgresql.org.sh -y > /dev/null
+          sudo apt-get install -y -qq postgresql-client-17 > /dev/null
+
+      - name: Nusxa olish
+        env:
+          SUPABASE_DB_URL: ${{ secrets.SUPABASE_DB_URL }}
+        run: |
+          "$PGCLIENT/pg_dump" --dbname "$SUPABASE_DB_URL" --format custom --no-owner --no-privileges \
+            --schema public --schema private --schema auth --file db.dump
+
+      - name: Toza bazaga tiklab sinash
+        run: |
+          "$PGCLIENT/psql" "$TEST_DB" -q -c "create role anon; create role authenticated; create role service_role; create role supabase_auth_admin; create schema extensions;" > /dev/null
+          # Natija loglarga chiqmaydi: xato matnida qator ma'lumoti bo'lishi mumkin.
+          # Supabase'ga xos kengaytmalar yo'qligi sababli kichik xatolar kutiladi, muhimi jadvallar va qatorlar.
+          "$PGCLIENT/pg_restore" --dbname "$TEST_DB" --no-owner --no-privileges db.dump > /dev/null 2>&1 || true
+          users=$("$PGCLIENT/psql" "$TEST_DB" -tAc "select count(*) from auth.users")
+          profiles=$("$PGCLIENT/psql" "$TEST_DB" -tAc "select count(*) from public.profiles")
+          if [ "$users" -lt 1 ] || [ "$profiles" -lt 1 ]; then echo "Tiklash sinovi o'tmadi"; exit 1; fi
+          echo "Tiklash sinovi o'tdi"
+
+      - name: Shifrlash
+        env:
+          BACKUP_PASSPHRASE: ${{ secrets.BACKUP_PASSPHRASE }}
+        run: |
+          if [ "${#BACKUP_PASSPHRASE}" -lt 32 ]; then echo "BACKUP_PASSPHRASE juda qisqa"; exit 1; fi
+          printf '%s' "$BACKUP_PASSPHRASE" | gpg --batch --yes --pinentry-mode loopback --passphrase-fd 0 \
+            --symmetric --cipher-algo AES256 --output investage-db.dump.gpg db.dump
+          shred -u db.dump
+
+      - name: Saqlash
+        uses: actions/upload-artifact@v4
+        with:
+          name: investage-db-${{ github.run_number }}
+          path: investage-db.dump.gpg
+          retention-days: 30
+          compression-level: 0
+          if-no-files-found: error

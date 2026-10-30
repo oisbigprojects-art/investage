@@ -133,15 +133,31 @@ def tts(text, voice, rate):
     return np.frombuffer(raw, dtype=np.int16).reshape(-1, 2).astype(np.float32) / 32768
 
 
+def mouth_env(sig):
+    """Og'iz harakati uchun: har kadrga (30 fps) 0..1 ovoz balandligi."""
+    hop = SR // FPS
+    mono = np.abs(sig).mean(axis=1)
+    env = np.array([mono[i:i + hop].mean() for i in range(0, len(mono), hop)])
+    env = np.clip(env / (np.percentile(env, 92) + 1e-9), 0, 1)
+    return [round(float(x), 2) for x in np.convolve(env, [.25, .5, .25], mode='same')]
+
+
 def prepare_voice(spec):
     """Har sahnadagi "say" matnini ovozlashtiradi va sahna uzunligini ovozga moslaydi."""
     voice = spec.get('voice', VOICE)
     rate = spec.get('rate', 0 if voice.startswith('aisha') else '+6%')
+    cast = spec.get('voices', {})   # "Agar...?" seriali: har qahramonga alohida ovoz ("speaker" bo'yicha)
+    lead, tail = spec.get('lead', VOICE_LEAD), spec.get('tail', VOICE_TAIL)
     clips = []
     for s in spec['scenes']:
         if s.get('say'):
-            sig = tts(s['say'], voice, rate)
-            s['dur'] = max(float(s.get('dur', 0) or 0), VOICE_LEAD + len(sig) / SR + VOICE_TAIL)
+            sig = tts(s['say'], cast.get(s.get('speaker'), voice), rate)
+            if cast:
+                sig = sig * (0.1 / (np.sqrt(np.mean(sig ** 2)) + 1e-9))   # ovozlar balandligini tenglash
+                s['env'] = mouth_env(sig)
+                s['voiceDur'] = len(sig) / SR
+                s['lead'] = lead * 1000
+            s['dur'] = max(float(s.get('dur', 0) or 0), lead + len(sig) / SR + tail)
             clips.append(sig)
         else:
             clips.append(None)
@@ -151,7 +167,7 @@ def prepare_voice(spec):
 def open_page(p, spec):
     browser = p.chromium.launch()
     page = browser.new_page(viewport={'width': 1080, 'height': 1920}, device_scale_factor=1)
-    page.goto('file:///' + os.path.join(HERE, 'template.html').replace('\\', '/'))
+    page.goto('file:///' + os.path.join(HERE, spec.get('template', 'template.html')).replace('\\', '/'))
     page.evaluate('document.fonts.ready')
     info = page.evaluate('spec => window.build(spec)', spec)
     page.evaluate('document.fonts.ready')
@@ -168,8 +184,10 @@ def render(spec, out):
         bounds = [(a / 1000, b / 1000) for a, b in info['bounds']]
         wav = os.path.join(tempfile.gettempdir(), 'investage_reel_audio.wav')
         seed = zlib.crc32(json.dumps(spec, ensure_ascii=False).encode()) % 1000
-        voices = [(a + VOICE_LEAD, c) for (a, _), c in zip(bounds, clips) if c is not None]
-        make_audio(bounds, dur_ms / 1000, wav, seed, voices)
+        lead = spec.get('lead', VOICE_LEAD)
+        voices = [(a + lead, c) for (a, _), c in zip(bounds, clips) if c is not None]
+        hits = [a + s.get('dropAt', 700) / 1000 for (a, _), s in zip(bounds, spec['scenes']) if s.get('share') is not None]
+        make_audio(bounds, dur_ms / 1000, wav, seed, voices, spec.get('music', 1.0), hits)
         cmd = [ff, '-y', '-loglevel', 'error', '-f', 'image2pipe', '-framerate', str(FPS), '-c:v', 'mjpeg', '-i', '-',
                '-i', wav, '-vf', 'scale=out_range=tv,format=yuv420p', '-color_range', 'tv', '-c:v', 'libx264', '-preset', 'medium', '-crf', '19', '-pix_fmt', 'yuv420p', '-profile:v', 'high',
                '-c:a', 'aac', '-b:a', '192k', '-shortest', '-movflags', '+faststart', out]
@@ -192,7 +210,7 @@ def preview(spec, outdir):
     with sync_playwright() as p:
         browser, page, info = open_page(p, spec)
         for i, (a, b) in enumerate(info['bounds']):
-            ms = min(b - 450, a + 2600)
+            ms = min(b - 300, a + 2600)
             page.evaluate('ms => window.seek(ms)', ms)
             path = os.path.join(outdir, f'scene{i + 1}.png')
             page.screenshot(path=path)

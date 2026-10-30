@@ -31,6 +31,11 @@ TASDIQ_KERAK: ha
   VoiceLab xatosi chiqsa (balans 402, ruxsat 403): ovozsiz joylamang — to'xtab, foydalanuvchiga yozing.
   Real odamlarning ismi bilan atalgan klon ovozlarni (masalan, Abdulhay Otaxo'jayev, Firdavs Urinov) ishlatmang.
 
+## Shablon: "Agar...?" seriali (template-story.html)
+- 2D qahramonli hikoya: ssenariyda `"template": "template-story.html"`, `"voices"` (qahramon -> ovoz), har sahnada `speaker`, `say`, `text`.
+  Namuna: `scripts/003-agar-51-foiz.json`. Qahramonlar: Sardor, Rustam, Investor, Malika. Uzunligi 45–65 soniya, bu format uchun 18–28 soniya qoidasi amal qilmaydi.
+- Misollar to'qima bo'lsa, videoda ham, caption'da ham shunday yozing. Hisob-kitob aniq bo'lsin (2-qoida baribir amal qiladi).
+
 ## Kunlik ish tartibi
 1. `marketing/reels/posted.json` va `content-plan.md` ni o'qing; navbatdagi ishlatilmagan mavzuni tanlang.
 2. `marketing/reels/scripts/NNN-qisqa-nom.json` yozing (format: render.py boshidagi izohda). `caption`: 1-qator — ilgak savol,

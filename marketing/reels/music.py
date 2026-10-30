@@ -105,9 +105,10 @@ def _impact(rng):
     return (boom + noise) * 0.8
 
 
-def make_audio(bounds, duration, path, seed=1, voices=None):
+def make_audio(bounds, duration, path, seed=1, voices=None, music=1.0, hits=()):
     """voices: [(boshlanish_s, np.ndarray shape (n, 2) float -1..1), ...] — diktor ovozi.
-    Ovoz yangrayotganda musiqa avtomatik pasayadi (ducking), ovoz esa ustida aniq eshitiladi."""
+    Ovoz yangrayotganda musiqa avtomatik pasayadi (ducking), ovoz esa ustida aniq eshitiladi.
+    music: fon musiqasi balandligi (1 = to'liq); hits: qo'shimcha "impact" urilishlari vaqtlari (soniya)."""
     rng = np.random.default_rng(seed)
     n = int(duration * SR) + SR
     drums, bass, pad, arp, fx = (np.zeros(n) for _ in range(5))
@@ -146,6 +147,8 @@ def make_audio(bounds, duration, path, seed=1, voices=None):
     for a, _ in bounds[1:]:
         _add(fx, max(0.0, a - 0.45), _whoosh(rng))
     _add(fx, bounds[-1][0] + 0.2, _impact(rng) * 0.5)
+    for t_hit in hits:
+        _add(fx, t_hit, _impact(rng) * 0.7)
 
     mix_l = drums * 0.9 + bass * 0.8 + pad * 0.55 + arp * 0.9 + fx * 0.9
     mix_r = drums * 0.9 + bass * 0.8 + np.roll(pad, 220) * 0.55 + np.roll(arp, 110) * 0.9 + fx * 0.9
@@ -163,7 +166,7 @@ def make_audio(bounds, duration, path, seed=1, voices=None):
         # Musiqani ovoz ostida silliq pasaytirish (40 ms hujum, 300 ms qaytish)
         duck = 1 - 0.68 * _lowpass(active, int(0.3 * SR))
         vpeak = np.max(np.abs(vo)) + 1e-9
-        mix = mix * duck[:, None] * 0.8 + vo / vpeak * 0.92
+        mix = mix * duck[:, None] * 0.8 * music + vo / vpeak * 0.92
         mix = np.tanh(mix * 1.05) * 0.95
     # Oxirida 0.8 s so'nish
     fade = int(0.8 * SR)

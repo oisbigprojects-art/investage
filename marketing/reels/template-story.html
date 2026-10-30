@@ -1,0 +1,262 @@
+<!doctype html>
+<html lang="uz">
+<head>
+<meta charset="utf-8">
+<!-- "Agar...?" serial shabloni: 2D qahramonlar, har biriga alohida ovoz, og'iz harakati ovoz balandligiga bog'langan,
+     subtitr bo'laklari va ulush hisoblagichi. render2.py ochadi, build(spec) chaqiradi va har kadr uchun seek(ms) qiladi. -->
+<style>
+@font-face { font-family: 'Manrope'; src: url('fonts/Manrope.ttf') format('truetype'); font-weight: 200 800; }
+@font-face { font-family: 'Inter'; src: url('fonts/Inter.ttf') format('truetype'); font-weight: 100 900; }
+* { box-sizing: border-box; margin: 0; padding: 0; }
+html, body { width: 1080px; height: 1920px; overflow: hidden; background: #14162f; }
+body { font-family: 'Manrope', sans-serif; position: relative; }
+#stage, .scene, .scene svg.art { position: absolute; inset: 0; width: 1080px; height: 1920px; }
+#stage { overflow: hidden; }
+.scene { overflow: hidden; }
+svg g { transform-box: view-box; }
+
+.logo { position: absolute; left: 50%; top: 96px; height: 54px; transform: translateX(-50%); z-index: 12; }
+.hud { position: absolute; left: 60px; right: 60px; top: 190px; display: flex; justify-content: space-between; align-items: center; z-index: 12; }
+.share { display: flex; align-items: center; gap: 20px; background: rgba(12, 14, 34, .86); border-radius: 26px; padding: 14px 28px 14px 22px; color: #fff; }
+.share small { font: 700 27px/1.15 'Inter'; color: #C9CBDD; width: 150px; }
+.share b { font: 800 76px/1 'Manrope'; color: #F5BF17; font-variant-numeric: tabular-nums; }
+.badge { font: 800 38px 'Manrope'; background: #F5BF17; color: #17181f; padding: 14px 28px; border-radius: 22px; transform: rotate(2deg); }
+.tag { position: absolute; left: 50%; top: 350px; transform: translateX(-50%); z-index: 11; white-space: nowrap; font: 800 44px 'Manrope'; color: #fff; background: #E4572E; padding: 14px 36px; border-radius: 20px; }
+.rule { position: absolute; left: 70px; right: 70px; top: 345px; z-index: 11; background: #fff; border-radius: 36px; padding: 32px 40px; box-shadow: 0 24px 0 rgba(0,0,0,.14); color: #17181f; }
+.rule i { display: block; font: 800 34px 'Inter'; font-style: normal; color: #1FA58A; margin-bottom: 8px; }
+.rule b { font: 800 60px/1.1 'Manrope'; letter-spacing: -.02em; }
+.sub { position: absolute; left: 50px; right: 50px; top: 1450px; z-index: 13; text-align: center; font: 800 86px/1.12 'Manrope'; letter-spacing: -.01em; color: #fff; -webkit-text-stroke: 14px #0c0e22; paint-order: stroke fill; }
+.sub em { font-style: normal; color: #FFCF33; }
+.url { position: absolute; left: 110px; right: 110px; top: 1240px; z-index: 11; background: #F5BF17; color: #17181f; font: 800 84px 'Manrope'; text-align: center; padding: 30px 20px; border-radius: 40px; }
+.note { position: absolute; left: 0; right: 0; top: 318px; z-index: 12; text-align: center; font: 700 32px 'Inter'; color: #fff; }
+.wipe { position: absolute; left: 50%; top: 50%; width: 2600px; height: 2600px; margin: -1300px; border-radius: 50%; background: #F5BF17; z-index: 20; transform: scale(0); }
+</style>
+</head>
+<body>
+<div id="stage">
+  <div id="scenes"></div>
+  <img class="logo" src="../../public/logo.webp" alt="" style="filter:brightness(0) invert(1)">
+  <div class="hud" id="hud">
+    <div class="share" id="share"><small>Sardorning ulushi</small><b id="pct">100%</b></div>
+    <div class="badge" id="badge">Agar...?</div>
+  </div>
+  <div class="sub" id="sub"></div>
+</div>
+<script>
+const ANIMS = [], TICKS = [];
+const E_OUT = 'cubic-bezier(.16,1,.3,1)', E_BACK = 'cubic-bezier(.34,1.56,.64,1)', E_IO = 'cubic-bezier(.65,0,.35,1)';
+function anim(el, kf, start, dur, easing = E_OUT, extra = {}) {
+  const a = el.animate(kf, { duration: dur, delay: start, fill: 'both', easing, ...extra });
+  a.pause(); ANIMS.push(a); return a;
+}
+function h(tag, cls, html) { const e = document.createElement(tag); if (cls) e.className = cls; if (html != null) e.innerHTML = html; return e; }
+function esc(s) { return String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;'); }
+function rnd(seed) { const x = Math.sin(seed * 9301 + 49297) * 233280; return x - Math.floor(x); }
+
+/* ---------- Qahramonlar ---------- */
+const CAST = {
+  sardor:   { skin: '#F2C09A', hair: '#2A1C14', top: '#F5BF17', pants: '#2F3A5A', shoe: '#F4F4F4' },
+  rustam:   { skin: '#E3A97F', hair: '#4A2C16', top: '#E4572E', pants: '#3B3B46', shoe: '#1d1d22' },
+  investor: { skin: '#EDB98E', hair: '#9AA0A8', top: '#23324F', pants: '#1B2740', shoe: '#101010' },
+  malika:   { skin: '#F3C6A5', hair: '#3B2416', top: '#1FA58A', pants: '#17584D', shoe: '#7A2E2E' },
+};
+const MOODS = { // qosh burchagi (gradus), og'iz egriligi
+  happy: [0, 16], neutral: [0, 3], worried: [14, -8], sad: [20, -16], smug: [-12, 12], angry: [-18, -6],
+};
+function hairOf(id, c) {
+  if (id === 'sardor') return `<path d="M-136,-520 Q-150,-640 -40,-650 Q10,-690 70,-650 Q150,-640 138,-520 Q120,-580 60,-590 Q-20,-560 -90,-590 Q-125,-570 -136,-520Z" fill="${c.hair}"/>`;
+  if (id === 'rustam') return `<path d="M-132,-540 Q-120,-610 0,-612 Q120,-610 132,-540 Q0,-575 -132,-540Z" fill="#17171d"/><path d="M-132,-540 L132,-540" stroke="#F4F4F4" stroke-width="9" stroke-dasharray="20 18"/><path d="M-60,-590 l22,-10 l22,10 l-22,10z M30,-590 l22,-10 l22,10 l-22,10z" fill="#F4F4F4"/>`;
+  if (id === 'investor') return `<path d="M-134,-500 Q-140,-610 -30,-622 Q130,-640 136,-500 Q125,-560 40,-572 Q-60,-560 -105,-570 Q-128,-545 -134,-500Z" fill="${c.hair}"/>`;
+  return `<circle cx="0" cy="-668" r="58" fill="${c.hair}"/><path d="M-140,-440 Q-168,-640 -20,-636 Q150,-640 140,-440 Q128,-560 60,-585 Q-40,-540 -105,-575 Q-130,-530 -140,-440Z" fill="${c.hair}"/>`;
+}
+function extraOf(id, c) {
+  if (id === 'sardor') return `<path d="M-70,-330 Q0,-268 70,-330 L58,-300 Q0,-250 -58,-300Z" fill="#D9A40F"/><path d="M-22,-290 v70 M22,-290 v70" stroke="#fff" stroke-width="8" stroke-linecap="round"/>`;
+  if (id === 'investor') return `<path d="M-46,-330 L0,-250 L46,-330Z" fill="#fff"/><path d="M-13,-322 L13,-322 L9,-296 L20,-190 L0,-165 L-20,-190 L-9,-296Z" fill="#C0392B"/><path d="M-46,-330 L-6,-160 L-78,-250Z M46,-330 L6,-160 L78,-250Z" fill="#17233B"/>`;
+  if (id === 'malika') return `<path d="M-40,-330 L0,-262 L40,-330Z" fill="#fff"/><circle cx="62" cy="-260" r="11" fill="#F5BF17"/>`;
+  return `<path d="M-62,-330 Q0,-286 62,-330" stroke="#B83F1D" stroke-width="16" fill="none"/>`;
+}
+function character(id, x, y, s, flip) {
+  const c = CAST[id];
+  const arm = (side) => {
+    const k = side === 'L' ? -1 : 1;
+    return `<g class="arm${side}" style="transform-origin:${k * 108}px -300px"><path d="M${k * 108},-300 Q${k * 172},-210 ${k * 150},-124" stroke="${c.top}" stroke-width="54" fill="none" stroke-linecap="round"/><circle cx="${k * 150}" cy="-106" r="31" fill="${c.skin}"/></g>`;
+  };
+  const glasses = id === 'investor' ? `<g fill="none" stroke="#17181f" stroke-width="8"><rect x="-92" y="-505" width="72" height="56" rx="16"/><rect x="20" y="-505" width="72" height="56" rx="16"/><path d="M-20,-480 h40"/></g>` : '';
+  return `<g transform="translate(${x},${y}) scale(${(flip ? -1 : 1) * s},${s})"><g class="ch" data-c="${id}" style="transform-origin:0px 0px">
+    <ellipse cx="0" cy="6" rx="165" ry="24" fill="rgba(0,0,0,.2)"/>
+    <rect x="-86" y="-120" width="72" height="120" rx="26" fill="${c.pants}"/><rect x="14" y="-120" width="72" height="120" rx="26" fill="${c.pants}"/>
+    <ellipse cx="-54" cy="-6" rx="56" ry="24" fill="${c.shoe}"/><ellipse cx="54" cy="-6" rx="56" ry="24" fill="${c.shoe}"/>
+    ${arm('L')}
+    <path d="M-124,-96 Q-138,-322 -62,-336 L62,-336 Q138,-322 124,-96 Q0,-76 -124,-96Z" fill="${c.top}"/>
+    ${extraOf(id, c)}
+    ${arm('R')}
+    <g class="head" style="transform-origin:0px -340px">
+      <rect x="-38" y="-378" width="76" height="60" rx="24" fill="${c.skin}" filter="brightness(.9)"/>
+      <circle cx="-136" cy="-470" r="26" fill="${c.skin}"/><circle cx="136" cy="-470" r="26" fill="${c.skin}"/>
+      <rect x="-136" y="-606" width="272" height="262" rx="112" fill="${c.skin}"/>
+      ${hairOf(id, c)}
+      <g class="eyes" style="transform-origin:0px -476px">
+        <ellipse cx="-56" cy="-476" rx="24" ry="29" fill="#fff"/><ellipse cx="56" cy="-476" rx="24" ry="29" fill="#fff"/>
+        <circle class="pup" cx="-54" cy="-474" r="15" fill="#1a1a22"/><circle class="pup" cx="58" cy="-474" r="15" fill="#1a1a22"/>
+        <circle cx="-48" cy="-481" r="5" fill="#fff"/><circle cx="64" cy="-481" r="5" fill="#fff"/>
+      </g>
+      <rect class="browL" x="-92" y="-530" width="72" height="14" rx="7" fill="${id === 'investor' ? '#7c828a' : c.hair}" style="transform-origin:-56px -523px"/>
+      <rect class="browR" x="20" y="-530" width="72" height="14" rx="7" fill="${id === 'investor' ? '#7c828a' : c.hair}" style="transform-origin:56px -523px"/>
+      ${glasses}
+      <path d="M0,-462 Q16,-426 -10,-420" stroke="${c.hair === '#9AA0A8' ? '#c98f62' : '#C98F62'}" stroke-width="8" fill="none" stroke-linecap="round"/>
+      <g transform="translate(0,-392)"><path class="mouth" d="" fill="#6d1f2b" stroke="#6d1f2b" stroke-width="7" stroke-linejoin="round"/></g>
+    </g>
+  </g></g>`;
+}
+
+/* ---------- Fonlar: back — qahramonlar orqasida, front — oldida ---------- */
+function skyline(y, color, seed) {
+  let d = '', x = -20;
+  for (let i = 0; x < 1100; i++) { const w = 70 + rnd(seed + i) * 90, ht = 90 + rnd(seed + i * 3) * 230; d += `<rect x="${x}" y="${y - ht}" width="${w}" height="${ht + 400}" fill="${color}"/>`; x += w + 8; }
+  return d;
+}
+const table = (top, c1, c2) => `<rect x="-30" y="${top}" width="1140" height="46" rx="12" fill="${c1}"/><rect x="0" y="${top + 46}" width="1080" height="${1920 - top}" fill="${c2}"/>`;
+const BG = {
+  night: { back: `<defs><linearGradient id="gN" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#232A6B"/><stop offset="1" stop-color="#3B2F7E"/></linearGradient><radialGradient id="gL"><stop offset="0" stop-color="#FFD98A" stop-opacity=".75"/><stop offset="1" stop-color="#FFD98A" stop-opacity="0"/></radialGradient></defs>
+      <rect width="1080" height="1920" fill="url(#gN)"/>
+      <rect x="150" y="430" width="780" height="520" rx="24" fill="#0F1440"/><circle cx="760" cy="560" r="62" fill="#FFF1BE"/>${[0,1,2,3,4,5,6,7,8].map(i => `<circle cx="${190 + rnd(i) * 700}" cy="${470 + rnd(i + 9) * 170}" r="4" fill="#fff"/>`).join('')}
+      <svg x="150" y="430" width="780" height="520">${skyline(420, '#1B2263', 4)}</svg><rect x="150" y="430" width="780" height="520" rx="24" fill="none" stroke="#141A52" stroke-width="20"/><path d="M540,430 v520" stroke="#141A52" stroke-width="14"/>
+      <circle cx="540" cy="1000" r="560" fill="url(#gL)"/>`,
+    front: `${table(1180, '#8C5A33', '#5A3620')}<rect x="360" y="1040" width="360" height="146" rx="16" fill="#2B2F45"/><rect x="376" y="1054" width="328" height="118" rx="8" fill="#9FE3FF"/><path d="M400,1110 h200 M400,1140 h130" stroke="#3a6b86" stroke-width="10" stroke-linecap="round"/><path d="M300,1180 h480 l-20,16 h-440z" fill="#3A3F58"/><g transform="translate(880,1180)"><rect x="-44" y="-74" width="84" height="74" rx="14" fill="#fff"/><path d="M40,-58 q40,0 36,30 q-4,20 -36,18" fill="none" stroke="#fff" stroke-width="14"/></g>` },
+  choyxona: { back: `<rect width="1080" height="1920" fill="#F2A65A"/><rect width="1080" height="330" fill="#E98F3F"/>
+      ${[0,1,2,3,4,5,6].map(i => [0,1,2,3,4,5,6,7].map(j => `<path d="M${j * 160 - 20 + (i % 2) * 80},${260 + i * 150} l40,-50 l40,50 l-40,50z" fill="#EC9446"/>`).join('')).join('')}
+      <path d="M300,1000 V620 Q300,430 540,430 Q780,430 780,620 V1000Z" fill="#7FD1E8"/><path d="M300,1000 V620 Q300,430 540,430 Q780,430 780,620 V1000" fill="none" stroke="#1E6FA8" stroke-width="30"/><ellipse cx="540" cy="940" rx="240" ry="50" fill="#BFE9C4"/>`,
+    front: `${table(1180, '#A85A2A', '#7A3E1D')}<g transform="translate(540,1180)"><path d="M-74,-96 Q0,-130 74,-96 L92,-10 Q0,12 -92,-10Z" fill="#1E6FA8"/><path d="M84,-70 Q140,-90 150,-120" stroke="#1E6FA8" stroke-width="20" fill="none" stroke-linecap="round"/><path d="M-84,-70 Q-140,-60 -120,-16" stroke="#1E6FA8" stroke-width="12" fill="none"/><circle cx="0" cy="-122" r="16" fill="#F4F4F4"/><path d="M-40,-60 h80" stroke="#fff" stroke-width="10" stroke-dasharray="14 12"/></g><g transform="translate(270,1180)"><path d="M-54,-52 h108 q-8,52 -36,52 h-36 q-28,0 -36,-52z" fill="#F4F4F4"/><path d="M-50,-40 h100" stroke="#1E6FA8" stroke-width="9"/></g><g transform="translate(830,1180)"><path d="M-54,-52 h108 q-8,52 -36,52 h-36 q-28,0 -36,-52z" fill="#F4F4F4"/><path d="M-50,-40 h100" stroke="#1E6FA8" stroke-width="9"/></g>` },
+  office: { back: `<rect width="1080" height="1920" fill="#BFE3DC"/><rect x="90" y="420" width="900" height="600" rx="20" fill="#E9F8FF"/><svg x="90" y="420" width="900" height="600">${skyline(520, '#9CC7DA', 9)}${skyline(600, '#7FB1C9', 21)}</svg><rect x="90" y="420" width="900" height="600" rx="20" fill="none" stroke="#6FA79B" stroke-width="20"/>`,
+    front: `${table(1180, '#3C4C6E', '#26324C')}<g transform="translate(540,1178)"><path d="M-110,0 l26,-34 h168 l26,34z" fill="#fff"/><path d="M-60,-20 h100 M-40,-10 h110" stroke="#9aa" stroke-width="5"/></g>` },
+  bright: { back: `<rect width="1080" height="1920" fill="#FFE9A8"/><rect x="520" y="660" width="480" height="430" rx="22" fill="#fff" stroke="#D9B64A" stroke-width="16"/><path d="M570,1010 L680,930 L780,960 L930,760" fill="none" stroke="#1FA58A" stroke-width="18" stroke-linecap="round" stroke-linejoin="round"/><path d="M930,760 l-46,6 M930,760 l-4,46" stroke="#1FA58A" stroke-width="18" stroke-linecap="round"/>`,
+    front: `${table(1250, '#D9A441', '#B8862E')}` },
+  chart: { back: `<defs><radialGradient id="gC"><stop offset="0" stop-color="#34407E"/><stop offset="1" stop-color="#14162F"/></radialGradient></defs><rect width="1080" height="1920" fill="url(#gC)"/>`, front: '' },
+  gold: { back: `<rect width="1080" height="1920" fill="#232A6B"/>${[0,1,2,3,4,5,6,7,8,9,10,11].map(i => `<path d="M540,830 L${540 + 1600 * Math.cos(i * .5236)},${830 + 1600 * Math.sin(i * .5236)} L${540 + 1600 * Math.cos(i * .5236 + .26)},${830 + 1600 * Math.sin(i * .5236 + .26)}Z" fill="#2E3790"/>`).join('')}`, front: '' },
+};
+
+/* ---------- Qahramon harakati ---------- */
+function setupChar(root, cfg, s, t0, t1, idx) {
+  const g = root.querySelector(`[data-c="${cfg.id}"]`), mood = MOODS[cfg.mood || 'neutral'];
+  const [brow, curve] = mood, speaking = s.speaker === cfg.id, seed = idx * 7 + cfg.id.length;
+  const br = g.querySelector('.browL'), brR = g.querySelector('.browR');
+  br.style.transform = `rotate(${-brow}deg)`; brR.style.transform = `rotate(${brow}deg)`;
+  anim(g, [{ transform: 'translateY(0) scaleY(1)' }, { transform: 'translateY(-10px) scaleY(1.012)' }, { transform: 'translateY(0) scaleY(1)' }], -seed * 90, 1900, 'ease-in-out', { iterations: Infinity });
+  anim(g.querySelector('.eyes'), [{ transform: 'scaleY(1)' }, { transform: 'scaleY(1)', offset: .93 }, { transform: 'scaleY(.06)', offset: .965 }, { transform: 'scaleY(1)' }], -seed * 330, 3100 + seed * 11, 'linear', { iterations: Infinity });
+  const look = (cfg.look || 0) * 9;
+  g.querySelectorAll('.pup').forEach(p => p.setAttribute('transform', `translate(${look},0)`));
+  const head = g.querySelector('.head'), armR = g.querySelector('.armR'), armL = g.querySelector('.armL');
+  if (speaking) {
+    const a = cfg.gesture === 'none' ? 0 : -128;
+    anim(armR, [{ transform: 'rotate(0)' }, { transform: `rotate(${a}deg)`, offset: .25 }, { transform: `rotate(${a + 22}deg)`, offset: .5 }, { transform: `rotate(${a}deg)`, offset: .75 }, { transform: `rotate(${a + 16}deg)` }], t0 + 100, Math.max(1200, t1 - t0 - 300), 'ease-in-out');
+    anim(head, [{ transform: 'rotate(-3deg)' }, { transform: 'rotate(3deg)' }, { transform: 'rotate(-3deg)' }], t0, 1500, 'ease-in-out', { iterations: Infinity });
+  } else {
+    anim(head, [{ transform: `rotate(${cfg.tilt || 0}deg)` }, { transform: `rotate(${(cfg.tilt || 0) + 1.6}deg)` }, { transform: `rotate(${cfg.tilt || 0}deg)` }], t0, 2600, 'ease-in-out', { iterations: Infinity });
+  }
+  if (cfg.pose === 'wave') anim(armL, [{ transform: 'rotate(120deg)' }, { transform: 'rotate(150deg)' }, { transform: 'rotate(120deg)' }], t0, 640, 'ease-in-out', { iterations: Infinity });
+  if (cfg.pose === 'drop') anim(g, [{ transform: 'translateY(0)' }, { transform: 'translateY(26px) scaleY(.96)' }], t0 + 300, 900);
+  if (cfg.enter) anim(g, [{ transform: `translateX(${cfg.enter}px)` }, { transform: 'translateX(0)' }], t0, 620, E_BACK, { composite: 'add' });
+  const mouth = g.querySelector('.mouth'), w = 34;
+  const env = speaking ? (s.env || []) : [], lead = s.lead || 0;
+  TICKS.push(ms => {
+    if (ms < t0 || ms > t1) return;
+    const i = Math.floor((ms - t0 - lead) / (1000 / 30));
+    const o = (i >= 0 && i < env.length) ? env[i] * 34 : 0;
+    const c = curve;
+    mouth.setAttribute('d', `M${-w},${-c / 2} Q0,${c - o * .3} ${w},${-c / 2} Q0,${c + 2 + o * 2.1} ${-w},${-c / 2}Z`);
+  });
+}
+
+/* ---------- Subtitr: 2-4 so'zdan bo'lakka bo'linadi, vaqt harf soniga qarab taqsimlanadi ---------- */
+function chunks(text) {
+  const out = []; let cur = [];
+  for (const w of text.split(' ')) {
+    cur.push(w);
+    const len = cur.join(' ').length;
+    if (len >= 13 && /[.,!?…]$/.test(w) || len >= 17 || cur.length >= 4) { out.push(cur.join(' ')); cur = []; }
+  }
+  if (cur.length) out.push(cur.join(' '));
+  return out;
+}
+function setupSub(s, t0) {
+  if (!s.text) return;
+  const parts = chunks(s.text), tot = parts.reduce((a, p) => a + p.length, 0);
+  const speech = (s.voiceDur || 3) * 1000; let t = t0 + (s.lead || 0);
+  const hl = (s.highlight || []).map(x => x.toLowerCase());
+  return parts.map(p => {
+    const d = speech * p.length / tot, a = t; t += d;
+    const html = p.split(' ').map(w => hl.includes(w.replace(/[?.,!…:;]/g, '').toLowerCase()) ? `<em>${esc(w)}</em>` : esc(w)).join(' ');
+    return { a, b: t, html };
+  });
+}
+
+/* ---------- Doira diagramma ---------- */
+function setupPie(sc, s, t0) {
+  const cx = 540, cy = 800, r = 225, sw = 150;
+  const svg = sc.querySelector('.art-in'), NS = 'http://www.w3.org/2000/svg';
+  const from = s.pie.from, to = s.pie.to;
+  const g = document.createElementNS(NS, 'g'); svg.appendChild(g);
+  const arcs = to.map(p => { const c = document.createElementNS(NS, 'path'); c.setAttribute('fill', p.color); g.appendChild(c); return c; });
+  const R1 = r + sw / 2, R0 = r - sw / 2, pt = (rad, pc) => { const a = (pc * 3.6 - 90) * Math.PI / 180; return `${(cx + rad * Math.cos(a)).toFixed(2)},${(cy + rad * Math.sin(a)).toFixed(2)}`; };
+  const sector = (a, b) => { b = Math.min(b, a + 99.99); const big = b - a > 50 ? 1 : 0; return `M${pt(R1, a)} A${R1},${R1} 0 ${big} 1 ${pt(R1, b)} L${pt(R0, b)} A${R0},${R0} 0 ${big} 0 ${pt(R0, a)}Z`; };
+  const center = document.createElementNS(NS, 'text'); center.setAttribute('x', cx); center.setAttribute('y', cy + 36); center.setAttribute('text-anchor', 'middle'); center.setAttribute('style', "font:800 112px 'Manrope';fill:#F5BF17"); svg.appendChild(center);
+  to.forEach((p, i) => {
+    const y = 1120 + Math.floor(i / 2) * 58, x = i % 2 ? 590 : 120;
+    const t = document.createElementNS(NS, 'text'); t.setAttribute('x', x + 56); t.setAttribute('y', y + 16); t.setAttribute('style', "font:700 40px 'Inter';fill:#fff"); t.textContent = `${p.label} ${p.value}%`; svg.appendChild(t);
+    const d = document.createElementNS(NS, 'rect'); d.setAttribute('x', x); d.setAttribute('y', y - 20); d.setAttribute('width', 38); d.setAttribute('height', 38); d.setAttribute('rx', 10); d.setAttribute('fill', p.color); svg.appendChild(d);
+  });
+  const start = t0 + (s.dropAt || 700);
+  TICKS.push(ms => {
+    const q = Math.min(1, Math.max(0, (ms - start) / 1000)), e = q * q * (3 - 2 * q);
+    let cum = 0;
+    arcs.forEach((c, i) => { const v = (from[i] || 0) + (to[i].value - (from[i] || 0)) * e; c.setAttribute('d', v > .01 ? sector(cum, cum + v) : ''); cum += v; if (i === 0) center.textContent = Math.round(v) + '%'; });
+  });
+}
+
+window.build = function (spec) {
+  const scenes = spec.scenes, bounds = []; let t = 0;
+  scenes.forEach(s => { const d = Math.round((s.dur || 3) * 1000); bounds.push([t, t + d]); t += d; });
+  const DURATION = t, root = document.getElementById('scenes');
+  const subs = [], drops = [];
+  scenes.forEach((s, idx) => {
+    const [s0, s1] = bounds[idx], sc = h('div', 'scene'), bg = BG[s.bg];
+    sc.innerHTML = `<svg class="art" viewBox="0 0 1080 1920" xmlns="http://www.w3.org/2000/svg"><g class="cam"><g class="art-in" transform="translate(540,0) scale(1.13) translate(-540,0)">${bg.back}${(s.cast || []).map(c => character(c.id, c.x, c.y, c.s || 1.1, c.flip)).join('')}${bg.front}</g></g></svg>`;
+    root.appendChild(sc);
+    anim(sc, [{ visibility: 'hidden' }, { visibility: 'visible' }], s0, 1, 'step-end');
+    if (idx < scenes.length - 1) anim(sc, [{ visibility: 'visible' }, { visibility: 'hidden' }], s1, 1, 'step-end', { fill: 'forwards' });
+    const cam = sc.querySelector('.cam'), ox = s.camX || 540, oy = s.camY || 900;
+    cam.style.transformOrigin = `${ox}px ${oy}px`;
+    anim(cam, [{ transform: `scale(${s.zoomFrom || 1})` }, { transform: `scale(${s.zoomTo || 1.08})` }], s0, s1 - s0, 'linear');
+    (s.cast || []).forEach(c => setupChar(sc, c, s, s0, s1, idx));
+    if (s.pie) setupPie(sc, s, s0);
+    if (s.tag) { const e = h('div', 'tag', esc(s.tag)); sc.appendChild(e); anim(e, [{ opacity: 0, transform: 'translateX(-50%) scale(.6) rotate(-4deg)' }, { opacity: 1, transform: 'translateX(-50%) scale(1) rotate(-2deg)' }], s0 + 120, 460, E_BACK); }
+    if (s.rule) { const e = h('div', 'rule', `<i>${esc(s.rule.kicker)}</i><b>${esc(s.rule.title)}</b>`); sc.appendChild(e); anim(e, [{ opacity: 0, transform: 'translateY(-40px) scale(.92)' }, { opacity: 1, transform: 'none' }], s0 + 300, 560, E_BACK); }
+    if (s.url) { const e = h('div', 'url', esc(s.url)); sc.appendChild(e); anim(e, [{ opacity: 0, transform: 'scale(.7)' }, { opacity: 1, transform: 'scale(1)' }], s0 + (s.urlAt || 2000), 520, E_BACK); anim(e, [{ transform: 'scale(1)' }, { transform: 'scale(1.04)' }, { transform: 'scale(1)' }], s0 + (s.urlAt || 2000) + 700, 900, 'ease-in-out', { iterations: Infinity, composite: 'add' }); }
+    if (s.note) sc.appendChild(h('div', 'note', esc(s.note)));
+    const sb = setupSub(s, s0); if (sb) subs.push(...sb);
+    if (s.share != null) drops.push({ at: s0 + (s.dropAt || 700), to: s.share });
+    if (idx > 0 && s.wipe !== false) { const w = h('div', 'wipe'); root.appendChild(w); w.style.background = s.wipeColor || '#F5BF17';
+      anim(w, [{ transform: 'scale(0)' }, { transform: 'scale(1)', offset: .5 }, { transform: 'scale(1)', opacity: 1, offset: .5 }, { transform: 'scale(1)', opacity: 0 }], s0 - 230, 460, 'ease-in-out', { fill: 'forwards' }); }
+  });
+  /* Hisoblagich */
+  const pct = document.getElementById('pct'), share = document.getElementById('share');
+  drops.forEach(d => anim(share, [{ transform: 'scale(1)' }, { transform: 'scale(1.16) rotate(-2deg)', background: '#D2332E' }, { transform: 'scale(1)' }], d.at, 900, 'ease-out'));
+  TICKS.push(ms => {
+    let v = 100, prev = 100;
+    for (const d of drops) { if (ms >= d.at) { const q = Math.min(1, (ms - d.at) / 1000); v = prev + (d.to - prev) * q * q * (3 - 2 * q); prev = d.to; } }
+    pct.textContent = Math.round(v) + '%';
+  });
+  /* Subtitr */
+  const sub = document.getElementById('sub'); let last = null;
+  TICKS.push(ms => {
+    const c = subs.find(x => ms >= x.a && ms < x.b + 120) || null;
+    if (c !== last) { sub.innerHTML = c ? c.html : ''; last = c; }
+    if (c) { const q = Math.min(1, (ms - c.a) / 130); sub.style.transform = `scale(${1.14 - .14 * q})`; }
+  });
+  anim(document.getElementById('stage'), [{ opacity: 1 }, { opacity: 0 }], DURATION - 350, 350, 'ease-in');
+  return { duration: DURATION, bounds };
+};
+window.seek = function (ms) { for (const a of ANIMS) a.currentTime = ms; for (const f of TICKS) f(ms); };
+</script>
+</body>
+</html>

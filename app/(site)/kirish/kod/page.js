@@ -15,7 +15,8 @@ export default async function MfaLoginPage({ searchParams }) {
   const [{ supabase, user }, t] = await Promise.all([getAuthUser(), getT()]);
   if (!user) redirect('/kirish');
   const { data: aal } = await supabase.auth.mfa.getAuthenticatorAssuranceLevel();
-  if (aal?.currentLevel === aal?.nextLevel) redirect('/kabinet');
+  const keyin = sp?.keyin === 'yangi-parol';
+  if (aal?.currentLevel === aal?.nextLevel) redirect(keyin ? '/yangi-parol' : '/kabinet');
 
   return (
     <div className="auth">
@@ -23,6 +24,7 @@ export default async function MfaLoginPage({ searchParams }) {
       <p className="muted">{t('mfa.login_sub')}</p>
       <Flash searchParams={sp} />
       <form action={verifyMfa} className="card form">
+        {keyin && <input type="hidden" name="keyin" value="yangi-parol" />}
         <label>
           {t('mfa.code')}
           <input name="code" inputMode="numeric" autoComplete="one-time-code" pattern="[0-9]{6}" maxLength={6} required autoFocus />

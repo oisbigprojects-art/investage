@@ -1,6 +1,8 @@
 'use server';
 
 import { redirect } from 'next/navigation';
+import { createClient as createPlainClient } from '@supabase/supabase-js';
+import { SUPABASE_URL, SUPABASE_ANON_KEY } from '@/lib/supabase/config';
 import { createClient, getSession } from '@/lib/supabase/server';
 import { originUrl } from '@/lib/site-url';
 import { getT } from '@/lib/i18n/server';
@@ -8,6 +10,16 @@ import { MIN_PW } from '@/lib/password';
 
 
 const back = (path, key, msg) => redirect(`${path}?${key}=${encodeURIComponent(msg)}`);
+
+// Joriy parolni tekshirish uchun alohida mijoz: asosiy sessiyaga tegmaydi, aks holda
+// ikki bosqichli kirishdan o'tgan sessiya pastga tushib, parol almashtirish rad etiladi
+async function passwordOk(email, password) {
+  const client = createPlainClient(SUPABASE_URL, SUPABASE_ANON_KEY, { auth: { persistSession: false, autoRefreshToken: false } });
+  const { error } = await client.auth.signInWithPassword({ email, password });
+  if (error) return false;
+  await client.auth.signOut({ scope: 'local' });
+  return true;
+}
 
 export async function signup(formData) {
   const t = await getT();
@@ -60,8 +72,9 @@ export async function verifyMfa(formData) {
   const factor = factors?.totp?.[0];
   if (!factor) redirect('/kabinet');
   const { error } = await supabase.auth.mfa.challengeAndVerify({ factorId: factor.id, code });
-  if (error) back('/kirish/kod', 'xato', t('mfa.err_code'));
-  redirect('/kabinet');
+  const after = formData.get('keyin') === 'yangi-parol' ? '/yangi-parol' : '/kabinet';
+  if (error) redirect(`/kirish/kod?${after === '/yangi-parol' ? 'keyin=yangi-parol&' : ''}xato=${encodeURIComponent(t('mfa.err_code'))}`);
+  redirect(after);
 }
 
 // Tasdiqlash xatini qayta yuborish. Javob har doim bir xil: bunday email bor-yo'qligini oshkor qilmaymiz
@@ -103,6 +116,8 @@ export async function setNewPassword(formData) {
   const { supabase, user } = await getSession();
   if (!user) back('/parol-tiklash', 'xato', t('reset.err_expired'));
   const { error } = await supabase.auth.updateUser({ password: p1 });
+  // Ikki bosqichli kirish yoqilgan hisobda parolni faqat kod bilan almashtirish mumkin
+  if (error?.code === 'insufficient_aal') redirect('/kirish/kod?keyin=yangi-parol');
   if (error) back('/yangi-parol', 'xato', error.message);
   redirect(`/kabinet/sozlamalar?xabar=${encodeURIComponent(t('reset.done'))}`);
 }
@@ -120,8 +135,7 @@ export async function changePassword(formData) {
   if (p1.length < MIN_PW) back(SETTINGS, 'xato', t('reset.err_short', { n: MIN_PW }));
   if (p1 !== p2) back(SETTINGS, 'xato', t('reset.err_match'));
   // Joriy parolni tekshiramiz (sessiya o'g'irlangan bo'lsa ham parol almashtirib bo'lmasin)
-  const { error: e1 } = await supabase.auth.signInWithPassword({ email: user.email, password: current });
-  if (e1) back(SETTINGS, 'xato', t('set.err_current'));
+  if (!(await passwordOk(user.email, current))) back(SETTINGS, 'xato', t('set.err_current'));
   // current_password ham yuboriladi: Supabase'da "joriy parolni talab qilish" yoqilgan bo'lsa ham ishlaydi
   const { error } = await supabase.auth.updateUser({ password: p1, current_password: current });
   if (error) back(SETTINGS, 'xato', error.message);
@@ -145,8 +159,7 @@ export async function deleteAccount(formData) {
   const { supabase, user } = await getSession();
   if (!user) redirect('/kirish');
   if (String(formData.get('confirm') || '').trim().toUpperCase() !== t('set.del_word').toUpperCase()) back(SETTINGS, 'xato', t('set.err_del_word'));
-  const { error: e1 } = await supabase.auth.signInWithPassword({ email: user.email, password: String(formData.get('password') || '') });
-  if (e1) back(SETTINGS, 'xato', t('set.err_current'));
+  if (!(await passwordOk(user.email, String(formData.get('password') || '')))) back(SETTINGS, 'xato', t('set.err_current'));
   // Yuklangan logotiplarni o'chiramiz, keyin hisobning o'zini (bog'liq ma'lumotlar bazada birga o'chadi)
   const { data: files } = await supabase.storage.from('logos').list(user.id);
   if (files?.length) await supabase.storage.from('logos').remove(files.map((f) => `${user.id}/${f.name}`));

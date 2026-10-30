@@ -3,7 +3,6 @@
 import { useState } from 'react';
 import { stringsT } from '@/lib/i18n/client';
 
-const LOCALES = { uz: 'uz-UZ', ru: 'ru-RU', en: 'en-US' };
 
 // Oddiy hisob: post-money = summa / ulush, pre-money = post-money − summa
 export default function ValuationCalc({ strings, lang }) {
@@ -11,7 +10,8 @@ export default function ValuationCalc({ strings, lang }) {
   const [amount, setAmount] = useState(50000);
   const [equity, setEquity] = useState(10);
 
-  const fmt = (n) => '$' + new Intl.NumberFormat(LOCALES[lang] || 'en-US', { maximumFractionDigits: 0 }).format(n);
+  // Intl server va brauzerda har xil natija berishi mumkin (hydration xatosi), shuning uchun qo'lda ajratamiz
+  const fmt = (n) => '$' + String(Math.round(n)).replace(/\B(?=(\d{3})+(?!\d))/g, ' ');
   const a = Number(amount);
   const e = Number(equity);
   const ok = a > 0 && e >= 1 && e <= 99;

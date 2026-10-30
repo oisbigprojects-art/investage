@@ -953,6 +953,8 @@ html.menu-open { overflow: hidden; }
 .bot-chip:hover { border-color: var(--gold-line); background: var(--gold-wash); }
 .bot-form { display: flex; gap: 8px; align-items: flex-end; padding: 10px 12px 6px; border-top: 1px solid var(--line-soft); }
 .bot-form textarea { flex: 1; resize: none; min-height: 40px; padding: 10px 12px; font-size: 0.92rem; }
+/* iPhone 16px dan kichik maydon bosilganda sahifani kattalashtirib yuboradi */
+@media (pointer: coarse) { input, textarea, select, .bot-form textarea, .top-search input { font-size: 16px; } }
 .bot-send { flex: none; width: 40px; height: 40px; padding: 0; display: grid; place-items: center; border-radius: 50%; }
 .bot-foot { padding: 0 14px 12px; margin: 0; font-size: 0.74rem; line-height: 1.45; }
 @media (prefers-reduced-motion: reduce) { .bot-panel.is-open { animation: none; } .bot-typing i { animation: none; } }

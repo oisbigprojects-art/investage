@@ -1,6 +1,8 @@
 import Link from 'next/link';
 import { adminContext } from '@/lib/admin';
 import { Flash } from '@/components/ui';
+import { BarChart } from '@/components/charts';
+import { getT } from '@/lib/i18n/server';
 
 const ACT = {
   startup_update: (d) => {
@@ -10,6 +12,7 @@ const ACT = {
     if (d?.score && d.score[0] !== d.score[1]) bits.push(`ball ${d.score[0]} → ${d.score[1]}`);
     return bits.join(', ') || "o'zgarish yo'q";
   },
+  users_export: (d) => `${d?.rows ?? 0} ta yozuv eksport qilindi`,
   user_block: () => 'bloklandi',
   user_unblock: () => 'blokdan chiqarildi',
 };
@@ -20,7 +23,9 @@ const fmt = (iso) => new Date(iso).toLocaleString('uz-UZ', { day: 'numeric', mon
 export default async function AdminHome({ searchParams }) {
   const sp = await searchParams;
   const { supabase } = await adminContext();
-  const [{ data: o }, { data: log }] = await Promise.all([supabase.rpc('admin_overview'), supabase.rpc('admin_log', { p_limit: 12 })]);
+  const [{ data: o }, { data: log }, { data: growth }, t] = await Promise.all([supabase.rpc('admin_overview'), supabase.rpc('admin_log', { p_limit: 12 }), supabase.rpc('admin_growth', { p_days: 14 }), getT()]);
+  const series = (k) => (growth || []).map((d) => ({ label: d.day.slice(8), value: Number(d[k]) }));
+  const charts = [['users', "Yangi foydalanuvchilar"], ['startups', 'Yangi startaplar'], ['requests', "Kirish so'rovlari"]];
   const n = (k) => Number(o?.[k] ?? 0);
 
   const cards = [
@@ -60,6 +65,23 @@ export default async function AdminHome({ searchParams }) {
           );
         })}
       </div>
+
+      <section className="card">
+        <div className="section-head sm">
+          <h2>Oxirgi 14 kun</h2>
+          <form action="/admin/eksport" method="post">
+            <button className="btn btn-ghost btn-sm" type="submit">CSV yuklab olish</button>
+          </form>
+        </div>
+        <div className="admin-charts">
+          {charts.map(([k, title]) => (
+            <div key={k}>
+              <h3>{title}</h3>
+              <BarChart data={series(k)} title={title} t={t} />
+            </div>
+          ))}
+        </div>
+      </section>
 
       <section className="card">
         <div className="section-head sm">

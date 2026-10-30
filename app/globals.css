@@ -954,6 +954,9 @@ html.menu-open { overflow: hidden; }
 .bot-form { display: flex; gap: 8px; align-items: flex-end; padding: 10px 12px 6px; border-top: 1px solid var(--line-soft); }
 .admin-facts { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 16px; margin: 0; }
 .admin-facts dd { margin: 2px 0 0; font-weight: 600; overflow-wrap: anywhere; }
+.admin-charts { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 24px; }
+.admin-charts h3 { font-size: 0.9rem; color: var(--muted); margin-bottom: 12px; }
+.admin-charts .bars { gap: 3px; height: 150px; }
 .mfa-card { margin-bottom: 20px; }
 .mfa-qr { display: block; padding: 10px; background: #fff; border-radius: 16px; }
 .mfa-secret { display: block; margin-top: 8px; font: 600 0.95rem var(--mono); word-break: break-all; user-select: all; }

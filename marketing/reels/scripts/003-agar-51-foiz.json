@@ -13,61 +13,351 @@
   "music": 0.55,
   "caption": "Agar startapingning yarmidan ko‘pini birinchi investorga bersang-chi? 🤔\n\nSardor rozi bo‘ldi: 51% berdi. Keyin yana ikki raund. Natija — o‘zi qurgan kompaniyada 31%.\n\nHar yangi raundda eski ulushlar ham kichrayadi. Shuning uchun ulushni bosqichma-bosqich bering va keyingi raundni oldindan hisoblab ko‘ring.\n\nSiz birinchi investorga necha foiz berardingiz? Izohda yozing 👇\n\n⚠️ Bu o‘ylab topilgan misol, qahramonlar to‘qima. Aniq huquqlar shartnomaga bog‘liq. Moliyaviy maslahat emas.\n\n🚀 Startapingizni investorlarga ko‘rsating: investage.uz (havola profilda)\n\n#startap #startup #investitsiya #investor #ulush #biznes #uzbekistan #ozbekiston #toshkent #tadbirkorlik #investage",
   "scenes": [
-    {"bg": "night", "speaker": "narrator", "zoomFrom": 1.02, "zoomTo": 1.12, "camY": 800,
-     "cast": [{"id": "sardor", "x": 540, "y": 1330, "s": 1.25, "mood": "worried", "look": -1}],
-     "say": "Agar startapingning yarmidan ko'pini birinchi investorga bersang-chi?",
-     "text": "Agar startapingning yarmidan ko‘pini birinchi investorga bersang-chi?", "highlight": ["yarmidan", "ko‘pini"]},
-    {"bg": "night", "speaker": "narrator", "wipe": false, "zoomFrom": 1.12, "zoomTo": 1.04, "camY": 800,
-     "cast": [{"id": "sardor", "x": 540, "y": 1330, "s": 1.25, "mood": "sad", "look": 1, "pose": "drop"}],
-     "tag": "Hisobda: 0 so‘m",
-     "say": "Mana Sardor. O'zi qurgan ilova, ulushi yuz foiz. Lekin hisobida pul qolmadi.",
-     "text": "Mana Sardor. O‘zi qurgan ilova, ulushi 100%. Lekin hisobida pul qolmadi.", "highlight": ["100%", "pul"]},
-    {"bg": "choyxona", "speaker": "rustam", "camX": 760, "camY": 800, "zoomTo": 1.1,
-     "cast": [{"id": "sardor", "x": 280, "y": 1330, "s": 1.05, "mood": "worried", "look": 1},
-              {"id": "rustam", "x": 770, "y": 1330, "s": 1.05, "mood": "happy", "look": -1, "enter": 420}],
-     "tag": "Do‘sti Rustam",
-     "say": "Sardor, ko'p o'ylama! Ellik bir foizini ber, pulni ol, vassalom!",
-     "text": "Sardor, ko‘p o‘ylama! 51 foizini ber, pulni ol, vassalom!", "highlight": ["51", "foizini"]},
-    {"bg": "office", "speaker": "investor", "camX": 280, "camY": 800,
-     "cast": [{"id": "investor", "x": 280, "y": 1330, "s": 1.08, "mood": "smug", "look": 1},
-              {"id": "sardor", "x": 790, "y": 1330, "s": 1.02, "mood": "happy", "look": -1}],
-     "tag": "1-investor",
-     "say": "Kelishdik. Ellik bir foiz endi meniki.",
-     "text": "Kelishdik. 51 foiz endi meniki.", "highlight": ["meniki."]},
-    {"bg": "chart", "speaker": "narrator", "share": 49, "dropAt": 500, "zoomTo": 1.03,
-     "pie": {"from": [100, 0], "to": [{"label": "Sardor", "value": 49, "color": "#F5BF17"}, {"label": "1-investor", "value": 51, "color": "#3E8BFF"}]},
-     "say": "Bitta imzo bilan ulushi qirq to'qqiz foizga tushdi. Endi ko'pchilik ovoz investorda.",
-     "text": "Bitta imzo bilan ulushi 49% ga tushdi. Endi ko‘pchilik ovoz investorda.", "highlight": ["49%", "ko‘pchilik"]},
-    {"bg": "office", "speaker": "investor", "camX": 280, "camY": 800, "wipeColor": "#3E8BFF",
-     "cast": [{"id": "investor", "x": 280, "y": 1330, "s": 1.08, "mood": "angry", "look": 1},
-              {"id": "sardor", "x": 790, "y": 1330, "s": 1.02, "mood": "sad", "look": -1, "tilt": 5}],
-     "say": "G'oyangizni eshitdim. Lekin endi qarorni men qilaman.",
-     "text": "G‘oyangizni eshitdim. Lekin endi qarorni men qilaman.", "highlight": ["men"]},
-    {"bg": "chart", "speaker": "narrator", "share": 39, "dropAt": 2300, "zoomTo": 1.03,
-     "tag": "1 yildan keyin · 2-raund",
-     "pie": {"from": [49, 51, 0], "to": [{"label": "Sardor", "value": 39, "color": "#F5BF17"}, {"label": "1-investor", "value": 41, "color": "#3E8BFF"}, {"label": "2-investor", "value": 20, "color": "#FF5C8A"}]},
-     "say": "Bir yildan keyin yana pul kerak bo'ldi. Yangi investor yigirma foiz oldi. Sardorda o'ttiz to'qqiz foiz qoldi.",
-     "text": "Bir yildan keyin yana pul kerak bo‘ldi. Yangi investor 20% oldi. Sardorda 39% qoldi.", "highlight": ["20%", "39%"]},
-    {"bg": "chart", "speaker": "narrator", "share": 31, "dropAt": 600, "zoomTo": 1.03, "wipe": false,
-     "tag": "3-raund",
-     "pie": {"from": [39, 41, 20, 0], "to": [{"label": "Sardor", "value": 31, "color": "#F5BF17"}, {"label": "1-investor", "value": 33, "color": "#3E8BFF"}, {"label": "2-investor", "value": 16, "color": "#FF5C8A"}, {"label": "3-investor", "value": 20, "color": "#2FD08F"}]},
-     "say": "Keyingi raundda yana yigirma foiz. Endi atigi o'ttiz bir foiz.",
-     "text": "Keyingi raundda yana 20%. Endi atigi 31%.", "highlight": ["31%"]},
-    {"bg": "night", "speaker": "sardor", "camY": 760, "zoomFrom": 1.05, "zoomTo": 1.18, "wipeColor": "#232A6B",
-     "cast": [{"id": "sardor", "x": 540, "y": 1330, "s": 1.25, "mood": "sad", "gesture": "none"}],
-     "say": "Axir bu kompaniyani men qurgan edim-ku...",
-     "text": "Axir bu kompaniyani men qurgan edim-ku...", "highlight": ["men"]},
-    {"bg": "bright", "speaker": "malika", "camX": 300, "camY": 900, "wipeColor": "#1FA58A",
-     "cast": [{"id": "malika", "x": 290, "y": 1400, "s": 1.02, "mood": "happy", "look": 1}],
-     "rule": {"kicker": "Tajribali investor Malika", "title": "Ulushni bosqichma-bosqich bering"},
-     "say": "To'xta, Sardor. Ulushni bosqichma-bosqich ber. Har safar keyingi raundni ham hisoblab ko'r.",
-     "text": "To‘xta, Sardor. Ulushni bosqichma-bosqich ber. Har safar keyingi raundni ham hisoblab ko‘r.", "highlight": ["bosqichma-bosqich", "keyingi"]},
-    {"bg": "gold", "speaker": "narrator", "zoomTo": 1.04, "urlAt": 4000,
-     "cast": [{"id": "rustam", "x": 225, "y": 1040, "s": 0.72, "mood": "happy"},
-              {"id": "sardor", "x": 540, "y": 1040, "s": 0.95, "mood": "happy", "pose": "wave"},
-              {"id": "malika", "x": 855, "y": 1040, "s": 0.72, "mood": "happy"}],
-     "url": "investage.uz", "note": "Misol o‘ylab topilgan, qahramonlar to‘qima",
-     "say": "Siz birinchi investorga necha foiz berardingiz? Izohda yozing. Startapingizni investorlarga Investeyj nuqta uz saytida ko'rsating.",
-     "text": "Siz birinchi investorga necha foiz berardingiz? Izohda yozing. Startapingizni investorlarga ko‘rsating: investage.uz", "highlight": ["necha", "foiz", "izohda"]}
+    {
+      "bg": "street",
+      "speaker": "narrator",
+      "zoomFrom": 1.0,
+      "zoomTo": 1.16,
+      "camY": 1150,
+      "cast": [
+        {
+          "id": "sardor",
+          "x": 540,
+          "y": 1240,
+          "s": 0.72,
+          "mood": "worried",
+          "look": -1,
+          "pose": "walk"
+        }
+      ],
+      "say": "Agar startapingning yarmidan ko'pini birinchi investorga bersang-chi?",
+      "text": "Agar startapingning yarmidan ko‘pini birinchi investorga bersang-chi?",
+      "highlight": [
+        "yarmidan",
+        "ko‘pini"
+      ]
+    },
+    {
+      "bg": "night",
+      "speaker": "narrator",
+      "wipe": false,
+      "zoomFrom": 1.12,
+      "zoomTo": 1.04,
+      "camY": 800,
+      "cast": [
+        {
+          "id": "sardor",
+          "x": 540,
+          "y": 1330,
+          "s": 1.25,
+          "mood": "sad",
+          "look": 1,
+          "pose": "drop"
+        }
+      ],
+      "tag": "Hisobda: 0 so‘m",
+      "say": "Mana Sardor. O'zi qurgan ilova, ulushi yuz foiz. Lekin hisobida pul qolmadi.",
+      "text": "Mana Sardor. O‘zi qurgan ilova, ulushi 100%. Lekin hisobida pul qolmadi.",
+      "highlight": [
+        "100%",
+        "pul"
+      ]
+    },
+    {
+      "bg": "choyxona",
+      "speaker": "rustam",
+      "camX": 760,
+      "camY": 800,
+      "zoomTo": 1.1,
+      "cast": [
+        {
+          "id": "sardor",
+          "x": 280,
+          "y": 1330,
+          "s": 1.05,
+          "mood": "worried",
+          "look": 1
+        },
+        {
+          "id": "rustam",
+          "x": 770,
+          "y": 1330,
+          "s": 1.05,
+          "mood": "happy",
+          "look": -1,
+          "enter": 420
+        }
+      ],
+      "tag": "Do‘sti Rustam",
+      "say": "Sardor, ko'p o'ylama! Ellik bir foizini ber, pulni ol, vassalom!",
+      "text": "Sardor, ko‘p o‘ylama! 51 foizini ber, pulni ol, vassalom!",
+      "highlight": [
+        "51",
+        "foizini"
+      ]
+    },
+    {
+      "bg": "office",
+      "speaker": "investor",
+      "camX": 280,
+      "camY": 800,
+      "cast": [
+        {
+          "id": "investor",
+          "x": 280,
+          "y": 1330,
+          "s": 1.08,
+          "mood": "smug",
+          "look": 1
+        },
+        {
+          "id": "sardor",
+          "x": 790,
+          "y": 1330,
+          "s": 1.02,
+          "mood": "happy",
+          "look": -1
+        }
+      ],
+      "tag": "1-investor",
+      "say": "Kelishdik. Ellik bir foiz endi meniki.",
+      "text": "Kelishdik. 51 foiz endi meniki.",
+      "highlight": [
+        "meniki."
+      ]
+    },
+    {
+      "bg": "chart",
+      "speaker": "narrator",
+      "share": 49,
+      "dropAt": 500,
+      "zoomTo": 1.03,
+      "pie": {
+        "from": [
+          100,
+          0
+        ],
+        "to": [
+          {
+            "label": "Sardor",
+            "value": 49,
+            "color": "#F5BF17"
+          },
+          {
+            "label": "1-investor",
+            "value": 51,
+            "color": "#3E8BFF"
+          }
+        ]
+      },
+      "say": "Bitta imzo bilan ulushi qirq to'qqiz foizga tushdi. Endi ko'pchilik ovoz investorda.",
+      "text": "Bitta imzo bilan ulushi 49% ga tushdi. Endi ko‘pchilik ovoz investorda.",
+      "highlight": [
+        "49%",
+        "ko‘pchilik"
+      ]
+    },
+    {
+      "bg": "office",
+      "speaker": "investor",
+      "camX": 280,
+      "camY": 800,
+      "wipeColor": "#3E8BFF",
+      "cast": [
+        {
+          "id": "investor",
+          "x": 280,
+          "y": 1330,
+          "s": 1.08,
+          "mood": "angry",
+          "look": 1
+        },
+        {
+          "id": "sardor",
+          "x": 790,
+          "y": 1330,
+          "s": 1.02,
+          "mood": "sad",
+          "look": -1,
+          "tilt": 5
+        }
+      ],
+      "say": "G'oyangizni eshitdim. Lekin endi qarorni men qilaman.",
+      "text": "G‘oyangizni eshitdim. Lekin endi qarorni men qilaman.",
+      "highlight": [
+        "men"
+      ]
+    },
+    {
+      "bg": "chart",
+      "speaker": "narrator",
+      "share": 39,
+      "dropAt": 2300,
+      "zoomTo": 1.03,
+      "tag": "1 yildan keyin · 2-raund",
+      "pie": {
+        "from": [
+          49,
+          51,
+          0
+        ],
+        "to": [
+          {
+            "label": "Sardor",
+            "value": 39,
+            "color": "#F5BF17"
+          },
+          {
+            "label": "1-investor",
+            "value": 41,
+            "color": "#3E8BFF"
+          },
+          {
+            "label": "2-investor",
+            "value": 20,
+            "color": "#FF5C8A"
+          }
+        ]
+      },
+      "say": "Bir yildan keyin yana pul kerak bo'ldi. Yangi investor yigirma foiz oldi. Sardorda o'ttiz to'qqiz foiz qoldi.",
+      "text": "Bir yildan keyin yana pul kerak bo‘ldi. Yangi investor 20% oldi. Sardorda 39% qoldi.",
+      "highlight": [
+        "20%",
+        "39%"
+      ]
+    },
+    {
+      "bg": "chart",
+      "speaker": "narrator",
+      "share": 31,
+      "dropAt": 600,
+      "zoomTo": 1.03,
+      "wipe": false,
+      "tag": "3-raund",
+      "pie": {
+        "from": [
+          39,
+          41,
+          20,
+          0
+        ],
+        "to": [
+          {
+            "label": "Sardor",
+            "value": 31,
+            "color": "#F5BF17"
+          },
+          {
+            "label": "1-investor",
+            "value": 33,
+            "color": "#3E8BFF"
+          },
+          {
+            "label": "2-investor",
+            "value": 16,
+            "color": "#FF5C8A"
+          },
+          {
+            "label": "3-investor",
+            "value": 20,
+            "color": "#2FD08F"
+          }
+        ]
+      },
+      "say": "Keyingi raundda yana yigirma foiz. Endi atigi o'ttiz bir foiz.",
+      "text": "Keyingi raundda yana 20%. Endi atigi 31%.",
+      "highlight": [
+        "31%"
+      ]
+    },
+    {
+      "bg": "night",
+      "speaker": "sardor",
+      "camY": 760,
+      "zoomFrom": 1.05,
+      "zoomTo": 1.18,
+      "wipeColor": "#232A6B",
+      "cast": [
+        {
+          "id": "sardor",
+          "x": 540,
+          "y": 1330,
+          "s": 1.25,
+          "mood": "sad",
+          "gesture": "none"
+        }
+      ],
+      "say": "Axir bu kompaniyani men qurgan edim-ku...",
+      "text": "Axir bu kompaniyani men qurgan edim-ku...",
+      "highlight": [
+        "men"
+      ]
+    },
+    {
+      "bg": "bright",
+      "speaker": "malika",
+      "camX": 300,
+      "camY": 900,
+      "wipeColor": "#1FA58A",
+      "cast": [
+        {
+          "id": "malika",
+          "x": 290,
+          "y": 1400,
+          "s": 1.02,
+          "mood": "happy",
+          "look": 1
+        }
+      ],
+      "rule": {
+        "kicker": "Tajribali investor Malika",
+        "title": "Ulushni bosqichma-bosqich bering"
+      },
+      "say": "To'xta, Sardor. Ulushni bosqichma-bosqich ber. Har safar keyingi raundni ham hisoblab ko'r.",
+      "text": "To‘xta, Sardor. Ulushni bosqichma-bosqich ber. Har safar keyingi raundni ham hisoblab ko‘r.",
+      "highlight": [
+        "bosqichma-bosqich",
+        "keyingi"
+      ]
+    },
+    {
+      "bg": "gold",
+      "speaker": "narrator",
+      "zoomTo": 1.04,
+      "urlAt": 4000,
+      "cast": [
+        {
+          "id": "rustam",
+          "x": 225,
+          "y": 1040,
+          "s": 0.72,
+          "mood": "happy"
+        },
+        {
+          "id": "sardor",
+          "x": 540,
+          "y": 1040,
+          "s": 0.95,
+          "mood": "happy",
+          "pose": "wave"
+        },
+        {
+          "id": "malika",
+          "x": 855,
+          "y": 1040,
+          "s": 0.72,
+          "mood": "happy"
+        }
+      ],
+      "url": "investage.uz",
+      "note": "Misol o‘ylab topilgan, qahramonlar to‘qima",
+      "say": "Siz birinchi investorga necha foiz berardingiz? Izohda yozing. Startapingizni investorlarga Investeyj nuqta uz saytida ko'rsating.",
+      "text": "Siz birinchi investorga necha foiz berardingiz? Izohda yozing. Startapingizni investorlarga ko‘rsating: investage.uz",
+      "highlight": [
+        "necha",
+        "foiz",
+        "izohda"
+      ]
+    }
   ]
 }

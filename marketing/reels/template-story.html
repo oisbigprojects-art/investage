@@ -29,6 +29,9 @@ svg g { transform-box: view-box; }
 .sub em { font-style: normal; color: #FFCF33; }
 .url { position: absolute; left: 110px; right: 110px; top: 1240px; z-index: 11; background: #F5BF17; color: #17181f; font: 800 84px 'Manrope'; text-align: center; padding: 30px 20px; border-radius: 40px; }
 .note { position: absolute; left: 0; right: 0; top: 318px; z-index: 12; text-align: center; font: 700 32px 'Inter'; color: #fff; }
+.vig { position: absolute; inset: 0; z-index: 10; pointer-events: none; background: radial-gradient(ellipse at 50% 42%, rgba(0,0,0,0) 52%, rgba(8,8,30,.42) 100%); }
+.grain { position: absolute; inset: 0; z-index: 10; opacity: .07; mix-blend-mode: overlay; pointer-events: none; }
+.coin { position: absolute; width: 58px; height: 58px; border-radius: 50%; background: radial-gradient(circle at 35% 30%, #FFE9A0, #F5BF17 55%, #B98600); box-shadow: inset 0 0 0 5px rgba(150,100,0,.35); z-index: 11; }
 .wipe { position: absolute; left: 50%; top: 50%; width: 2600px; height: 2600px; margin: -1300px; border-radius: 50%; background: #F5BF17; z-index: 20; transform: scale(0); }
 </style>
 </head>
@@ -41,6 +44,8 @@ svg g { transform-box: view-box; }
     <div class="badge" id="badge">Agar...?</div>
   </div>
   <div class="sub" id="sub"></div>
+  <div class="vig"></div>
+  <svg class="grain" width="1080" height="1920"><filter id="n"><feTurbulence type="fractalNoise" baseFrequency=".85" numOctaves="2" stitchTiles="stitch"/></filter><rect width="100%" height="100%" filter="url(#n)"/></svg>
 </div>
 <script>
 const ANIMS = [], TICKS = [];
@@ -88,13 +93,17 @@ function character(id, x, y, s, flip) {
     <ellipse cx="-54" cy="-6" rx="56" ry="24" fill="${c.shoe}"/><ellipse cx="54" cy="-6" rx="56" ry="24" fill="${c.shoe}"/>
     ${arm('L')}
     <path d="M-124,-96 Q-138,-322 -62,-336 L62,-336 Q138,-322 124,-96 Q0,-76 -124,-96Z" fill="${c.top}"/>
+    <path d="M40,-336 L62,-336 Q138,-322 124,-96 Q84,-86 40,-84 Q96,-210 40,-336Z" fill="rgba(0,0,30,.13)"/>
     ${extraOf(id, c)}
     ${arm('R')}
     <g class="head" style="transform-origin:0px -340px">
       <rect x="-38" y="-378" width="76" height="60" rx="24" fill="${c.skin}" filter="brightness(.9)"/>
       <circle cx="-136" cy="-470" r="26" fill="${c.skin}"/><circle cx="136" cy="-470" r="26" fill="${c.skin}"/>
       <rect x="-136" y="-606" width="272" height="262" rx="112" fill="${c.skin}"/>
+      <path d="M40,-606 Q136,-590 136,-470 Q136,-350 40,-344 Q96,-470 40,-606Z" fill="rgba(120,50,30,.13)"/>
+      <ellipse cx="-84" cy="-420" rx="26" ry="15" fill="rgba(235,90,80,.28)"/><ellipse cx="84" cy="-420" rx="26" ry="15" fill="rgba(235,90,80,.28)"/>
       ${hairOf(id, c)}
+      <path d="M-90,-590 Q-30,-640 40,-620 Q-20,-612 -70,-572Z" fill="rgba(255,255,255,.16)"/>
       <g class="eyes" style="transform-origin:0px -476px">
         <ellipse cx="-56" cy="-476" rx="24" ry="29" fill="#fff"/><ellipse cx="56" cy="-476" rx="24" ry="29" fill="#fff"/>
         <circle class="pup" cx="-54" cy="-474" r="15" fill="#1a1a22"/><circle class="pup" cx="58" cy="-474" r="15" fill="#1a1a22"/>
@@ -116,6 +125,19 @@ function skyline(y, color, seed) {
   return d;
 }
 const table = (top, c1, c2) => `<rect x="-30" y="${top}" width="1140" height="46" rx="12" fill="${c1}"/><rect x="0" y="${top + 46}" width="1080" height="${1920 - top}" fill="${c2}"/>`;
+function street() {
+  const row = (y, h0, seed, cols, wMin) => { let out = '', x = -40, i = 0; while (x < 1160) { const w = wMin + rnd(seed + i) * 90, ht = h0 + rnd(seed * 3 + i) * 230, c = cols[i % cols.length]; out += `<rect x="${x}" y="${y - ht}" width="${w}" height="${ht + 40}" fill="${c}"/>`; for (let a = 0; a < Math.floor(ht / 46); a++) for (let b = 0; b < Math.floor(w / 42); b++) out += `<rect x="${x + 14 + b * 42}" y="${y - ht + 18 + a * 46}" width="22" height="28" rx="3" fill="${rnd(seed + a * 13 + b * 5 + i) > .5 ? '#FFD98A' : 'rgba(30,30,70,.45)'}"/>`; x += w + 6; i++; } return out; };
+  const people = () => { let out = ''; for (let i = 0; i < 26; i++) { const x = rnd(i) * 1300 - 110, b = 1045 + rnd(i + 4) * 95, k = .62 + (b - 1045) / 170, c = ['#E4572E', '#1FA58A', '#2C5FA8', '#F2EFE8', '#A06A8C', '#D9536F'][i % 6], sk = ['#F2C09A', '#E3A97F', '#C98F62'][i % 3]; out += `<g class="wk" data-v="${(i % 2 ? 1 : -1) * (40 + rnd(i) * 50)}"><g transform="translate(${x},${b}) scale(${k})"><rect x="-17" y="-60" width="14" height="60" rx="7" fill="#2f3550"/><rect x="3" y="-60" width="14" height="60" rx="7" fill="#2f3550"/><rect x="-26" y="-132" width="52" height="82" rx="20" fill="${c}"/><circle cx="0" cy="-158" r="27" fill="${sk}"/><path d="M-27,-160 Q-22,-190 0,-188 Q24,-190 27,-160 Q0,-172 -27,-160Z" fill="#2A1C14"/></g></g>`; } return out; };
+  return { back: `<defs><linearGradient id="gS" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#3B3F9E"/><stop offset=".42" stop-color="#E06C8C"/><stop offset=".72" stop-color="#FFC27A"/></linearGradient><radialGradient id="gSun"><stop offset="0" stop-color="#FFF3C4"/><stop offset=".3" stop-color="#FFE29A"/><stop offset="1" stop-color="#FFE29A" stop-opacity="0"/></radialGradient></defs>
+    <rect width="1080" height="1920" fill="url(#gS)"/><circle cx="700" cy="620" r="330" fill="url(#gSun)"/>
+    <g class="p1"><path d="M250,860 Q250,740 340,720 Q430,740 430,860Z" fill="#2C8BC4"/><rect x="230" y="860" width="220" height="130" fill="#D9B98A"/>${row(1000, 120, 3, ['#7A5FA8', '#8C6AB0', '#6F5AA0'], 90)}</g>
+    <g class="p2">${row(1040, 240, 7, ['#D97B5A', '#C9A27A', '#7A8FB0', '#E0C49A', '#A06A8C', '#6FA79B'], 150)}</g>
+    <rect y="1020" width="1080" height="130" fill="#B7AFB3"/><rect y="1150" width="1080" height="800" fill="#5B5A6C"/>
+    ${[0,1,2,3,4].map(i => `<rect x="${i * 240 - 40}" y="1248" width="130" height="12" fill="#EFE9DA"/>`).join('')}
+    <g class="p3">${[0,1,2,3,4,5].map(i => `<g transform="translate(${i * 300 - 180},1040)"><rect x="-9" y="-150" width="18" height="150" fill="#5F4230"/><circle cx="0" cy="-200" r="82" fill="#4B8F4F"/><circle cx="-46" cy="-158" r="58" fill="#5A9E55"/><circle cx="48" cy="-162" r="60" fill="#3F8A4E"/></g>`).join('')}</g>
+    ${people()}`,
+    front: `<g class="car" data-v="-340"><g transform="translate(1320,1330)"><path d="M-190,0 Q-190,-60 -120,-66 L-70,-124 Q-50,-140 20,-140 L100,-140 Q130,-140 150,-96 L196,-70 Q220,-56 220,0Z" fill="#F5BF17"/><path d="M-50,-122 L10,-122 L10,-72 L-92,-72Z M30,-122 L92,-122 Q112,-122 126,-76 L30,-72Z" fill="#2B3350"/><circle cx="-110" cy="4" r="44" fill="#17171C"/><circle cx="130" cy="4" r="44" fill="#17171C"/><circle cx="-110" cy="4" r="18" fill="#C9CBD6"/><circle cx="130" cy="4" r="18" fill="#C9CBD6"/></g></g>` };
+}
 const BG = {
   night: { back: `<defs><linearGradient id="gN" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#232A6B"/><stop offset="1" stop-color="#3B2F7E"/></linearGradient><radialGradient id="gL"><stop offset="0" stop-color="#FFD98A" stop-opacity=".75"/><stop offset="1" stop-color="#FFD98A" stop-opacity="0"/></radialGradient></defs>
       <rect width="1080" height="1920" fill="url(#gN)"/>
@@ -131,6 +153,7 @@ const BG = {
     front: `${table(1180, '#3C4C6E', '#26324C')}<g transform="translate(540,1178)"><path d="M-110,0 l26,-34 h168 l26,34z" fill="#fff"/><path d="M-60,-20 h100 M-40,-10 h110" stroke="#9aa" stroke-width="5"/></g>` },
   bright: { back: `<rect width="1080" height="1920" fill="#FFE9A8"/><rect x="520" y="660" width="480" height="430" rx="22" fill="#fff" stroke="#D9B64A" stroke-width="16"/><path d="M570,1010 L680,930 L780,960 L930,760" fill="none" stroke="#1FA58A" stroke-width="18" stroke-linecap="round" stroke-linejoin="round"/><path d="M930,760 l-46,6 M930,760 l-4,46" stroke="#1FA58A" stroke-width="18" stroke-linecap="round"/>`,
     front: `${table(1250, '#D9A441', '#B8862E')}` },
+  street: street(),
   chart: { back: `<defs><radialGradient id="gC"><stop offset="0" stop-color="#34407E"/><stop offset="1" stop-color="#14162F"/></radialGradient></defs><rect width="1080" height="1920" fill="url(#gC)"/>`, front: '' },
   gold: { back: `<rect width="1080" height="1920" fill="#232A6B"/>${[0,1,2,3,4,5,6,7,8,9,10,11].map(i => `<path d="M540,830 L${540 + 1600 * Math.cos(i * .5236)},${830 + 1600 * Math.sin(i * .5236)} L${540 + 1600 * Math.cos(i * .5236 + .26)},${830 + 1600 * Math.sin(i * .5236 + .26)}Z" fill="#2E3790"/>`).join('')}`, front: '' },
 };
@@ -154,6 +177,7 @@ function setupChar(root, cfg, s, t0, t1, idx) {
     anim(head, [{ transform: `rotate(${cfg.tilt || 0}deg)` }, { transform: `rotate(${(cfg.tilt || 0) + 1.6}deg)` }, { transform: `rotate(${cfg.tilt || 0}deg)` }], t0, 2600, 'ease-in-out', { iterations: Infinity });
   }
   if (cfg.pose === 'wave') anim(armL, [{ transform: 'rotate(120deg)' }, { transform: 'rotate(150deg)' }, { transform: 'rotate(120deg)' }], t0, 640, 'ease-in-out', { iterations: Infinity });
+  if (cfg.pose === 'walk') { anim(armL, [{ transform: 'rotate(-16deg)' }, { transform: 'rotate(16deg)' }, { transform: 'rotate(-16deg)' }], t0, 760, 'ease-in-out', { iterations: Infinity }); anim(armR, [{ transform: 'rotate(16deg)' }, { transform: 'rotate(-16deg)' }, { transform: 'rotate(16deg)' }], t0, 760, 'ease-in-out', { iterations: Infinity }); anim(g, [{ transform: 'translateY(0)' }, { transform: 'translateY(-16px)' }, { transform: 'translateY(0)' }], t0, 380, 'ease-in-out', { iterations: Infinity }); }
   if (cfg.pose === 'drop') anim(g, [{ transform: 'translateY(0)' }, { transform: 'translateY(26px) scaleY(.96)' }], t0 + 300, 900);
   if (cfg.enter) anim(g, [{ transform: `translateX(${cfg.enter}px)` }, { transform: 'translateX(0)' }], t0, 620, E_BACK, { composite: 'add' });
   const mouth = g.querySelector('.mouth'), w = 34;
@@ -227,8 +251,14 @@ window.build = function (spec) {
     const cam = sc.querySelector('.cam'), ox = s.camX || 540, oy = s.camY || 900;
     cam.style.transformOrigin = `${ox}px ${oy}px`;
     anim(cam, [{ transform: `scale(${s.zoomFrom || 1})` }, { transform: `scale(${s.zoomTo || 1.08})` }], s0, s1 - s0, 'linear');
+    const dur = s1 - s0;
+    [['.p1', 14], ['.p2', 34], ['.p3', 70]].forEach(([q, d]) => sc.querySelectorAll(q).forEach(e => anim(e, [{ transform: `translateX(${d}px)` }, { transform: `translateX(${-d}px)` }], s0, dur, 'linear')));
+    sc.querySelectorAll('.wk').forEach(e => anim(e, [{ transform: 'translateX(0)' }, { transform: `translateX(${+e.dataset.v * dur / 1000}px)` }], s0, dur, 'linear'));
+    sc.querySelectorAll('.car').forEach(e => anim(e, [{ transform: 'translateX(0)' }, { transform: `translateX(${+e.dataset.v * dur / 1000 * 1.4}px)` }], s0 + 300, dur, 'linear'));
     (s.cast || []).forEach(c => setupChar(sc, c, s, s0, s1, idx));
-    if (s.pie) setupPie(sc, s, s0);
+    if (s.pie) { setupPie(sc, s, s0); const at = s0 + (s.dropAt || 700);
+      for (let i = 0; i < 16; i++) { const cn = h('div', 'coin'), a = rnd(i + idx) * 6.28, d = 260 + rnd(i * 3) * 340; cn.style.left = '511px'; cn.style.top = '880px'; sc.appendChild(cn);
+        anim(cn, [{ opacity: 0, transform: 'translate(0,0) scale(.3)' }, { opacity: 1, offset: .15 }, { opacity: 0, transform: `translate(${Math.cos(a) * d}px,${Math.sin(a) * d + 420}px) scale(1) rotate(300deg)` }], at + i * 28, 1000, 'cubic-bezier(.3,.3,.6,1)'); } }
     if (s.tag) { const e = h('div', 'tag', esc(s.tag)); sc.appendChild(e); anim(e, [{ opacity: 0, transform: 'translateX(-50%) scale(.6) rotate(-4deg)' }, { opacity: 1, transform: 'translateX(-50%) scale(1) rotate(-2deg)' }], s0 + 120, 460, E_BACK); }
     if (s.rule) { const e = h('div', 'rule', `<i>${esc(s.rule.kicker)}</i><b>${esc(s.rule.title)}</b>`); sc.appendChild(e); anim(e, [{ opacity: 0, transform: 'translateY(-40px) scale(.92)' }, { opacity: 1, transform: 'none' }], s0 + 300, 560, E_BACK); }
     if (s.url) { const e = h('div', 'url', esc(s.url)); sc.appendChild(e); anim(e, [{ opacity: 0, transform: 'scale(.7)' }, { opacity: 1, transform: 'scale(1)' }], s0 + (s.urlAt || 2000), 520, E_BACK); anim(e, [{ transform: 'scale(1)' }, { transform: 'scale(1.04)' }, { transform: 'scale(1)' }], s0 + (s.urlAt || 2000) + 700, 900, 'ease-in-out', { iterations: Infinity, composite: 'add' }); }

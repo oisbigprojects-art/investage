@@ -13,6 +13,7 @@ const ACT = {
     return bits.join(', ') || "o'zgarish yo'q";
   },
   users_export: (d) => `${d?.rows ?? 0} ta yozuv eksport qilindi`,
+  video_remove: () => "video o'chirildi",
   user_block: () => 'bloklandi',
   user_unblock: () => 'blokdan chiqarildi',
 };

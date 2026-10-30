@@ -45,6 +45,20 @@ export async function setBlocked(formData) {
   go(back, 'xabar', blocked ? 'Bloklandi' : 'Blokdan chiqarildi');
 }
 
+export async function clearVideo(formData) {
+  const supabase = await ctx();
+  const startup = String(formData.get('startup') || '');
+  const user = String(formData.get('user') || '');
+  if (!isId(startup) || !isId(user)) go('/admin/foydalanuvchilar', 'xato', 'Startap topilmadi');
+  const back = `/admin/foydalanuvchilar/${user}`;
+  const { data: url, error } = await supabase.rpc('admin_clear_video', { p_startup: startup });
+  if (error) go(back, 'xato', error.message);
+  const path = String(url || '').split('/object/public/videos/')[1];
+  if (path) await supabase.storage.from('videos').remove([path]);
+  revalidatePath('/', 'layout');
+  go(back, 'xabar', "Video o'chirildi");
+}
+
 export async function setFeedback(formData) {
   const back = internal(formData.get('back'), '/admin/murojaatlar');
   const supabase = await ctx();

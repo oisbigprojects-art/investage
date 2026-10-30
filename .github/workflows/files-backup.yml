@@ -1,4 +1,4 @@
-# Har kuni Storage fayllari zaxirasi: logotip va startap hujjatlari yuklab olinadi, shifrlanib 30 kun saqlanadi.
+# Har kuni Storage fayllari zaxirasi: logotip, startap hujjatlari va videolar yuklab olinadi, shifrlanib 30 kun saqlanadi.
 # Repo ochiq, shuning uchun fayl nomlari loglarga chiqarilmaydi va shifrlanmagan fayl yuklanmaydi.
 # Tiklash yo'riqnomasi: supabase/zaxira-tiklash.md
 name: Fayllar zaxirasi
@@ -27,9 +27,9 @@ jobs:
       - name: Fayllarni yuklab olish
         run: |
           sudo apt-get install -y -qq rclone > /dev/null
-          mkdir -p files/docs files/logos
+          mkdir -p files/docs files/logos files/videos
           # Fayl nomlari loglarga chiqmaydi: xatoda faqat soni va sababi ko'rinadi
-          for bucket in docs logos; do
+          for bucket in docs logos videos; do
             if ! rclone copy "SB:$bucket" "files/$bucket" --multi-thread-streams 0 --log-level ERROR 2> sync.err; then
               echo "$bucket: $(wc -l < sync.err) ta xato"
               sed -E 's#^[0-9/]+ [0-9:]+ ##; s#[0-9a-f-]{36}[^ :]*#<fayl>#g' sync.err | sort -u | head -5

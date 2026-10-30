@@ -2,7 +2,7 @@ import Link from 'next/link';
 import { notFound } from 'next/navigation';
 import { adminContext } from '@/lib/admin';
 import { Flash } from '@/components/ui';
-import { setBlocked } from '@/app/admin-actions';
+import { clearVideo, setBlocked } from '@/app/admin-actions';
 
 const fmt = (iso) => (iso ? new Date(iso).toLocaleString('uz-UZ', { day: 'numeric', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit', hour12: false, timeZone: 'Asia/Tashkent' }) : '—');
 
@@ -52,6 +52,16 @@ export default async function AdminUser({ params, searchParams }) {
           <p className="muted">
             {[u.startup.verified ? 'Tasdiqlangan' : 'Tasdiqlanmagan', u.startup.hidden ? 'Yashirin' : u.startup.listed ? 'Katalogda' : "Profil to'liq emas", u.startup.score != null && `Ball: ${u.startup.score}`].filter(Boolean).join(' · ')}
           </p>
+          {u.startup.video_url && (
+            <>
+              <video className="pitch-video" src={u.startup.video_url} controls playsInline preload="metadata" />
+              <form action={clearVideo}>
+                <input type="hidden" name="startup" value={u.startup.id} />
+                <input type="hidden" name="user" value={u.id} />
+                <button className="btn btn-danger btn-sm" type="submit">Videoni o'chirish</button>
+              </form>
+            </>
+          )}
         </section>
       )}
 

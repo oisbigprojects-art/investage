@@ -19,7 +19,7 @@ const csp = [
   `img-src 'self' data: blob: ${SUPABASE}`,
   "font-src 'self'",
   `connect-src 'self' ${SUPABASE} wss://fuklumjbymmkaflzndxp.supabase.co https://*.sentry.io`,
-  "media-src 'self'",
+  `media-src 'self' ${SUPABASE}`,
   "object-src 'none'",
   "base-uri 'self'",
   "form-action 'self'",

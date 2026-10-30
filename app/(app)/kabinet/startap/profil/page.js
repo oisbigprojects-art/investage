@@ -4,6 +4,9 @@ import { getT } from '@/lib/i18n/server';
 import { Flash, Monogram } from '@/components/ui';
 import { saveStartup } from '@/app/cabinet-actions';
 import { STAGE_KEYS, EXTRA_FIELDS } from '@/lib/labels';
+import VideoPitch from '@/components/VideoPitch';
+import { pickStrings } from '@/lib/i18n';
+import { VIDEO_KEYS } from '@/lib/i18n/video-keys';
 
 export async function generateMetadata() {
   const t = await getT();
@@ -32,6 +35,8 @@ export default async function StartupProfile({ searchParams }) {
         </p>
       </div>
       <Flash searchParams={sp} />
+
+      {s && <VideoPitch startupId={s.id} userId={s.owner_id} url={s.video_url} strings={pickStrings(t, VIDEO_KEYS)} lang={t.lang} />}
 
       <form action={saveStartup} className="card form">
         <div className="form-block">

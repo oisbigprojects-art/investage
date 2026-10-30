@@ -18,7 +18,7 @@ const getStartup = cache(async (id) => {
   const { supabase } = await getAuthUser();
   const { data } = await supabase
     .from('startups')
-    .select('id, owner_id, name, sector, short_desc, stage, score, verified, created_at, logo_url, hidden, listed, is_demo')
+    .select('id, owner_id, name, sector, short_desc, stage, score, verified, created_at, logo_url, video_url, hidden, listed, is_demo')
     .eq('id', id)
     .maybeSingle();
   return data;
@@ -124,6 +124,13 @@ export default async function StartupDetail({ params, searchParams }) {
           {isInvestor && <SaveButton startupId={s.id} saved={isSaved} back={`/startaplar/${s.id}`} withLabel t={t} />}
         </div>
       </section>
+
+      {s.video_url && (
+        <section className="card video-card">
+          <h2>{t('vid.title')}</h2>
+          <video className="pitch-video" src={s.video_url} controls playsInline preload="metadata" />
+        </section>
+      )}
 
       <div className="detail-grid">
         {/* ---------- YOPIQ QISM ---------- */}

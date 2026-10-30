@@ -957,6 +957,9 @@ html.menu-open { overflow: hidden; }
 .admin-charts { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 24px; }
 .admin-charts h3 { font-size: 0.9rem; color: var(--muted); margin-bottom: 12px; }
 .admin-charts .bars { gap: 3px; height: 150px; }
+.video-card { margin-bottom: 20px; display: grid; gap: 14px; }
+.video-card .btn { justify-self: start; }
+.pitch-video { width: 100%; max-height: 70vh; border-radius: 16px; background: #000; }
 .mfa-card { margin-bottom: 20px; }
 .mfa-qr { display: block; padding: 10px; background: #fff; border-radius: 16px; }
 .mfa-secret { display: block; margin-top: 8px; font: 600 0.95rem var(--mono); word-break: break-all; user-select: all; }

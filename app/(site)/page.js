@@ -8,7 +8,6 @@ import { pickStrings } from '@/lib/i18n';
 import StartupCard from '@/components/StartupCard';
 import SealedDemo from '@/components/SealedDemo';
 import { DEMO_KEYS } from '@/lib/i18n/demo-keys';
-import { ScoreRing } from '@/components/ui';
 import { CheckIcon, LockIcon, SealIcon } from '@/components/icons';
 import Splash from '@/components/Splash';
 import ValuationCalc from '@/components/ValuationCalc';
@@ -20,6 +19,8 @@ import { SITE_URL } from '@/lib/site-url';
 import { CONTACT } from '@/lib/site';
 
 // Rolga bog'liq tugmalar (sessiya keyin keladi, matn esa darrov ko'rinadi)
+export const metadata = { alternates: { canonical: '/' } };
+
 async function HeroActions({ onDark = false }) {
   const [{ profile }, t] = await Promise.all([getSession(), getT()]);
   const ghost = onDark ? 'btn btn-light' : 'btn btn-ghost';
@@ -167,10 +168,6 @@ export default async function Home() {
         <div className="hero-visual">
           <span className="vault-ring" aria-hidden="true" />
           <span className="vault-ring vault-ring-2" aria-hidden="true" />
-          <span className="float float-a">
-            <ScoreRing value={78} size={40} t={t} />
-            <b>{t('ui.score')}</b>
-          </span>
           <span className="float float-b">
             <SealIcon size={22} />
             <b>{t('ui.verified')}</b>

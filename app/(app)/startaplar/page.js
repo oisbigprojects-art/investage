@@ -71,14 +71,14 @@ export default async function StartupsPage({ searchParams }) {
         <p className="muted">{t('cat.sub')}</p>
       </div>
 
-      <div className="stats stats-4 stats-strip">
+      {all.length >= 6 && <div className="stats stats-4 stats-strip">
         <Stat value={all.length} label={t('cat.stat_total')} />
         <Stat value={all.filter((r) => r.verified).length} label={t('cat.stat_verified')} tone="gold" />
         <Stat value={byStage('mvp') + byStage('daromad')} label={t('cat.stat_mvp')} />
         <Stat value={sectors.length} label={t('cat.stat_sectors')} />
-      </div>
+      </div>}
 
-      {all.length > 0 && (
+      {all.length >= 6 && (
         <details className="card insight">
           <summary>{t('cat.insight')}</summary>
           <div className="dash-row insight-body">

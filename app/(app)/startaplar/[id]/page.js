@@ -29,7 +29,9 @@ export async function generateMetadata({ params }) {
   const [data, t] = await Promise.all([getStartup(id), getT()]);
   if (!data?.name) return { title: t('meta.startup_default') };
   const title = `${data.name} — Investage`;
-  const description = (data.short_desc || t('meta.site_desc')).slice(0, 200);
+  // Juda qisqa tavsif qidiruvda hech narsa aytmaydi: nom va sohadan to'ldiramiz
+  const desc = data.short_desc || '';
+  const description = (desc.length >= 40 ? desc : t('meta.startup_desc', { name: data.name, sector: data.sector || t('role.startup') })).slice(0, 200);
   return {
     title,
     description,
@@ -123,6 +125,7 @@ export default async function StartupDetail({ params, searchParams }) {
           <span className="muted small">{t('detail.joined', { date: formatDate(s.created_at, t) })}</span>
           {isInvestor && <SaveButton startupId={s.id} saved={isSaved} back={`/startaplar/${s.id}`} withLabel t={t} />}
         </div>
+        <p className="muted small risk-note">{t('ui.risk')}</p>
       </section>
 
       {s.video_url && (
@@ -196,6 +199,7 @@ export default async function StartupDetail({ params, searchParams }) {
 function Redacted({ t }) {
   return (
     <div className="dossier is-locked">
+      <p className="locked-note small"><LockIcon size={15} /> {t('detail.after_ok')}</p>
       <div className="figures">
         <div className="figure">
           <span>{t('pd.funding')}</span>
@@ -325,6 +329,7 @@ function AccessPanel({ t, user, profile, req, startupId, isOwner, hasAccess }) {
           placeholder={t('access.message_ph')}
         />
       </label>
+      <p className="muted small">{t('ui.risk')}</p>
       <button className="btn btn-gold" type="submit">
         {again ? t('access.send_again') : t('access.send')}
       </button>

@@ -125,9 +125,9 @@ export default function SealedDemo({ strings, lang }) {
         </div>
       </div>
 
-      <div className="demo-dots" role="tablist" aria-hidden={phase !== 'locked'}>
+      <div className="demo-dots">
         {SAMPLES.map((_, i) => (
-          <button key={i} type="button" className={i === idx ? 'is-on' : ''} onClick={() => phase === 'locked' && !leaving && setIdx(i)} aria-label={`${i + 1}`} tabIndex={-1} />
+          <button key={i} type="button" className={i === idx ? 'is-on' : ''} onClick={() => phase === 'locked' && !leaving && setIdx(i)} aria-label={t('demo.dot', { n: i + 1 })} aria-pressed={i === idx} />
         ))}
       </div>
 

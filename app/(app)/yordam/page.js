@@ -1,3 +1,4 @@
+import Link from 'next/link';
 import { getSession } from '@/lib/supabase/server';
 import { getT } from '@/lib/i18n/server';
 import { Flash } from '@/components/ui';
@@ -50,6 +51,7 @@ export default async function HelpPage({ searchParams }) {
         </label>
         {/* Botlar uchun yashirin maydon */}
         <input className="visually-hidden" name="website" tabIndex={-1} autoComplete="off" aria-hidden="true" />
+        <p className="muted small">{t('help.privacy')} <Link href="/maxfiylik">{t('legal.privacy_title')}</Link></p>
         <button className="btn btn-gold" type="submit">
           {t('help.send')}
         </button>

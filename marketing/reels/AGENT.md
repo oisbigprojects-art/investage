@@ -36,6 +36,19 @@ TASDIQ_KERAK: ha
   Namuna: `scripts/003-agar-51-foiz.json`. Qahramonlar: Sardor, Rustam, Investor, Malika. Uzunligi 45–65 soniya, bu format uchun 18–28 soniya qoidasi amal qilmaydi.
 - Misollar to'qima bo'lsa, videoda ham, caption'da ham shunday yozing. Hisob-kitob aniq bo'lsin (2-qoida baribir amal qiladi).
 
+## Shablon: Stickman (stick.py)
+- Musiqasiz: faqat qisqa ovozlar va tovush effektlari (`sfx.py`, sintez). Namuna: `scripts/005-yoq-eshitganda.json`, sahnalar `stick-episodes.js` da.
+- Render: `python stick.py scripts/NNN.json out/NNN.mp4`; kadrlar varag'i: `python stick.py scripts/NNN.json --sheet out/NNN/`.
+- Nutq yo'q: gap pufakchalarda yoziladi, tovushi signal (`silent` + `sound`). Egasi qisqa TTS jumlalarni ham, sintez g'o'ldirashni ham rad etdi. Ovoz kerak bo'lsa, faqat haqiqiy odam yozuvi.
+- Ism har epizodda boshqacha bo'lsin, faqat Sardor emas (o'tganlar: Sardor, Bekzod).
+- Stickman multfilmda "hikoya o'ylab topilgan" yozuvi kerak emas (egasi qarori): videoda ham, caption'da ham yozilmaydi. Raqam va fakt to'qish taqiqi baribir amal qiladi.
+
+## Til
+- Asosiy til o'zbek lotin: taxminan 3 ta reels'dan 2 tasi. Har 3-chisi rus tilida (eng yaxshi chiqqan o'zbekcha videoning ruscha versiyasi bo'lishi mumkin).
+- Stickman videoda yozuvlar `tr('uz', 'ru')` bilan yoziladi, ruscha caption esa `caption_ru` da. Ruscha render: `python stick.py scripts/NNN.json out/NNN-ru.mp4 --lang ru`.
+- O'zbekcha caption'da ilgakdan keyin bitta qisqa `RU:` qatori bo'ladi. Inglizcha kontent hozircha qilinmaydi.
+- 2-3 hafta statistikadan keyin nisbat qayta ko'rib chiqiladi: qaysi til ko'proq saqlansa va saytga olib kelsa, shunga urg'u beriladi.
+
 ## Kunlik ish tartibi
 1. `marketing/reels/posted.json` va `content-plan.md` ni o'qing; navbatdagi ishlatilmagan mavzuni tanlang.
 2. `marketing/reels/scripts/NNN-qisqa-nom.json` yozing (format: render.py boshidagi izohda). `caption`: 1-qator — ilgak savol,

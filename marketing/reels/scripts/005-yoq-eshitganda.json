@@ -1,0 +1,43 @@
+{
+  "episode": "yoq",
+  "caption": "Investor “Yo‘q” dedi. Keyin nima qilasan? 🚪\n\nKo‘pchilik keyingi eshikka yuguradi va o‘sha xatoni takrorlaydi.\nBekzod to‘xtadi va bitta savol berdi: “Nega?”\n\nJavob og‘ir bo‘lishi mumkin, lekin aynan u keyingi qadamni ko‘rsatadi.\n\nSiz oxirgi marta “Nega?” deb so‘raganmisiz? Izohda yozing 👇\n\nRU: Инвестор сказал «Нет». Не беги к следующему: спроси почему.\n\n⚠️ Moliyaviy maslahat emas.\n\n🚀 Startapingizni investorlarga ko‘rsating: investage.uz (havola profilda)\n\n#startap #startup #investor #investitsiya #biznes #tadbirkorlik #uzbekistan #ozbekiston #toshkent #stickman #investage",
+  "lines": {
+    "inv_yoq": {
+      "silent": 0.47,
+      "sound": "buzz"
+    },
+    "lola_yoq": {
+      "silent": 0.4,
+      "sound": "buzz",
+      "rate": 1.3
+    },
+    "dark_yoq": {
+      "silent": 0.7,
+      "sound": "buzz",
+      "rate": 0.68
+    },
+    "hero_nega": {
+      "silent": 0.49,
+      "sound": "huh"
+    },
+    "inv_mijoz": {
+      "silent": 1.12,
+      "sound": "buzz",
+      "rate": 0.85
+    },
+    "inv_ha": {
+      "silent": 0.24,
+      "sound": "pop"
+    },
+    "malika_toxta": {
+      "silent": 0.9,
+      "sound": "pop"
+    },
+    "malika_sabab": {
+      "silent": 1.09,
+      "sound": "pop",
+      "rate": 1.25
+    }
+  },
+  "caption_ru": "Инвестор сказал «Нет». Что дальше? 🚪\n\nМногие бегут к следующему и повторяют ту же ошибку.\nБекзод остановился и задал один вопрос: «Почему?»\n\nОтвет может быть неприятным, но именно он показывает следующий шаг.\n\nКогда вы в последний раз спрашивали «Почему?» Напишите в комментариях 👇\n\n⚠️ Не является финансовой рекомендацией.\n\n🚀 Покажите свой стартап инвесторам: investage.uz (ссылка в профиле)\n\n#стартап #инвестиции #инвестор #бизнес #предпринимательство #узбекистан #ташкент #startup #stickman #investage"
+}

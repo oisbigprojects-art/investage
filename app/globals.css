@@ -1174,3 +1174,7 @@ html.menu-open { overflow: hidden; }
   .role-tabs { display: flex; }
   .role-tabs button { flex: 1; padding: 12px 8px; font-size: 0.9rem; }
 }
+
+/* Sodda matn: sarlavhaning ikkinchi yo'li va atamalar izohi */
+.hero h1 .h1-sub { font-size: 0.48em; line-height: 1.2; letter-spacing: -0.02em; font-weight: 700; color: #d9d7cb; margin-top: 14px; }
+.hero-explain { margin: 0 0 22px; padding-left: 14px; border-left: 3px solid var(--gold); color: #d9d7cb; font-size: 0.98rem; line-height: 1.45; }

@@ -149,11 +149,12 @@ export default async function Home() {
           <h1>
             <span>{t('home.h1a')}</span>
             <span className="hl">{t('home.h1b')}</span>
-            <span>{t('home.h1c')}</span>
+            <span className="h1-sub">{t('home.h1c')}</span>
           </h1>
           <p className="lead">
             {t('home.lead')}
           </p>
+          <p className="hero-explain">{t('home.explain')}</p>
 
           <Suspense fallback={<div className="row"><span className="skel skel-btn" /><span className="skel skel-btn" /></div>}>
             <HeroActions onDark />

@@ -4,7 +4,7 @@ import { getNews, getSitemapStartups, safe } from '@/lib/public-data';
 export const revalidate = 3600;
 
 export default async function sitemap() {
-  const pages = ['', '/startaplar', '/investorlar', '/yangiliklar', '/yordam', '/royxat', '/kirish', '/shartlar', '/maxfiylik'].map((p) => ({
+  const pages = ['', '/startaplar', '/investorlar', '/yangiliklar', '/biz-haqimizda', '/yordam', '/royxat', '/kirish', '/shartlar', '/maxfiylik'].map((p) => ({
     url: `${SITE_URL}${p}`,
     changeFrequency: p === '' || p === '/startaplar' ? 'daily' : 'monthly',
     priority: p === '' ? 1 : p === '/startaplar' ? 0.9 : 0.5,

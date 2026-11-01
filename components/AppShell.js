@@ -56,6 +56,7 @@ export async function Sidebar() {
           { href: '/', label: t('nav.home'), icon: 'home', exact: true },
           { href: '/startaplar', label: t('nav.startups'), icon: 'search' },
           { href: '/investorlar', label: t('nav.investors'), icon: 'users' },
+          { href: '/biz-haqimizda', label: t('nav.about'), icon: 'globe' },
           { href: '/yordam', label: t('nav.help'), icon: 'help' },
         ],
       },

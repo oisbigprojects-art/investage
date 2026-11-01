@@ -59,6 +59,7 @@ export default async function Topbar() {
             {role && <Link href={cabinet}>{t('nav.cabinet')}</Link>}
             {role === 'startup' && <Link href="/kabinet/startap/sorovlar">{t('nav.requests')}</Link>}
             <Link href="/yangiliklar">{t('news.title')}</Link>
+            <Link href="/biz-haqimizda">{t('nav.about')}</Link>
             <Link href="/yordam">{t('nav.help')}</Link>
           </nav>
           <div className="sheet-tools">

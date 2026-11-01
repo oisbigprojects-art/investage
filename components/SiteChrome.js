@@ -28,6 +28,7 @@ export default async function SiteChrome({ children }) {
               <p className="muted small">{t('brand.tagline')}</p>
             </div>
             <nav className="footer-links" aria-label={t('nav.footer')}>
+              <Link href="/biz-haqimizda">{t('nav.about')}</Link>
               <Link href="/startaplar">{t('nav.startups')}</Link>
               <Link href="/investorlar">{t('nav.investors')}</Link>
               <Link href="/yangiliklar">{t('news.title')}</Link>

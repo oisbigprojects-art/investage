@@ -8,7 +8,7 @@ import { pickStrings } from '@/lib/i18n';
 import StartupCard from '@/components/StartupCard';
 import SealedDemo from '@/components/SealedDemo';
 import { DEMO_KEYS } from '@/lib/i18n/demo-keys';
-import { CheckIcon, LockIcon, SealIcon } from '@/components/icons';
+import { CheckIcon, LockIcon, SealIcon, PlusIcon, SearchIcon, ChatIcon } from '@/components/icons';
 import Splash from '@/components/Splash';
 import ValuationCalc from '@/components/ValuationCalc';
 import HomeStory from '@/components/HomeStory';
@@ -24,6 +24,26 @@ export const metadata = { alternates: { canonical: '/' } };
 async function HeroActions({ onDark = false }) {
   const [{ profile }, t] = await Promise.all([getSession(), getT()]);
   const ghost = onDark ? 'btn btn-light' : 'btn btn-ghost';
+  if (!profile && onDark) {
+    // Birinchi ekran: odam o'zini bir qarashda topadigan ikki katta tanlov
+    return (
+      <>
+        <div className="hero-choices">
+          <Link className="choice choice-gold" href="/royxat?rol=startup">
+            <span className="choice-ic"><PlusIcon size={24} /></span>
+            <span className="choice-tx"><b>{t('home.choice1_t')}</b><small>{t('home.choice1_d')}</small></span>
+            <ArrowIcon size={18} />
+          </Link>
+          <Link className="choice" href="/royxat?rol=investor">
+            <span className="choice-ic"><SearchIcon size={24} /></span>
+            <span className="choice-tx"><b>{t('home.choice2_t')}</b><small>{t('home.choice2_d')}</small></span>
+            <ArrowIcon size={18} />
+          </Link>
+        </div>
+        <Link className="hero-browse" href="/startaplar">{t('home.cta_browse')} <ArrowIcon size={15} /></Link>
+      </>
+    );
+  }
   return profile ? (
     <div className="row">
       <Link className="btn btn-gold" href="/kabinet">
@@ -45,27 +65,37 @@ async function HeroActions({ onDark = false }) {
   );
 }
 
-// Platforma raqamlari: startaplar soni ishonarli bo'lgandagina ko'rsatiladi ("1 startap, 0 tasdiqlangan"
-// yangi tashrif buyuruvchiga bo'sh platformadek ko'rinadi), aks holda platforma haqidagi aniq faktlar
+// Raqamlar startaplar soni ishonarli bo'lgandagina ko'rsatiladi ("1 startap, 0 tasdiqlangan" bo'sh saytdek ko'rinadi),
+// aks holda odamga aniq foyda aytiladi
 const STATS_MIN_STARTUPS = 10;
 async function StatBand() {
   const [data, t] = await Promise.all([safe(getPlatformStats, null), getT()]);
   const n = (k) => Number(data?.[k]) || 0;
-  const real = n('startups') >= STATS_MIN_STARTUPS;
-  const items = real
-    ? [
-        [n('startups'), t('home.stat_startups')],
-        [n('verified'), t('home.stat_verified')],
-        [n('investors'), t('home.stat_investors')],
-        [n('approved'), t('home.stat_approved')],
-      ]
-    : [
-        [t('home.fact_score_n'), t('home.fact_score')],
-        [t('home.fact_lang_n'), t('home.fact_lang')],
-        [t('home.fact_ctrl_n'), t('home.fact_ctrl')],
-      ];
+  if (n('startups') < STATS_MIN_STARTUPS) {
+    const perks = [
+      [CheckIcon, 'home.perk1_t', 'home.perk1_d'],
+      [LockIcon, 'home.perk2_t', 'home.perk2_d'],
+      [ChatIcon, 'home.perk3_t', 'home.perk3_d'],
+    ];
+    return (
+      <div className="perks">
+        {perks.map(([Icon, a, b]) => (
+          <div className="perk" key={a}>
+            <span className="perk-ic"><Icon size={22} /></span>
+            <div><b>{t(a)}</b><p>{t(b)}</p></div>
+          </div>
+        ))}
+      </div>
+    );
+  }
+  const items = [
+    [n('startups'), t('home.stat_startups')],
+    [n('verified'), t('home.stat_verified')],
+    [n('investors'), t('home.stat_investors')],
+    [n('approved'), t('home.stat_approved')],
+  ];
   return (
-    <div className={`statband ${real ? 'is-4' : ''}`}>
+    <div className="statband is-4">
       {items.map(([v, l]) => (
         <div key={l}>
           <b className="num">{v}</b>
@@ -149,21 +179,17 @@ export default async function Home() {
           <h1>
             <span>{t('home.h1a')}</span>
             <span className="hl">{t('home.h1b')}</span>
-            <span className="h1-sub">{t('home.h1c')}</span>
+            <span>{t('home.h1c')}</span>
           </h1>
           <p className="lead">
             {t('home.lead')}
           </p>
-          <p className="hero-explain">{t('home.explain')}</p>
 
           <Suspense fallback={<div className="row"><span className="skel skel-btn" /><span className="skel skel-btn" /></div>}>
             <HeroActions onDark />
           </Suspense>
 
-          <p className="hero-note">
-            <LockIcon size={15} />
-            {t('home.note')}
-          </p>
+          <p className="hero-explain">{t('home.explain')}</p>
         </div>
 
         <div className="hero-visual">

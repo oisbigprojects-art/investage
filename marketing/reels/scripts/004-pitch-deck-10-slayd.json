@@ -1,0 +1,19 @@
+{
+  "voice": "voicelab:voice_fa56cecf-9b0b-45ba-9ec3-494efb5b301f",
+  "rate": 1.08,
+  "caption": "Pitch-deck tuzyapsizmi, lekin nimadan boshlashni bilmayapsizmi? 📊\n\nKeng tarqalgan tuzilma — 10 ta slayd, 4 ta qism:\n\n1️⃣ Muammo, yechim, mahsulot — kimning qaysi muammosini hal qilasiz.\n2️⃣ Bozor, biznes model, raqobat — pulni qanday topasiz.\n3️⃣ Natijalar, jamoa — nima qildingiz va kim quryapti.\n4️⃣ Moliya, so‘rov — qancha kerak va nimaga sarflanadi.\n\nBu qat’iy qoida emas: tartibni startapingizga moslang, lekin har slaydda bitta asosiy fikr qolsin.\n\n🚀 Tayyor bo‘lsa, startapingizni investorlarga ko‘rsating: investage.uz (havola profilda)\n\nSaqlab qo‘ying va startapchi do‘stingizga yuboring 👇\n\n#startap #startup #pitchdeck #investitsiya #investor #biznes #uzbekistan #ozbekiston #toshkent #tadbirkorlik #investage",
+  "scenes": [
+    {"type": "hook", "eyebrow": "Startapchilar uchun", "title": "Pitch-deck: 10 ta slaydda nima bo‘ladi?", "highlight": ["10", "slaydda"],
+     "say": "Pitch dek qanday tuziladi? O'nta slayd, to'rtta qism."},
+    {"type": "point", "num": "1–3", "title": "Muammo, yechim, mahsulot", "body": "Kimning qaysi muammosini hal qilasiz? Mahsulotingiz buni qanday yechadi?",
+     "say": "Birinchi uchtasi — muammo, yechim, mahsulot. Kimning muammosini hal qilasiz?"},
+    {"type": "point", "num": "4–6", "title": "Bozor, model, raqobat", "body": "Bozor qanchalik katta? Pulni qanday topasiz? Sizdan oldin kim bor?",
+     "say": "Keyingi uchtasi — bozor, biznes model, raqobat. Pulni qanday topasiz?"},
+    {"type": "point", "num": "7–8", "title": "Natijalar va jamoa", "body": "Nimaga erishdingiz? Mijozlar va daromad. Buni kim quryapti?",
+     "say": "Keyin natijalar va jamoa. Nimaga erishdingiz, buni kim quryapti?"},
+    {"type": "point", "num": "9–10", "title": "Moliya va so‘rov", "body": "Qancha mablag‘ kerak, nimaga sarflanadi, evaziga nima taklif qilasiz?",
+     "say": "Oxirida moliya va so'rov. Qancha kerak, nimaga sarflanadi?"},
+    {"type": "cta", "title": "Tayyor bo‘lsa, investorlarga ko‘rsating", "highlight": ["investorlarga"], "button": "investage.uz", "note": "Ro‘yxatdan o‘tish bepul",
+     "say": "Taqdimotingiz tayyormi? Startapingizni Investeyj nuqta uz saytida investorlarga ko'rsating."}
+  ]
+}

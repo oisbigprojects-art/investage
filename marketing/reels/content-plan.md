@@ -27,3 +27,6 @@ Ustunlar: S — startapchilarga, I — investorlarga, P — Investage platformas
 23. [S] Moliyaviy prognoz: investor ishonadigan raqamlar qanday tuziladi
 24. [P] Profilingizni to'ldiring: katalogga chiqish uchun 5 ta maydon
 25. [S] Birinchi 100 mijozni qanday topish mumkin
+26. [S] "Agar...?" seriali: agar asoschilar ulushni shartnomasiz bo'lishsa-chi? (vesting nima — to'qima misol)
+27. [S] "Agar...?" seriali: agar pulni mahsulotdan oldin reklamaga sarflasang-chi? (runway nima — to'qima misol)
+28. [I] "Agar...?" seriali: agar investor bitta startapga hamma pulini kiritsa-chi? (portfel, to'qima misol, moliyaviy maslahat emas)

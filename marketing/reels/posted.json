@@ -22,5 +22,13 @@
     "video": "public/reels/003-agar-51-foiz.mp4",
     "media_id": "18129753272488195",
     "permalink": "https://www.instagram.com/reel/DfHqy2gDJjV/"
+  },
+  {
+    "date": "2026-11-01",
+    "topic": "Investordan \"yo'q\" eshitganda nima qilish kerak: stickman, tovush effektlari, ruscha versiya",
+    "script": "scripts/005-yoq-eshitganda.json",
+    "video": "public/reels/005-yoq-eshitganda-ru.mp4",
+    "media_id": "18063835001558732",
+    "permalink": "https://www.instagram.com/reel/DfM35lYEzvz/"
   }
 ]

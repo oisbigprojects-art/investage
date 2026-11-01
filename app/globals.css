@@ -1204,22 +1204,58 @@ html.menu-open { overflow: hidden; }
 .perk-ic { flex: none; width: 44px; height: 44px; border-radius: 14px; display: grid; place-items: center; background: rgba(246, 190, 19, 0.14); color: var(--gold); }
 
 /* Biz haqimizda */
-.about-hero { padding: 40px 0 8px; max-width: 760px; }
-.about-hero h1 { font-size: clamp(2.2rem, 6vw, 3.8rem); line-height: 1.05; letter-spacing: -0.04em; margin: 14px 0 16px; }
-.about-why { max-width: 760px; }
-.about-why p { font-size: 1.1rem; line-height: 1.65; color: var(--muted); }
-.about-grid { display: grid; gap: 14px; }
-.about-grid-2 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
-.about-card h3 { margin: 14px 0 6px; }
-.about-card p { margin: 0; line-height: 1.5; }
-.about-card .perk-ic { color: var(--gold-ink); }
-.about-contact { padding: 28px; }
-.about-links { display: flex; flex-wrap: wrap; gap: 10px 22px; margin: 14px 0 20px; font-weight: 700; }
+.ab-hero { position: relative; overflow: hidden; display: grid; grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr); gap: 40px; align-items: center; padding: 56px; border-radius: 40px; color: #f5f4ee; background: radial-gradient(800px 480px at 80% 10%, rgba(246, 190, 19, 0.22), transparent 70%), #0d0d0b; box-shadow: 0 40px 90px -50px rgba(0, 0, 0, 0.7); }
+.ab-hero .eyebrow { background: rgba(246, 190, 19, 0.14); color: #f6c945; }
+.ab-hero h1 { margin: 16px 0 18px; color: #fff; font-size: clamp(2rem, 3.8vw, 3.3rem); line-height: 1.14; letter-spacing: -0.04em; }
+.ab-hero .hl { display: inline-block; color: #16160f; }
+.ab-hero .hl::after { top: 0.04em; bottom: 0.02em; height: auto; left: -10px; right: -10px; border-radius: 12px; transform: rotate(-1deg); }
+.ab-hero .lead { margin: 0; color: #bdbcb1; }
+.ab-link { display: flex; align-items: center; min-width: 0; }
+.ab-node { flex: none; width: 104px; height: 104px; border-radius: 26px; display: grid; place-items: center; align-content: center; gap: 6px; background: rgba(255, 255, 255, 0.07); border: 1px solid rgba(255, 255, 255, 0.16); color: #f6c945; }
+.ab-node b { color: #fff; font: 800 0.92rem var(--display); }
+.ab-hub { flex: none; width: 76px; height: 76px; border-radius: 50%; display: grid; place-items: center; background: var(--gold); color: #17170f; font: 800 2.2rem var(--display); box-shadow: 0 0 0 10px rgba(246, 190, 19, 0.16), 0 0 60px rgba(246, 190, 19, 0.7); animation: ab-pulse 2.4s ease-in-out infinite; }
+.ab-line { position: relative; flex: 1; min-width: 14px; height: 3px; background: rgba(246, 190, 19, 0.35); overflow: hidden; }
+.ab-line i { position: absolute; top: 0; left: -40%; width: 40%; height: 100%; background: linear-gradient(90deg, transparent, #ffe27a); animation: ab-run 1.8s linear infinite; }
+.ab-line i + i { animation-delay: 0.9s; }
+.ab-line-r { transform: scaleX(-1); }
+@keyframes ab-run { to { left: 110%; } }
+@keyframes ab-pulse { 50% { box-shadow: 0 0 0 16px rgba(246, 190, 19, 0.1), 0 0 80px rgba(246, 190, 19, 0.9); } }
+.ab-pains { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 14px; margin-top: 18px; }
+.ab-pains article { padding: 26px; border-radius: 26px; background: var(--panel); box-shadow: var(--shadow); }
+.ab-pains p { margin: 12px 0 0; font: 700 1.2rem/1.35 var(--display); letter-spacing: -0.02em; }
+.ab-tag { display: inline-block; padding: 6px 14px; border-radius: 999px; background: var(--pill); color: var(--muted); font-size: 0.86rem; font-weight: 700; }
+.ab-answer { margin: 20px 0 0; padding: 20px 26px; border-radius: 22px; background: var(--gold); color: #17170f; font: 800 clamp(1.1rem, 2vw, 1.4rem)/1.3 var(--display); letter-spacing: -0.02em; text-align: center; }
+.ab-sides { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 14px; margin-top: 18px; }
+.ab-side { display: flex; flex-direction: column; gap: 10px; padding: 28px; border-radius: 28px; background: #0d0d0b; color: #f5f4ee; transition: transform 0.2s var(--ease); }
+.ab-side:hover { transform: translateY(-3px); text-decoration: none; }
+.ab-side h3 { margin: 6px 0 0; font-size: 1.35rem; color: inherit; }
+.ab-side p { margin: 0; flex: 1; line-height: 1.5; opacity: 0.8; }
+.ab-side b { display: inline-flex; align-items: center; gap: 8px; margin-top: 8px; color: #f6c945; }
+.ab-side-gold { background: var(--gold); color: #17170f; }
+.ab-side-gold b { color: #17170f; }
+.ab-side-gold .choice-ic { background: rgba(0, 0, 0, 0.12); }
+.ab-rules { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 14px; margin-top: 22px; }
+.ab-rule { padding: 22px; border-radius: 22px; background: rgba(255, 255, 255, 0.05); border: 1px solid rgba(255, 255, 255, 0.1); }
+.ab-rule h3 { margin: 14px 0 6px; color: #fff; font-size: 1.12rem; }
+.ab-rule p { margin: 0; color: #bdbcb1; line-height: 1.5; }
+.ab-contact { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 20px; padding: 30px 32px; border-radius: 28px; background: var(--panel); box-shadow: var(--shadow); }
+.ab-contact h2 { margin: 0 0 6px; }
+.ab-contact p { margin: 0; color: var(--muted); }
+.ab-links { display: flex; flex-wrap: wrap; gap: 10px; }
+.ab-links a { padding: 11px 18px; min-height: 44px; display: inline-flex; align-items: center; border-radius: 999px; background: var(--pill); color: inherit; font-weight: 700; }
+.ab-links a:hover { background: var(--gold); color: #17170f; text-decoration: none; }
+@media (prefers-reduced-motion: reduce) {
+  .ab-line i, .ab-hub { animation: none; }
+}
+@media (max-width: 900px) {
+  .ab-hero { grid-template-columns: minmax(0, 1fr); padding: 32px 22px; border-radius: 28px; gap: 28px; }
+  .ab-pains, .ab-sides, .ab-rules { grid-template-columns: minmax(0, 1fr); }
+}
 @media (max-width: 760px) {
   .hero h1 { font-size: clamp(1.5rem, 7.2vw, 2.4rem); line-height: 1.16; }
   .perks { grid-template-columns: minmax(0, 1fr); gap: 10px; }
   .perk { padding: 14px; }
   .choice-tx b { font-size: 1.06rem; }
-  .about-grid-2 { grid-template-columns: minmax(0, 1fr); }
-  .about-hero { padding-top: 16px; }
+  .ab-node { width: 84px; height: 84px; border-radius: 20px; }
+  .ab-hub { width: 60px; height: 60px; font-size: 1.7rem; }
 }

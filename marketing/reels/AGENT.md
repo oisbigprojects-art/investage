@@ -41,6 +41,7 @@ TASDIQ_KERAK: ha
 - Render: `python stick.py scripts/NNN.json out/NNN.mp4`; kadrlar varag'i: `python stick.py scripts/NNN.json --sheet out/NNN/`.
 - Nutq yo'q: gap pufakchalarda yoziladi, tovushi signal (`silent` + `sound`). Egasi qisqa TTS jumlalarni ham, sintez g'o'ldirashni ham rad etdi. Ovoz kerak bo'lsa, faqat haqiqiy odam yozuvi.
 - Ism har epizodda boshqacha bo'lsin, faqat Sardor emas (o'tganlar: Sardor, Bekzod).
+- Asosiy format endi stickman. Fon qora-oltin, har kadrda oltin `investage.uz` yozuvi turadi (`stick-engine.js`).
 - Stickman multfilmda "hikoya o'ylab topilgan" yozuvi kerak emas (egasi qarori): videoda ham, caption'da ham yozilmaydi. Raqam va fakt to'qish taqiqi baribir amal qiladi.
 
 ## Shablon: Reklama (template-ad.html)

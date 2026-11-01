@@ -3,7 +3,8 @@
 const cv = document.getElementById('c');
 const ctx = cv.getContext('2d');
 const W = 1080, H = 1920, GROUND = 1400;
-const INK = '#15140F', PAPER = '#F6F1E4', GOLD = '#F5BF17', RED = '#E5342B', NIGHT = '#141A2B', MOON = '#E9E6DA';
+// Brend ranglari: qora fon, och chiziqlar, oltin urg'u. TXT — oq yoki oltin ustidagi qora matn
+const INK = '#F4EFE0', PAPER = '#0E0E0B', TXT = '#15140F', GOLD = '#F5BF17', RED = '#E5342B', NIGHT = '#0A0B12', MOON = '#E9E6DA';
 const FONT = 'Manrope, sans-serif';
 
 const R = { torso: 165, upper: 84, lower: 84, thigh: 96, shin: 96, neck: 16, head: 50, line: 17 };
@@ -237,14 +238,14 @@ function bubble(text, x, y, t, o = {}) {
   const tw = ctx.measureText(text).width, pad = size * 0.55, bw = tw + pad * 2, bh = size * 1.75;
   ctx.translate(x, y); ctx.scale(p, p); ctx.rotate((o.rot || -1.5) * Math.PI / 180);
   const bx = -bw / 2 + (o.dx || 0);
-  ctx.fillStyle = o.fill || '#fff'; ctx.strokeStyle = INK; ctx.lineWidth = 9; ctx.lineJoin = 'round';
+  ctx.fillStyle = o.fill || '#fff'; ctx.strokeStyle = TXT; ctx.lineWidth = 9; ctx.lineJoin = 'round';
   ctx.beginPath();
   ctx.roundRect(bx, -bh / 2, bw, bh, 34);
   ctx.fill(); ctx.stroke();
   const tx = o.tail || 0;
   ctx.beginPath(); ctx.moveTo(tx - 28, bh / 2 - 6); ctx.lineTo(tx + (o.tailTo || 0), bh / 2 + 62); ctx.lineTo(tx + 34, bh / 2 - 6); ctx.fill();
   ctx.beginPath(); ctx.moveTo(tx - 28, bh / 2 - 1); ctx.lineTo(tx + (o.tailTo || 0), bh / 2 + 62); ctx.lineTo(tx + 34, bh / 2 - 1); ctx.stroke();
-  ctx.fillStyle = o.color || INK; ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+  ctx.fillStyle = o.color || TXT; ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
   ctx.fillText(text, (o.dx || 0), 4);
   ctx.restore();
 }
@@ -256,7 +257,7 @@ function word(text, x, y, t, o = {}) {
   ctx.save();
   ctx.translate(x, y); ctx.rotate((o.rot || 0) * Math.PI / 180); ctx.scale(p, p); ctx.globalAlpha = a;
   ctx.font = `800 ${o.size || 110}px ${FONT}`; ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
-  ctx.lineJoin = 'round'; ctx.lineWidth = (o.size || 110) * 0.2; ctx.strokeStyle = o.stroke || INK;
+  ctx.lineJoin = 'round'; ctx.lineWidth = (o.size || 110) * 0.2; ctx.strokeStyle = o.stroke || TXT;
   ctx.strokeText(text, 0, 0);
   ctx.fillStyle = o.color || GOLD; ctx.fillText(text, 0, 0);
   ctx.restore();
@@ -275,7 +276,7 @@ function burst(x, y, t, o = {}) {
 function stars(x, y, t, o = {}) {
   for (let i = 0; i < 4; i++) {
     const a = t * 6 + (i * Math.PI) / 2;
-    ctx.fillStyle = o.color || GOLD; ctx.strokeStyle = INK; ctx.lineWidth = 5;
+    ctx.fillStyle = o.color || GOLD; ctx.strokeStyle = TXT; ctx.lineWidth = 5;
     const sx = x + Math.cos(a) * 92, sy = y + Math.sin(a) * 28;
     ctx.beginPath();
     for (let k = 0; k < 10; k++) {
@@ -293,7 +294,7 @@ function drops(x, y, n, t, seed = 1) {
   }
 }
 function confetti(t, n = 90) {
-  const colors = [GOLD, RED, '#2FB57A', '#3E8BFF', INK];
+  const colors = [GOLD, '#FFE27A', '#fff', '#B8860B', RED];
   for (let i = 0; i < n; i++) {
     const x = hash(i, 1) * W + Math.sin(t * 3 + i) * 34;
     const y = -60 + ((hash(i, 2) * 1 + t * (0.45 + hash(i, 4) * 0.4)) % 1.05) * (H - 300);
@@ -327,7 +328,7 @@ function tally(n, x, y, o = {}) {
 function sky(color) { ctx.fillStyle = color; ctx.fillRect(-200, -200, W + 400, H + 400); }
 // Qog'oz donachalari: fon "tirik" turadi
 function grain(alpha = 0.05) {
-  ctx.fillStyle = `rgba(90,70,30,${alpha})`;
+  ctx.fillStyle = `rgba(245,191,23,${alpha})`;
   for (let i = 0; i < 70; i++) ctx.fillRect(hash(i, 8) * W, hash(i, 9) * H, 3 + hash(i, 5) * 5, 3);
 }
 
@@ -363,4 +364,11 @@ window.seek = function (ms) {
   ctx.save();
   sc.draw(t - sc.at, sc.at);
   ctx.restore();
+  // Brend yozuvi har kadrda (oltin fonda yakuniy kadrdan tashqari)
+  if (sc !== S.scenes[S.scenes.length - 1]) {
+    ctx.setTransform(1, 0, 0, 1, 0, 0);
+    ctx.font = `800 46px ${FONT}`; ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+    ctx.lineJoin = 'round'; ctx.lineWidth = 10; ctx.strokeStyle = 'rgba(0,0,0,.7)'; ctx.strokeText('investage.uz', 540, 186);
+    ctx.fillStyle = GOLD; ctx.fillText('investage.uz', 540, 186);
+  }
 };

@@ -2,8 +2,9 @@
 window.EPISODES = {
   yoq({ scene, cue, say, D }) {
     const HERO = { id: 11, tie: GOLD };
-    const JASUR = { id: 21, tie: RED, flip: true };
-    const LOLA = { id: 31, hair: 'long', flip: true };
+    const ROOM = { color: TXT, fill: '#FBDD76', eye: TXT };   // eshik ichidagi yorug'da qora qahramon
+    const JASUR = { id: 21, tie: RED, flip: true, ...ROOM };
+    const LOLA = { id: 31, hair: 'long', flip: true, ...ROOM };
     const DARK = { id: 41, hat: true, flip: true };
     const MALIKA = { id: 51, hair: 'bun', tie: '#2FB57A' };
     let tals = 0;     // shu paytgacha sanalgan "Yo'q"lar soni: har sahna oxirida ko'payadi
@@ -32,7 +33,7 @@ window.EPISODES = {
         const hook = 1 - prog(t, 2.4, 2.7);
         floor();
         door({
-          x: 770, open, color: '#C9472B',
+          x: 770, open, color: '#D9A514',
           inner: () => stick({ ...JASUR, x: 790, pose: t > 1.9 ? P.stop : P.crossed, mouth: talk('inv_yoq', t, 1.34), mood: 'angry', look: 0.34 }),
         });
         const k = Math.floor(t * 8) % 2;
@@ -77,7 +78,7 @@ window.EPISODES = {
         const open = kf(t, [[0.62, 0], [0.8, 1, 'out']]);
         floor();
         door({
-          x: 770, open, color: '#2F7DD1', seed: 60,
+          x: 770, open, color: '#8C6A12', seed: 60,
           inner: () => stick({ ...LOLA, x: kf(t, [[1.1, 800], [1.32, 700, 'out'], [1.8, 790]]), pose: kf(t, [[1.1, P.crossed], [1.3, P.stop, 'out'], [1.7, P.stop], [2, P.crossed]]), mood: 'angry', mouth: talk('lola_yoq', t, 0.82), look: 0.34 }),
         });
         const rot = kf(t, [[1.34, 0], [1.72, -90, 'in'], [1.86, -84, 'out'], [2, -90, 'in']]);
@@ -106,7 +107,7 @@ window.EPISODES = {
     {
       const a = 5.8;
       const s = (t) => {
-        sky('#201A22');
+        sky('#120D08');
         const light = kf(t, [[0.2, 0], [1, 1]]);
         ctx.fillStyle = `rgba(229,52,43,${0.16 * light})`; ctx.fillRect(0, 0, W, H);
         shake(t, 1.75, 0.25, 16);
@@ -154,7 +155,7 @@ window.EPISODES = {
       const hits = []; let c = 0.15;
       gaps.forEach((g) => { hits.push(c); c += g; });
       const end = c + 0.1;
-      const colors = ['#C9472B', '#2F7DD1', '#2FB57A', '#8E44AD', '#E07A1F', '#3A3A44'];
+      const colors = ['#D9A514', '#8C6A12', '#F5BF17', '#6B5210', '#D9A514', '#3A3A44'];
       const voices = ['inv_yoq', 'lola_yoq', 'dark_yoq', 'inv_yoq', 'lola_yoq', 'dark_yoq'];
       const rates = [1.12, 1.18, 1.2, 1.3, 1.35, 1.25];
       const s = (t) => {
@@ -182,7 +183,7 @@ window.EPISODES = {
         const n = 3 + hits.filter((h) => t >= h + 0.08).length;
         textBlock([tr('YO‘Q', 'НЕТ')], 90, 318, 66, { align: 'left', color: RED });
         tally(n, 300, 270);
-        if (t > end - 0.02) { ctx.fillStyle = INK; ctx.fillRect(0, 0, W, H); }
+        if (t > end - 0.02) { ctx.fillStyle = '#000'; ctx.fillRect(0, 0, W, H); }
       };
       hits.forEach((h, i) => {
         say(a + h, voices[i], 0.95, rates[i]);
@@ -193,7 +194,7 @@ window.EPISODES = {
       cue(a + end - 0.04, 'slam', 1.3, 0.8);
       scene(end + 0.45, (t) => {
         if (t < end) s(t);
-        else sky(INK);
+        else sky('#000');
       });
     }
 
@@ -203,10 +204,10 @@ window.EPISODES = {
       const U = 3.7, H1 = U + 1.6, H2 = H1 + 1.75;   // pufakchani o'qishga vaqt qolsin
       const s = (t) => {
         const flash = t > H2 ? 1 - prog(t, H2, H2 + 0.5) : 0;
-        sky(t > H2 + 0.2 ? '#F6F1E4' : NIGHT);
+        sky(t > H2 + 0.2 ? PAPER : NIGHT);
         const col = t > H2 + 0.2 ? INK : MOON, bg = t > H2 + 0.2 ? PAPER : NIGHT;
         floor(col);
-        ctx.fillStyle = col === INK ? '#D9CDB4' : '#2C3650';
+        ctx.fillStyle = col === INK ? '#2A281F' : '#22263A';
         ctx.fillRect(540, GROUND - 112, 250, 112);
         ink([[540, GROUND], [540, GROUND - 112], [790, GROUND - 112], [790, GROUND]], 90, 9, col);
         // Malika soyabon bilan keladi
@@ -272,7 +273,7 @@ window.EPISODES = {
         const open = kf(t, [[1.34, 0], [1.54, 1, 'out'], [2.04, 1], [2.12, 0.42, 'in'], [O, 0.42], [O + 0.34, 1, 'io']]);
         floor();
         door({
-          x: 770, open, color: '#C9472B',
+          x: 770, open, color: '#D9A514',
           inner: () => stick({ ...JASUR, x: 800, pose: t > M ? P.point : P.crossed, mood: t > M ? 'calm' : 'angry', mouth: talk('inv_yoq', t, 1.6) + talk('inv_mijoz', t, M), look: 0.34 }),
         });
         const x = kf(t, [[0, -160], [0.62, 500, 'out']]);
@@ -330,10 +331,10 @@ window.EPISODES = {
           const p = ease.back(prog(t, at, at + 0.18));
           const x = 620 + i * 72;
           stick({ id: 200 + i, x, s: 0.72 * p, pose: t > at + 0.2 ? walk(t * 5 + i, 0.2) : P.cheer, mood: 'happy', flip: true, tie: [GOLD, RED, '#2FB57A'][i % 3] });
-          word('+1', x, 900 - (i % 2) * 80, t - at, { size: 74, color: '#2FB57A', dur: 0.4 });
+          word('+1', x, 900 - (i % 2) * 80, t - at, { size: 74, color: GOLD, dur: 0.4 });
         });
-        textBlock([tr('MIJOZLAR', 'КЛИЕНТЫ')], 90, 318, 66, { align: 'left', color: '#1E9A66' });
-        tally(times.filter((x) => t >= x).length, 470, 270, { slash: '#1E9A66' });
+        textBlock([tr('MIJOZLAR', 'КЛИЕНТЫ')], 90, 318, 66, { align: 'left', color: GOLD });
+        tally(times.filter((x) => t >= x).length, 470, 270, { slash: GOLD });
       };
       cue(a + 0.05, 'keys', 3);
       times.forEach((x, i) => { cue(a + x, 'pop', 1, 1 + i * 0.1); cue(a + x + 0.05, 'coin', 0.9, 1 + i * 0.09); });
@@ -366,7 +367,7 @@ window.EPISODES = {
         }
         floor();
         door({
-          x: 770, open, color: '#C9472B',
+          x: 770, open, color: '#D9A514',
           inner: () => stick({ ...JASUR, x: 790, pose: t > Ha ? P.point : P.crossed, mood: t > Ha ? 'happy' : 'calm', look: t > Ha ? 0.34 : Math.sin((t - Op) * 2.6) * 0.45 + 0.1, mouth: talk('inv_ha', t, Ha) }),
         });
         queue(t);
@@ -398,13 +399,13 @@ window.EPISODES = {
         sky(GOLD);
         const ap = ease.back(prog(t, 0.05, 0.35));
         ctx.save(); ctx.translate(540, 520); ctx.scale(ap, ap);
-        textBlock(tr(['“Yo‘q” — bu oxiri emas.', 'Sababini so‘ra.'], ['«Нет» — это не конец.', 'Спроси почему.']), 0, -60, 84);
+        textBlock(tr(['“Yo‘q” — bu oxiri emas.', 'Sababini so‘ra.'], ['«Нет» — это не конец.', 'Спроси почему.']), 0, -60, 84, { color: TXT });
         ctx.restore();
-        stick({ ...HERO, x: 540, pose: kf((t * 2.2) % 2, [[0, P.wave], [1, { ...P.wave, aF: [118, 30] }], [2, P.wave]]), mood: 'happy', y: 1290, tie: '#fff', mouth: 0 });
-        ink([[-100, 1298], [1200, 1294]], 120, 12);
+        stick({ ...HERO, x: 540, pose: kf((t * 2.2) % 2, [[0, P.wave], [1, { ...P.wave, aF: [118, 30] }], [2, P.wave]]), mood: 'happy', y: 1290, tie: '#fff', mouth: 0, color: TXT, fill: GOLD, eye: TXT });
+        ink([[-100, 1298], [1200, 1294]], 120, 12, TXT);
         const up = ease.back(prog(t, 0.5, 0.8));
         ctx.save(); ctx.translate(540, 1425); ctx.scale(up, up);
-        ctx.fillStyle = INK; ctx.beginPath(); ctx.roundRect(-340, -66, 680, 132, 28); ctx.fill();
+        ctx.fillStyle = TXT; ctx.beginPath(); ctx.roundRect(-340, -66, 680, 132, 28); ctx.fill();
         textBlock(['investage.uz'], 0, 4, 74, { color: GOLD });
         ctx.restore();
       };

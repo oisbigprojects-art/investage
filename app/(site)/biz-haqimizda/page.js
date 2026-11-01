@@ -87,6 +87,7 @@ export default async function AboutPage() {
           <p>{OPERATOR[t.lang] || OPERATOR.uz}</p>
         </div>
         <div className="ab-links">
+          {CONTACT.instagram && <a href={`https://www.instagram.com/${CONTACT.instagram.replace('@', '')}/`} target="_blank" rel="noopener noreferrer">Instagram</a>}
           {CONTACT.telegram && <a href={`https://t.me/${CONTACT.telegram.replace('@', '')}`} rel="noopener noreferrer">{CONTACT.telegram}</a>}
           {CONTACT.phone && <a href={`tel:${CONTACT.phone.replace(/\s/g, '')}`}>{CONTACT.phone}</a>}
           {CONTACT.email && <a href={`mailto:${CONTACT.email}`}>{CONTACT.email}</a>}

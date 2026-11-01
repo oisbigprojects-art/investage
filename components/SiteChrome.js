@@ -48,6 +48,11 @@ export default async function SiteChrome({ children }) {
                     {CONTACT.telegram}
                   </a>
                 )}
+                {CONTACT.instagram && (
+                  <a href={`https://www.instagram.com/${CONTACT.instagram.replace('@', '')}/`} target="_blank" rel="noopener noreferrer">
+                    Instagram: {CONTACT.instagram}
+                  </a>
+                )}
                 {CONTACT.address && <span className="muted">{CONTACT.address}</span>}
                 {CONTACT.hours && <span className="muted">{CONTACT.hours}</span>}
               </address>

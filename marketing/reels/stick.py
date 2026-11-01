@@ -9,6 +9,7 @@ Ssenariy: {"episode": "yoq", "caption": "...", "lines": {nom: manba}}. Manba tur
     {"voice": "voicelab:<id>", "text": "..."}                  VoiceLab, yo'q bo'lsa "fallback" ishlatiladi
     {"fallback": {"edge": "uz-UZ-SardorNeural", "text": "...", "pitch": "-20Hz", "rate": "-5%"}}
     {"clip": {"voice": "...", "rate": 1.05, "text": "...", "part": 0}}   oldin yaratilgan ovozdan bitta gapni qirqib oladi
+    {"file": "out/voice/x.ogg", "from": 1.2, "to": 3.4}                  haqiqiy ovoz yozuvidan bo'lak (shovqin tozalanadi)
     {"silent": 0.5, "sound": "buzz", "rate": 1}                          ovozsiz qator: pufakcha turadi, sfx.py dagi tovush chalinadi
 """
 import asyncio
@@ -31,8 +32,9 @@ from render2 import FPS, HERE, mouth_env, tts
 from sfx import mix
 
 
-def decode(src):
-    raw = subprocess.run([imageio_ffmpeg.get_ffmpeg_exe(), '-loglevel', 'error', '-i', src, '-f', 's16le', '-ac', '1', '-ar', str(SR), '-'],
+def decode(src, af=None):
+    filt = ['-af', af] if af else []
+    raw = subprocess.run([imageio_ffmpeg.get_ffmpeg_exe(), '-loglevel', 'error', '-i', src, *filt, '-f', 's16le', '-ac', '1', '-ar', str(SR), '-'],
                          capture_output=True, check=True).stdout
     return np.frombuffer(raw, dtype=np.int16).astype(np.float32) / 32768
 
@@ -73,6 +75,11 @@ def trim(sig):
 def line(src):
     if 'silent' in src:
         return np.zeros(int(src['silent'] * SR), dtype=np.float32)
+    if 'file' in src:
+        sig = decode(os.path.join(HERE, src['file']), 'highpass=f=85,afftdn=nf=-40,acompressor=threshold=0.12:ratio=2.5:attack=6:release=140:makeup=1.4')
+        sig = sig[int(src['from'] * SR): int(src['to'] * SR)]
+        f = np.minimum(1, np.minimum(np.arange(len(sig)), np.arange(len(sig))[::-1]) / 500)
+        return sig * f * (src.get('gain', 1) * 0.17 / (np.sqrt(np.mean(sig ** 2)) + 1e-9))
     if 'clip' in src:
         c = src['clip']
         sig = tts(c['text'], c['voice'], c.get('rate', 1)).mean(axis=1)
@@ -97,6 +104,7 @@ def line(src):
 
 
 def prepare(spec):
+    spec.setdefault('lines', {})
     clips = {k: line(v) for k, v in spec['lines'].items()}
     info = {}
     for k, sig in clips.items():
@@ -109,10 +117,10 @@ def open_page(p, spec, info):
     browser = p.chromium.launch()
     page = browser.new_page(viewport={'width': 1080, 'height': 1920}, device_scale_factor=1)
     page.on('pageerror', lambda e: print('JS xato:', e))
-    page.goto('file:///' + os.path.join(HERE, 'template-stick.html').replace('\\', '/'))
+    page.goto('file:///' + os.path.join(HERE, spec.get('template', 'template-stick.html')).replace('\\', '/'))
     page.evaluate('document.fonts.load("800 80px Manrope")')
     page.evaluate('document.fonts.ready')
-    return browser, page, page.evaluate('spec => window.build(spec)', {'episode': spec['episode'], 'lines': info, 'lang': spec.get('lang', 'uz')})
+    return browser, page, page.evaluate('spec => window.build(spec)', {'episode': spec.get('episode'), 'lines': info, 'lang': spec.get('lang', 'uz')})
 
 
 def render(spec, out):

@@ -43,6 +43,10 @@ TASDIQ_KERAK: ha
 - Ism har epizodda boshqacha bo'lsin, faqat Sardor emas (o'tganlar: Sardor, Bekzod).
 - Stickman multfilmda "hikoya o'ylab topilgan" yozuvi kerak emas (egasi qarori): videoda ham, caption'da ham yozilmaydi. Raqam va fakt to'qish taqiqi baribir amal qiladi.
 
+## Shablon: Reklama (template-ad.html)
+- Qora-oltin motion-grafika, ovozsiz, yozuvlar ikki tilda: katta o'zbekcha, tagida ruscha. Render: `python stick.py scripts/006-investage-reklama.json out/006.mp4`.
+- Faqat saytdagi rost da'volar: "Startap tanishtiradi. Investor so'raydi. Qaror startapniki.", ro'yxatdan o'tish bepul. Raqam va "1-o'rin" kabi gaplar yozilmaydi.
+
 ## Til
 - Asosiy til o'zbek lotin: taxminan 3 ta reels'dan 2 tasi. Har 3-chisi rus tilida (eng yaxshi chiqqan o'zbekcha videoning ruscha versiyasi bo'lishi mumkin).
 - Stickman videoda yozuvlar `tr('uz', 'ru')` bilan yoziladi, ruscha caption esa `caption_ru` da. Ruscha render: `python stick.py scripts/NNN.json out/NNN-ru.mp4 --lang ru`.

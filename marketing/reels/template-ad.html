@@ -1,0 +1,165 @@
+<!doctype html>
+<html lang="uz">
+<head>
+<meta charset="utf-8">
+<title>Investage reklama</title>
+<style>
+@font-face { font-family: 'Manrope'; src: url('fonts/Manrope.ttf') format('truetype'); font-weight: 200 800; }
+:root { --gold: #F5BF17; --ink: #0A0A08; --red: #FF4B3E; --mute: #B9B7AA; }
+* { box-sizing: border-box; margin: 0; padding: 0; }
+html, body { width: 1080px; height: 1920px; overflow: hidden; background: var(--ink); }
+body { font-family: 'Manrope', sans-serif; color: #fff; font-weight: 800; }
+#stage { position: absolute; inset: 0; overflow: hidden; background: radial-gradient(1000px 800px at 50% 44%, #1E1A0B 0%, var(--ink) 72%); }
+#fx { position: absolute; inset: 0; }
+#floor { position: absolute; left: -900px; right: -900px; top: 1160px; height: 1500px; transform-origin: 50% 0; transform: perspective(700px) rotateX(74deg);
+  background-image: linear-gradient(rgba(245,191,23,.32) 2px, transparent 2px), linear-gradient(90deg, rgba(245,191,23,.32) 2px, transparent 2px); background-size: 120px 120px;
+  -webkit-mask-image: linear-gradient(#000 0, transparent 70%); }
+.scene { position: absolute; inset: 0; opacity: 0; }
+h1, h2 { letter-spacing: -0.03em; line-height: 1.06; }
+.ru { color: var(--mute); font-weight: 600; font-size: 60px; line-height: 1.2; letter-spacing: -0.01em; margin-top: 26px; }
+.gold { color: var(--gold); }
+.comet { position: absolute; width: 26px; height: 26px; margin: -13px 0 0 -13px; border-radius: 50%; background: #FFF6CF;
+  box-shadow: 0 0 22px 10px var(--gold), 0 0 90px 34px rgba(245,191,23,.55); }
+.trail { position: absolute; height: 7px; margin-top: -3px; border-radius: 4px; background: linear-gradient(90deg, transparent, var(--gold)); box-shadow: 0 0 22px rgba(245,191,23,.8); }
+
+/* 1 */
+#t1 { position: absolute; left: 80px; top: 800px; width: 920px; font-size: 140px; white-space: nowrap; }
+#t1 .m { position: relative; display: inline-block; }
+#t1 .m i { position: absolute; left: -12px; right: -12px; top: 8px; bottom: 2px; background: var(--gold); border-radius: 14px; transform-origin: 0 50%; }
+#t1 .m b { position: relative; }
+#ru1 { position: absolute; left: 80px; top: 1000px; }
+
+/* 2 */
+#q { position: absolute; right: -60px; top: 640px; font-size: 1000px; line-height: 1; color: transparent; -webkit-text-stroke: 5px rgba(245,191,23,.34); }
+.w { display: block; font-size: 128px; transform-origin: 0 50%; }
+#l2 { position: absolute; left: 80px; top: 640px; }
+#ru2 { position: absolute; left: 80px; top: 1250px; }
+
+/* 3 */
+#h3 { position: absolute; left: 80px; top: 300px; font-size: 118px; }
+#ru3 { position: absolute; left: 80px; top: 430px; margin: 0; }
+#stack { position: absolute; left: 50%; top: 1000px; width: 0; height: 0; perspective: 1500px; }
+#stackIn { position: absolute; transform-style: preserve-3d; }
+.pn { position: absolute; left: -440px; width: 880px; height: 200px; padding: 30px 46px; border-radius: 26px; background: linear-gradient(135deg, #24211A, #151410); border: 3px solid rgba(255,255,255,.2); box-shadow: 0 50px 70px rgba(0,0,0,.6); }
+.pn b { display: block; font-size: 72px; letter-spacing: -0.02em; }
+.pn span { display: block; color: var(--mute); font-weight: 600; font-size: 44px; margin-top: 6px; }
+.pn u { position: absolute; left: 22px; right: 22px; top: 50%; height: 11px; background: var(--red); border-radius: 6px; box-shadow: 0 0 22px var(--red); transform-origin: 0 50%; }
+
+/* 4 */
+.nd { position: absolute; top: 890px; width: 300px; margin-left: -150px; text-align: center; font-size: 50px; line-height: 1.25; }
+.nd small { display: block; color: var(--mute); font-size: 36px; font-weight: 600; }
+.nd i { display: block; width: 36px; height: 36px; margin: 0 auto 26px; border-radius: 50%; background: #FFF6CF; box-shadow: 0 0 22px 10px var(--gold), 0 0 80px 30px rgba(245,191,23,.5); }
+#link { position: absolute; top: 907px; height: 7px; background: var(--gold); box-shadow: 0 0 22px var(--gold); }
+#flash { position: absolute; inset: 0; background: #FFF4C6; opacity: 0; }
+#logo { position: absolute; left: 50%; top: 810px; width: 800px; margin-left: -400px; filter: brightness(0) invert(1); }
+#sub4 { position: absolute; left: 90px; right: 90px; top: 1050px; text-align: center; font-size: 64px; line-height: 1.16; letter-spacing: -0.02em; }
+#sub4 .ru { font-size: 46px; margin-top: 20px; }
+
+/* 5 */
+#h5 { position: absolute; left: 70px; right: 70px; top: 262px; text-align: center; height: 260px; }
+.ln { position: absolute; left: 0; right: 0; top: 0; }
+.ln h2 { font-size: 104px; }
+.ln .ru { font-size: 50px; margin-top: 18px; }
+#card3 { position: absolute; left: 90px; top: 570px; width: 900px; height: 900px; perspective: 1700px; }
+#card { position: absolute; left: 60px; top: 30px; width: 780px; transform-origin: 50% 0; padding: 42px; border-radius: 38px; background: linear-gradient(160deg, #24211A, #12110D); border: 3px solid rgba(245,191,23,.45); box-shadow: 0 70px 110px rgba(0,0,0,.65), 0 0 90px rgba(245,191,23,.16); transform-style: preserve-3d; }
+#ring { position: absolute; left: 50%; top: 50%; width: 1040px; height: 1040px; margin: -560px 0 0 -520px; border: 5px dashed rgba(245,191,23,.3); border-radius: 50%; }
+#ring2 { position: absolute; left: 50%; top: 50%; width: 1320px; height: 1320px; margin: -700px 0 0 -660px; border: 3px solid rgba(245,191,23,.14); border-radius: 50%; }
+.ct { display: flex; align-items: center; gap: 22px; margin-bottom: 26px; }
+.ct em { width: 96px; height: 96px; border-radius: 26px; background: var(--gold); color: #17170F; display: grid; place-items: center; font-style: normal; font-size: 56px; }
+.ct b { font-size: 48px; letter-spacing: -0.02em; line-height: 1.1; }
+.ct span { display: block; color: var(--mute); font-size: 32px; font-weight: 600; }
+.rw { display: flex; align-items: center; justify-content: space-between; padding: 21px 0; border-top: 2px solid rgba(255,255,255,.12); font-size: 40px; }
+.rw span { color: var(--mute); font-weight: 600; font-size: 34px; margin-left: 12px; }
+.val { padding: 9px 22px; border-radius: 999px; background: rgba(255,255,255,.1); font-size: 34px; white-space: nowrap; }
+.lock { filter: blur(9px); opacity: .75; letter-spacing: .08em; }
+#bt { margin-top: 26px; height: 106px; border-radius: 26px; background: var(--gold); color: #17170F; display: flex; align-items: center; justify-content: center; font-size: 42px; white-space: nowrap; }
+#bt span { font-weight: 600; font-size: 34px; margin-left: 14px; opacity: .72; }
+#cur { position: absolute; left: 0; top: 0; width: 84px; height: 84px; filter: drop-shadow(0 8px 12px rgba(0,0,0,.6)); }
+#req { position: absolute; left: 0; top: 0; padding: 22px 34px; border-radius: 26px; background: #fff; color: #17170F; font-size: 40px; white-space: nowrap; box-shadow: 0 30px 60px rgba(0,0,0,.55); }
+#req span { font-weight: 600; font-size: 32px; margin-left: 10px; color: #55534A; }
+#bdg { position: absolute; right: -24px; top: -24px; width: 84px; height: 84px; border-radius: 50%; background: var(--red); display: grid; place-items: center; font-size: 46px; box-shadow: 0 0 40px rgba(255,75,62,.7); }
+#note5 { position: absolute; left: 70px; right: 70px; top: 1462px; text-align: center; font-size: 38px; line-height: 1.25; color: #fff; }
+#note5 span { display: block; color: var(--mute); font-weight: 600; font-size: 34px; margin-top: 6px; }
+
+/* 6 */
+#gold { position: absolute; inset: 0; background: var(--gold); color: #15140F; }
+#logo6 { position: absolute; left: 50%; top: 400px; width: 520px; margin-left: -260px; filter: brightness(0); }
+#h6 { position: absolute; left: 60px; right: 60px; top: 590px; text-align: center; font-size: 104px; }
+#ru6 { position: absolute; left: 60px; right: 60px; top: 840px; margin: 0; text-align: center; color: #3B3711; font-size: 56px; }
+#url { position: absolute; left: 90px; right: 90px; top: 1040px; height: 196px; border-radius: 40px; background: #15140F; color: var(--gold); display: grid; place-items: center; font-size: 110px; letter-spacing: -0.03em; }
+#for6 { position: absolute; left: 60px; right: 60px; top: 1290px; text-align: center; font-size: 48px; }
+#for6 span { display: block; color: #3B3711; font-weight: 600; font-size: 42px; margin-top: 8px; }
+</style>
+</head>
+<body>
+<div id="stage">
+  <canvas id="fx" width="1080" height="1920"></canvas>
+  <div id="floor"></div>
+
+  <div class="scene" id="s1">
+    <div class="trail" id="tr1"></div>
+    <h1 id="t1"><span class="m"><i id="mk1"></i><b id="mw1">G‘oyangiz</b></span> bor.</h1>
+    <p class="ru" id="ru1">У вас есть идея.</p>
+    <i class="comet" id="c1"></i>
+  </div>
+
+  <div class="scene" id="s2">
+    <div id="q">?</div>
+    <div id="l2"><h1 class="w">Lekin</h1><h1 class="w gold">investorni</h1><h1 class="w">qayerdan</h1><h1 class="w">topasiz?</h1></div>
+    <p class="ru" id="ru2">Но где найти инвестора?</p>
+  </div>
+
+  <div class="scene" id="s3">
+    <h1 id="h3">Eski yo‘l</h1>
+    <p class="ru" id="ru3">Старый путь</p>
+    <div id="stack"><div id="stackIn">
+      <div class="pn"><b>Tanishlar orqali</b><span>Через знакомых</span><u></u></div>
+      <div class="pn"><b>Guruhlarda xabar</b><span>Сообщения в группах</span><u></u></div>
+      <div class="pn"><b>Tasodifiy uchrashuv</b><span>Случайные встречи</span><u></u></div>
+    </div></div>
+  </div>
+
+  <div class="scene" id="s4">
+    <div id="link"></div>
+    <div class="nd" id="nA"><i></i>Startap<small>Стартап</small></div>
+    <div class="nd" id="nB"><i></i>Investor<small>Инвестор</small></div>
+    <img id="logo" src="../../public/logo.webp" alt="">
+    <div id="sub4">O‘zbekiston startaplari va investorlari platformasi<p class="ru">Платформа стартапов и инвесторов Узбекистана</p></div>
+  </div>
+
+  <div class="scene" id="s5">
+    <div id="ring"></div><div id="ring2"></div>
+    <div id="h5">
+      <div class="ln" id="la"><h2>Startap <span class="gold">tanishtiradi.</span></h2><p class="ru">Стартап рассказывает о себе.</p></div>
+      <div class="ln" id="lb"><h2>Investor <span class="gold">so‘raydi.</span></h2><p class="ru">Инвестор запрашивает доступ.</p></div>
+      <div class="ln" id="lc"><h2>Qaror <span class="gold">startapniki.</span></h2><p class="ru">Решение за стартапом.</p></div>
+    </div>
+    <div id="card3"><div id="card">
+      <div class="ct"><em>S</em><b>Sizning startapingiz<span>Ваш стартап</span></b></div>
+      <div class="rw"><div>Soha<span>Сфера</span></div><div class="val">✓ Ochiq · Открыто</div></div>
+      <div class="rw"><div>Bosqich<span>Стадия</span></div><div class="val">✓ Ochiq · Открыто</div></div>
+      <div class="rw sec"><div>Summa<span>Сумма</span></div><div class="val lock">●●●●●●●●</div></div>
+      <div class="rw sec"><div>Ulush<span>Доля</span></div><div class="val lock">●●●●●●●●</div></div>
+      <div class="rw sec"><div>Kontakt<span>Контакт</span></div><div class="val lock">●●●●●●●●</div></div>
+      <div id="bt">Tasdiqlash<span>Одобрить</span></div>
+      <div id="bdg">1</div>
+    </div></div>
+    <div id="req">So‘rov<span>Запрос</span></div>
+    <svg id="cur" viewBox="0 0 24 24"><path fill="#fff" stroke="#000" stroke-width="1.2" d="M5 2l14 11.5-6.2.8 3.7 7.2-3 1.5-3.6-7.3L5 20z"/></svg>
+    <div id="note5">Faqat tasdiqlangan investorga ochiladi<span>Открывается только одобренному инвестору</span></div>
+  </div>
+
+  <div class="scene" id="s6">
+    <div id="gold">
+      <img id="logo6" src="../../public/logo.webp" alt="">
+      <h1 id="h6">Ro‘yxatdan o‘tish bepul</h1>
+      <p class="ru" id="ru6">Регистрация бесплатная</p>
+      <div id="url">investage.uz</div>
+      <div id="for6">Startap va investorlar uchun<span>Для стартапов и инвесторов</span></div>
+    </div>
+  </div>
+  <div id="flash"></div>
+</div>
+<script src="ad-engine.js"></script>
+</body>
+</html>

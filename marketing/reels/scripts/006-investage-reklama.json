@@ -1,0 +1,61 @@
+{
+  "template": "template-ad.html",
+  "caption": "Startap tanishtiradi. Investor so‘raydi. Qaror startapniki. 🔐\n\nInvestage — O‘zbekiston startaplari va investorlari platformasi.\nSumma, ulush va kontaktlar faqat startap tasdiqlagan investorga ochiladi.\n\nRo‘yxatdan o‘tish bepul: investage.uz (havola profilda)\n\n—\n\nСтартап рассказывает о себе. Инвестор запрашивает доступ. Решение за стартапом. 🔐\n\nInvestage — платформа стартапов и инвесторов Узбекистана.\nСумма, доля и контакты открываются только тому инвестору, которого одобрил стартап.\n\nРегистрация бесплатная: investage.uz (ссылка в профиле)\n\n#investage #startap #startup #investor #investitsiya #стартап #инвестиции #инвестор #uzbekistan #узбекистан #toshkent",
+  "lines": {
+    "v1": {
+      "file": "out/voice/egasi-reklama.ogg",
+      "from": 0.72,
+      "to": 1.8
+    },
+    "v2": {
+      "file": "out/voice/egasi-reklama.ogg",
+      "from": 1.88,
+      "to": 4.44
+    },
+    "v3": {
+      "file": "out/voice/egasi-reklama.ogg",
+      "from": 4.74,
+      "to": 7.62
+    },
+    "v4": {
+      "file": "out/voice/egasi-reklama.ogg",
+      "from": 7.92,
+      "to": 8.98
+    },
+    "v5": {
+      "file": "out/voice/egasi-reklama.ogg",
+      "from": 9.96,
+      "to": 11.0
+    },
+    "v6": {
+      "file": "out/voice/egasi-reklama.ogg",
+      "from": 11.12,
+      "to": 14.92
+    },
+    "v7": {
+      "file": "out/voice/egasi-reklama.ogg",
+      "from": 15.22,
+      "to": 16.72
+    },
+    "v8": {
+      "file": "out/voice/egasi-reklama.ogg",
+      "from": 16.82,
+      "to": 17.94
+    },
+    "v9": {
+      "file": "out/voice/egasi-reklama.ogg",
+      "from": 18.02,
+      "to": 19.6
+    },
+    "v10": {
+      "file": "out/voice/egasi-reklama.ogg",
+      "from": 20.44,
+      "to": 21.96
+    },
+    "v11": {
+      "file": "out/voice/egasi-reklama.ogg",
+      "from": 22.36,
+      "to": 24.2
+    }
+  }
+}

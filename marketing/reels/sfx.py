@@ -4,7 +4,7 @@ Har funksiya mono np.ndarray qaytaradi (SR = 44100). SFX lug'ati nom -> funksiya
 """
 import numpy as np
 
-from music import SR, _impact, _lowpass, _whoosh
+from music import SR, _add, _hat, _impact, _kick, _lowpass, _pluck, _snare, _whoosh
 
 RNG = np.random.default_rng(7)
 
@@ -213,7 +213,86 @@ def huh():
     return np.sin(2 * np.pi * np.cumsum(300 + 520 * (t / 0.3) ** 2) / SR) * np.sin(np.pi * t / 0.3) * 0.32
 
 
+def riser():
+    """2 soniyalik ko'tariluvchi shovqin: zarbadan oldingi kutish."""
+    n = int(2.2 * SR)
+    t = np.arange(n) / SR
+    x = np.zeros(n)
+    noise = _noise(n)
+    for c in range(30):
+        a, b = c * n // 30, (c + 1) * n // 30
+        x[a:b] = (noise - _lowpass(noise, max(2, 60 - c * 2)))[a:b]
+    return x * (t / 2.2) ** 2.4 * 0.5
+
+
+def sweep():
+    """Yonib turgan chiziq ovozi: yengil yuqoriga sirpanish."""
+    t = _t(1.2)
+    f = 240 * (1 + 3 * (t / 1.2) ** 2)
+    return np.sin(2 * np.pi * np.cumsum(f) / SR) * np.sin(np.pi * t / 1.2) ** 1.2 * 0.16 + _whoosh(RNG, 1.2) * 0.7
+
+
+def hit():
+    t = _t(1.8)
+    sub = np.sin(2 * np.pi * (44 + 80 * np.exp(-t * 18)) * t) * np.exp(-t * 2.6)
+    crack = _band(_noise(len(t)), 300, 6000) * np.exp(-t * 22) * 0.8
+    return (sub * 1.2 + crack) * 0.9
+
+
+def slam_text():
+    t = _t(0.26)
+    return (np.sin(2 * np.pi * (70 + 60 * np.exp(-t * 40)) * t) * np.exp(-t * 16) + _band(_noise(len(t)), 900, 7000) * np.exp(-t * 70) * 0.45) * 0.85
+
+
+def strike():
+    t = _t(0.3)
+    return _band(_noise(len(t)), 1500, 9000) * np.sin(np.pi * t / 0.3) ** 2 * 0.5 + np.sin(2 * np.pi * 150 * t) * np.exp(-t * 26) * 0.5
+
+
+def shimmer():
+    t = _t(2.2)
+    sig = sum(np.sin(2 * np.pi * f * t) * np.exp(-t * d) * a for f, d, a in [(880, 1.6, 0.3), (1318, 2, 0.22), (1760, 2.6, 0.16), (2637, 3.4, 0.1)])
+    return sig * 0.8
+
+
+def click():
+    t = _t(0.07)
+    return _band(_noise(len(t)), 1200, 8000) * np.exp(-t * 130) * 0.8
+
+
+def bed():
+    """Reklama foni (120 BPM): boshida faqat bas, zarbadan keyin to'liq ritm. Sahna o'tishlari urishga tushadi."""
+    dur, beat = 27.5, 0.5
+    n = int(dur * SR)
+    low, top = np.zeros(n), np.zeros(n)
+    prog = [45, 41, 48, 43]        # A - F - C - G (bas)
+    k, hat = _kick(), _hat(RNG)
+    i, s = 0, 0.0
+    while s < dur - 0.4:
+        root = 440.0 * 2 ** ((prog[(i // 4) % 4] - 69) / 12)
+        quiet = 10 <= s < 11              # zarbadan oldin jimlik
+        if not quiet:
+            if s >= 3:
+                _add(low, s, k * (1.0 if s >= 11 else 0.72))
+            _add(low, s, _pluck(root, 0.46, 3) * 0.6)
+            if s >= 11:
+                _add(top, s + beat / 2, hat * 1.3)
+                if i % 2 == 1:
+                    _add(top, s, _snare(RNG) * 0.55)
+            if s >= 6:
+                for j in range(2):
+                    note = root * 4 * [1, 1.5, 1.2, 2][(i + j * 3) % 4]
+                    _add(top, s + j * beat / 2, _pluck(note, 0.22, 4) * (0.14 if s < 11 else 0.2))
+        i, s = i + 1, s + beat
+    t = np.arange(n) / SR
+    drone = np.sin(2 * np.pi * 55 * t) * 0.12 * np.minimum(1, t / 1.5) * np.where((t > 10) & (t < 11), 0, 1)
+    out = low + top + drone
+    out[-int(0.5 * SR):] *= np.linspace(1, 0, int(0.5 * SR))
+    return out * 0.62
+
+
 SFX = {
+    'riser': riser, 'sweep': sweep, 'hit': hit, 'slamText': slam_text, 'strike': strike, 'shimmer': shimmer, 'click': click, 'bed': bed,
     'knock': knock, 'creak': creak, 'creakLow': creak_low, 'slam': slam, 'thud': thud, 'smack': smack, 'push': push, 'thunk': thunk,
     'whoosh': whoosh, 'tick': tick, 'boom': boom, 'paper': paper, 'step': step, 'steps': steps, 'runs': runs, 'skid': skid, 'rain': rain,
     'buzz': buzz, 'huh': huh, 'umbrella': umbrella, 'ding': ding, 'pop': pop, 'coin': coin, 'keys': keys, 'slideDown': slide_down, 'heart': heart, 'fanfare': fanfare,
@@ -256,8 +335,10 @@ def mix(cues, lines, duration):
         j = min(n, i + len(sig))
         if i < j:
             buf[i:j] += sig[: j - i]
-    fx = _room(fx, 0.3, 0.1)
-    vo = _room(vo, 0.22, 0.06)
+    # Ovoz yangrayotganda fon pasayadi, so'z aniq eshitilsin
+    active = _lowpass((np.abs(_lowpass(vo, 400)) > 1e-3).astype(float), int(0.12 * SR))
+    fx = _room(fx, 0.3, 0.1) * (1 - 0.6 * active)
+    vo = _room(vo, 0.22, 0.03)
     tone = _lowpass(_noise(n), 260) * 0.03
     sl, sr = fx * 0.5 + tone, np.roll(fx, 40) * 0.5 + np.roll(tone, 900)
     out = np.tanh(np.stack([sl + vo, sr + vo], axis=1) * 1.15) * 0.96

@@ -1178,6 +1178,11 @@ html.menu-open { overflow: hidden; }
 /* Sodda matn: sarlavhaning ikkinchi yo'li va atamalar izohi */
 .hero-explain { margin: 20px 0 0; padding-left: 14px; border-left: 3px solid var(--gold); color: #bdbcb1; font-size: 0.92rem; line-height: 1.45; max-width: 52ch; }
 
+/* Ikki ustunli ekranda sarlavha qatorlari bo'linib ketmasin */
+@media (min-width: 901px) {
+  .hero h1 { font-size: clamp(2rem, 3.5vw, 3.05rem); line-height: 1.12; }
+}
+
 /* Birinchi ekran: ikki katta tanlov */
 .hero-choices { display: grid; gap: 12px; max-width: 540px; }
 .choice { display: flex; align-items: center; gap: 16px; padding: 16px 20px 16px 16px; border-radius: 22px; background: rgba(255, 255, 255, 0.07); border: 1px solid rgba(255, 255, 255, 0.16); color: #fff; transition: transform 0.2s var(--ease), background 0.2s var(--ease); }

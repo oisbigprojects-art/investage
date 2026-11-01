@@ -105,6 +105,9 @@ export default async function Topbar() {
             </Link>
           </>
         )}
+        <Link className="nav-link" href="/biz-haqimizda">
+          {t('nav.about')}
+        </Link>
         {!role && (
           <Link className="nav-link" href="/startaplar">
             {t('nav.startups')}

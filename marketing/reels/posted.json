@@ -38,5 +38,13 @@
     "video": "public/reels/006-investage-reklama.mp4",
     "media_id": "17956542192278156",
     "permalink": "https://www.instagram.com/reel/DfM-Da4lffU/"
+  },
+  {
+    "date": "2026-11-02",
+    "topic": "Topishmoq: yo'qolgan 1 000 so'm (AI rasmlar, VoiceLab Amir diktori, ruscha tarjima)",
+    "script": "scripts/008-yoqolgan-ming-som.json",
+    "video": "public/reels/008-yoqolgan-ming-som.mp4",
+    "media_id": "17946514197359635",
+    "permalink": "https://www.instagram.com/reel/DfP3U3EEzRg/"
   }
 ]

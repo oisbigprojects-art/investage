@@ -1,0 +1,17 @@
+{
+  "voice": "voicelab:voice_fa56cecf-9b0b-45ba-9ec3-494efb5b301f",
+  "rate": 1.08,
+  "caption": "Startapingiz qaysi bosqichda va unga qanday investor mos? 🧭\nRU: Какой инвестор подходит вашему стартапу на каждой стадии?\n\n1️⃣ G‘oya — mahsulot hali yo‘q. Ko‘pincha o‘z mablag‘ingiz, yaqinlar yoki angel investor.\n2️⃣ MVP — ishlaydigan mahsulot va ilk foydalanuvchilar. Angel investorlar va akseleratorlar.\n3️⃣ Daromad — mijozlar pul to‘layapti, o‘sish ko‘rinadi. Venchur fondlar ko‘proq shu bosqichda qiziqadi.\n\nBu qat’iy qoida emas, lekin bosqichingizga mos investorga yozsangiz, vaqtingiz tejaladi.\n\n🚀 Startapingizni investorlarga ko‘rsating: investage.uz (havola profilda)\n\nSaqlab qo‘ying va startapchi do‘stingizga yuboring 👇\n\n#startap #startup #investitsiya #investor #angelinvestor #mvp #biznes #uzbekistan #ozbekiston #tadbirkorlik #investage",
+  "scenes": [
+    {"type": "hook", "eyebrow": "Startapchilar uchun", "title": "Qaysi bosqichda qanday investor izlash kerak?", "highlight": ["qanday", "investor"],
+     "say": "Qaysi bosqichda qanday investor izlash kerak?"},
+    {"type": "point", "num": "01", "title": "G‘oya bosqichi", "body": "Mahsulot hali yo‘q. Ko‘pincha o‘z mablag‘ingiz, yaqinlar yoki angel investor.",
+     "say": "G'oya bosqichida mahsulot hali yo'q. Odatda o'z pulingiz, yaqinlar yoki angel investor."},
+    {"type": "point", "num": "02", "title": "MVP bosqichi", "body": "Ishlaydigan mahsulot va ilk foydalanuvchilar. Angel investorlar va akseleratorlar vaqti.",
+     "say": "MVP tayyor, ilk foydalanuvchilar bor. Bu angel investor va akseleratorlar vaqti."},
+    {"type": "point", "num": "03", "title": "Daromad bosqichi", "body": "Mijozlar pul to‘layapti, o‘sish ko‘rinadi. Venchur fondlar ko‘proq shu yerda qiziqadi.",
+     "say": "Mijozlar pul to'layaptimi? Venchur fondlar ko'proq shu bosqichda qiziqadi."},
+    {"type": "cta", "title": "Bosqichingizga mos investorni toping", "highlight": ["investorni"], "button": "investage.uz", "note": "Ro‘yxatdan o‘tish bepul",
+     "say": "Startapingizni investorlarga ko'rsating. Investeyj nuqta uz saytida ro'yxatdan o'ting — bepul."}
+  ]
+}

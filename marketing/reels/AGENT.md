@@ -48,6 +48,11 @@ TASDIQ_KERAK: ha
 - Qora-oltin motion-grafika, ovozsiz, yozuvlar ikki tilda: katta o'zbekcha, tagida ruscha. Render: `python stick.py scripts/006-investage-reklama.json out/006.mp4`.
 - Faqat saytdagi rost da'volar: "Startap tanishtiradi. Investor so'raydi. Qaror startapniki.", ro'yxatdan o'tish bepul. Raqam va "1-o'rin" kabi gaplar yozilmaydi.
 
+## Shablon: Topishmoq (riddle.py + template-riddle.html)
+- Namuna: `scripts/008-yoqolgan-ming-som.json`. Har sahnada AI rasm (`img`) va sekin kamera harakati (`kb`), katta raqamlar (`big`), tagida ruscha (`ru`).
+- Rasmlar Composio'dagi `GEMINI_GENERATE_IMAGE` (9:16) bilan yasaladi va `out/NNN/ai/` ga yuklanadi. Uslub: "detailed colorful 2D cartoon storybook illustration, no text".
+- Ovoz: VoiceLab "Amir" diktori (`say`). Egasining ovozi va qisqa TTS gaplar rad etilgan; bir xil 2D qahramonlarni qayta ishlatish "zerikarli" deb topilgan.
+
 ## Til
 - Asosiy til o'zbek lotin: taxminan 3 ta reels'dan 2 tasi. Har 3-chisi rus tilida (eng yaxshi chiqqan o'zbekcha videoning ruscha versiyasi bo'lishi mumkin).
 - Stickman videoda yozuvlar `tr('uz', 'ru')` bilan yoziladi, ruscha caption esa `caption_ru` da. Ruscha render: `python stick.py scripts/NNN.json out/NNN-ru.mp4 --lang ru`.

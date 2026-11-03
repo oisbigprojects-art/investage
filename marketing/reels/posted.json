@@ -54,5 +54,13 @@
     "video": "public/reels/009-yoqolgan-ming-som-tez.mp4",
     "media_id": "18114448577614287",
     "permalink": "https://www.instagram.com/reel/DfRPGdEkcr9/"
+  },
+  {
+    "date": "2026-11-03",
+    "topic": "Haqiqiy voqea: Ronald Wayne Apple'dagi 10% ulushini $800 ga sotgan (egasining ovozi, AI foto uslubi, hujjatli musiqa)",
+    "script": "scripts/011-apple-800-dollar.json",
+    "video": "public/reels/011-apple-800-dollar.mp4",
+    "media_id": "18077911691459519",
+    "permalink": "https://www.instagram.com/reel/DfSal9Yj9-4/"
   }
 ]

@@ -57,6 +57,16 @@ TASDIQ_KERAK: ha
   Har sahnada `sub` — `say` bilan bir xil gap, raqamlar `{o'ttiz ming|30 000}` ko'rinishida: riddle.py har so'zning vaqtini ovozdan topadi va subtitr so'zma-so'z chiqadi.
   `sfx`: `[["coin", "w3", 0.9]]` (3-so'z aytilganda tanga) — coin, ding, pop, huh, tick, riser, buzz, shimmer. `count: 3` — 3-2-1 sanoq sahnasi, `punch` — sahna boshida qisqa zoom.
 
+## Shablon: Haqiqiy voqea (riddle.py, "score": "cinematic")
+- Namuna: `scripts/011-apple-800-dollar.json`. Egasi so'ragan format: hayotda bo'lgan qiziq voqea (biznes, ulush, investor),
+  ikki burilishli, 30–55 s. Har fakt ishonchli manbadan tekshiriladi va caption'da manba yoziladi.
+- Rasmlar: yangiliklardagi fotolar mualliflik huquqi bilan himoyalangan, ishlatilmaydi. Gemini bilan "photorealistic vintage film photograph"
+  uslubida chiziladi, real odamlarning yuzi chizilmaydi (joy, buyum, qo'llar). Videoda `aiLabel`, caption'da "Rasmlar AI yordamida tasvirlangan".
+- Musiqa: `score.py` (pianino, torli, tik-tak). Sahnada `tense` (tik-tak), `drop` (burilish oldidan jimlik), `lift` (umidli final).
+- Ovoz: egasining yozuvi (`clip` + `sub`); subtitr uchun ovoz Whisper large-v3 bilan matnga o'giriladi (`wordsAt` — so'z vaqtlari).
+  Model `~/.cache/whisper-large-v3` da; egasining xom ovoz yozuvlari repoga tushmaydi (out/voice).
+- POV hazil ("g'oyani kimga aytsang") egasiga yoqmadi.
+
 ## Til
 - Asosiy til o'zbek lotin: taxminan 3 ta reels'dan 2 tasi. Har 3-chisi rus tilida (eng yaxshi chiqqan o'zbekcha videoning ruscha versiyasi bo'lishi mumkin).
 - Stickman videoda yozuvlar `tr('uz', 'ru')` bilan yoziladi, ruscha caption esa `caption_ru` da. Ruscha render: `python stick.py scripts/NNN.json out/NNN-ru.mp4 --lang ru`.

@@ -161,6 +161,11 @@ def make_audio(bounds, duration, path, seed=1, voices=None, music=1.0, hits=(), 
     mix_l = drums * 0.9 + bass * 0.8 + pad * 0.55 + arp * 0.9 + fx * 0.9
     mix_r = drums * 0.9 + bass * 0.8 + np.roll(pad, 220) * 0.55 + np.roll(arp, 110) * 0.9 + fx * 0.9
     mix = np.stack([mix_l, mix_r], axis=1)[: int(duration * SR)]
+    return finish(mix, path, voices, music)
+
+
+def finish(mix, path, voices=None, music=1.0):
+    """Musiqa (n, 2) ni normallaydi, diktor ovozini ustiga qo'yadi (ducking bilan), oxirini so'ndirib WAV ga yozadi."""
     mix = np.tanh(mix / (np.max(np.abs(mix)) + 1e-9) * 1.3) * 0.85
     if voices:
         vo = np.zeros_like(mix)

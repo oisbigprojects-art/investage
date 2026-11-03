@@ -27,9 +27,11 @@ svg g { transform-box: view-box; }
 .rule b { font: 800 60px/1.1 'Manrope'; letter-spacing: -.02em; }
 .sub { position: absolute; left: 50px; right: 50px; top: 1330px; z-index: 13; text-align: center; font: 800 86px/1.12 'Manrope'; letter-spacing: -.01em; color: #fff; -webkit-text-stroke: 14px #0c0e22; paint-order: stroke fill; }
 .sub em { font-style: normal; color: #FFCF33; }
-.sub .w { display: inline-block; margin: 0 .12em; transform-origin: 50% 70%; }
+.sub .w { display: inline-block; margin: 0 .2em; transform-origin: 50% 70%; }
 .sub .w.on { color: #FFCF33; }
+.ailabel { position: absolute; left: 0; right: 0; bottom: 60px; z-index: 14; text-align: center; font: 600 28px 'Inter'; color: rgba(255,255,255,.62); }
 .big.count span { font-size: 330px; line-height: 1; }
+.big.top small { display: inline-block; margin-bottom: 26px; padding: 12px 34px; border-radius: 20px; background: #E4572E; color: #fff; font: 800 52px 'Manrope'; box-shadow: 0 10px 30px rgba(0,0,0,.35); }
 .subru { position: absolute; left: 70px; right: 70px; top: 1565px; z-index: 13; text-align: center; font: 700 44px/1.2 'Inter'; color: #fff; -webkit-text-stroke: 9px #0c0e22; paint-order: stroke fill; }
 .rule b { white-space: nowrap; }
 .kb { position: absolute; inset: 0; overflow: hidden; background: #111; }
@@ -299,6 +301,7 @@ window.build = function (spec) {
     if (s.tag) { const e = h('div', 'tag', esc(s.tag)); sc.appendChild(e); anim(e, [{ opacity: 0, transform: 'translateX(-50%) scale(.6) rotate(-4deg)' }, { opacity: 1, transform: 'translateX(-50%) scale(1) rotate(-2deg)' }], s0 + 120, 460, E_BACK); }
     if (s.rule) { const e = h('div', 'rule', `<i>${esc(s.rule.kicker)}</i><b>${esc(s.rule.title)}</b>`); sc.appendChild(e); anim(e, [{ opacity: 0, transform: 'translateY(-40px) scale(.92)' }, { opacity: 1, transform: 'none' }], s0 + 300, 560, E_BACK); }
     if (s.big) { const e = h('div', 'big', (s.big.kicker ? `<small>${esc(s.big.kicker)}</small>` : '') + s.big.lines.map(l => `<span>${esc(l)}</span>`).join('')); sc.appendChild(e);
+      if (s.bigY) { e.style.top = s.bigY + 'px'; e.classList.add('top'); }
       e.querySelectorAll('span, small').forEach((x, i) => anim(x, [{ opacity: 0, transform: 'translateY(40px) scale(.85)' }, { opacity: 1, transform: 'none' }], s0 + 120 + i * (s.words ? 200 : 380), s.words ? 380 : 520, E_BACK)); }
     if (s.count) { const e = h('div', 'big count', '<span></span>'); sc.appendChild(e); const sp = e.querySelector('span'), step = (s1 - s0) / s.count;
       for (let k = 0; k < s.count; k++) anim(sp, [{ opacity: 0, transform: 'scale(1.6)' }, { opacity: 1, transform: 'scale(1)', offset: .25 }, { opacity: 1, transform: 'scale(.92)' }], s0 + k * step, step, 'ease-out', { composite: 'replace', fill: 'none' });
@@ -316,6 +319,7 @@ window.build = function (spec) {
     if (ru !== lastRu) { subru.textContent = ru; lastRu = ru; }
   });
   document.getElementById('badge').textContent = spec.badge || 'Agar...?';
+  if (spec.aiLabel) document.getElementById('stage').appendChild(h('div', 'ailabel', esc(spec.aiLabel)));
   if (!spec.hud) document.getElementById('share').style.visibility = 'hidden';
   /* Hisoblagich */
   const pct = document.getElementById('pct'), share = document.getElementById('share');

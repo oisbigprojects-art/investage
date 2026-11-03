@@ -20,6 +20,7 @@ import numpy as np
 from playwright.sync_api import sync_playwright
 
 from music import SR, make_audio
+from score import make_cinematic
 from sfx import SFX
 from render2 import FPS, HERE, open_page, tts
 from stick import decode
@@ -55,13 +56,16 @@ def voiced(sig, frame=0.01):
     return rms > max(0.012, rms.max() * 0.06), fr
 
 
-def tighten(sig, max_gap):
-    """Boshi/oxiridagi jimlikni kesadi, ichidagi uzun pauzalarni max_gap gacha qisqartiradi."""
+def tighten(sig, max_gap, spans=None):
+    """Boshi/oxiridagi jimlikni kesadi, ichidagi uzun pauzalarni max_gap gacha qisqartiradi.
+    spans ro'yxat bo'lsa, unga qoldirilgan bo'laklar (asl_boshi, asl_oxiri, yangi_boshi) namunalarda yoziladi."""
     on, fr = voiced(sig)
     idx = np.flatnonzero(on)
     if not len(idx):
         return sig
-    keep, i, n = [], idx[0], len(on)
+    pad = int(0.03 * SR)
+    pieces = [(max(0, idx[0] * fr - pad), idx[0] * fr)]
+    i, n = idx[0], len(on)
     while i <= idx[-1]:
         j = i
         while j < n and on[j] == on[i]:
@@ -69,13 +73,27 @@ def tighten(sig, max_gap):
         a, b = i * fr, j * fr
         if not on[i] and (j - i) * fr / SR > max_gap:
             half = int(max_gap * SR / 2)
-            keep += [sig[a: a + half], sig[b - half: b]]
+            pieces += [(a, a + half), (b - half, b)]
         else:
-            keep.append(sig[a:b])
+            pieces.append((a, b))
         i = j
-    pad = int(0.03 * SR)
-    out = np.concatenate([sig[max(0, idx[0] * fr - pad): idx[0] * fr]] + keep + [sig[(idx[-1] + 1) * fr:(idx[-1] + 1) * fr + pad]])
-    return out
+    pieces.append(((idx[-1] + 1) * fr, min(len(sig), (idx[-1] + 1) * fr + pad)))
+    pos = 0
+    for a, b in pieces:
+        if spans is not None:
+            spans.append((a, b, pos))
+        pos += b - a
+    return np.concatenate([sig[a:b] for a, b in pieces])
+
+
+def remap(t, spans):
+    """Asl signaldagi vaqt (s) -> tighten dan keyingi vaqt (s); kesilgan pauza ichidagi vaqt keyingi bo'lak boshiga tushadi."""
+    x = t * SR
+    for a, b, d in spans:
+        if x < b:
+            return (d + max(0, x - a)) / SR
+    a, b, d = spans[-1]
+    return (d + b - a) / SR
 
 
 def align(sig, toks):
@@ -122,6 +140,17 @@ def prepare(spec):
             if f not in cache:
                 cache[f] = decode(os.path.join(HERE, f), CLEAN)
             sig = cache[f][int(a * SR): int(b * SR)].copy()
+            if s.get('sub'):                     # odam yozuvi: biroz tezlashtirib, pauzalarni qisqartirib, so'z vaqtlarini topamiz
+                if spec.get('clipTempo', 1) != 1:
+                    sig = ffilter(sig, f"atempo={spec['clipTempo']}")
+                spans = []
+                sig = tighten(sig, spec.get('clipGap', 0.25), spans)
+                if s.get('wordsAt'):             # Whisper aniqlagan so'z vaqtlari (asl fayl soniyalarida)
+                    k = spec.get('clipTempo', 1)
+                    s['words'] = [{'t': w, 'a': round(remap((wa - a) / k, spans) * 1000), 'b': round(remap((wb - a) / k, spans) * 1000),
+                                   'br': bool(re.search(r'[.,:;?!—]$', w))} for w, wa, wb in s['wordsAt']]
+                else:
+                    s['words'] = align(sig, tokens(s['sub']))
         if s.get('say') or s.get('clip'):
             n = min(len(sig) // 2, 600)
             sig[:n] *= np.linspace(0, 1, n)
@@ -148,8 +177,11 @@ def audio(spec, clips, bounds, duration):
             if isinstance(at, str):
                 at = (s.get('lead', 0) + s['words'][int(at[1:])]['a']) / 1000
             extra.append((a / 1000 + at, SFX[name]() * gain))
-    make_audio([(a / 1000, b / 1000) for a, b in bounds], duration, wav, spec.get('seed', zlib.crc32(b'riddle') % 1000), voices,
-               spec.get('music', 0.35), hits, extra, spec.get('whoosh', 1.0))
+    secs, seed = [(a / 1000, b / 1000) for a, b in bounds], spec.get('seed', zlib.crc32(b'riddle') % 1000)
+    if spec.get('score') == 'cinematic':
+        make_cinematic(spec['scenes'], secs, duration, wav, seed, voices, spec.get('music', 0.35), hits, extra, spec.get('whoosh', 1.0))
+    else:
+        make_audio(secs, duration, wav, seed, voices, spec.get('music', 0.35), hits, extra, spec.get('whoosh', 1.0))
     return wav
 
 

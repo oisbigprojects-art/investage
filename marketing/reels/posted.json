@@ -46,5 +46,13 @@
     "video": "public/reels/008-yoqolgan-ming-som.mp4",
     "media_id": "17946514197359635",
     "permalink": "https://www.instagram.com/reel/DfP3U3EEzRg/"
+  },
+  {
+    "date": "2026-11-03",
+    "topic": "Topishmoq: yo'qolgan 1 000 so'm, tez versiya (53 s, so'zma-so'z subtitr, SFX) — 008 o'rniga",
+    "script": "scripts/009-yoqolgan-ming-som-tez.json",
+    "video": "public/reels/009-yoqolgan-ming-som-tez.mp4",
+    "media_id": "18114448577614287",
+    "permalink": "https://www.instagram.com/reel/DfRPGdEkcr9/"
   }
 ]

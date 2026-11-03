@@ -52,6 +52,10 @@ TASDIQ_KERAK: ha
 - Namuna: `scripts/008-yoqolgan-ming-som.json`. Har sahnada AI rasm (`img`) va sekin kamera harakati (`kb`), katta raqamlar (`big`), tagida ruscha (`ru`).
 - Rasmlar Composio'dagi `GEMINI_GENERATE_IMAGE` (9:16) bilan yasaladi va `out/NNN/ai/` ga yuklanadi. Uslub: "detailed colorful 2D cartoon storybook illustration, no text".
 - Ovoz: VoiceLab "Amir" diktori (`say`). Egasining ovozi va qisqa TTS gaplar rad etilgan; bir xil 2D qahramonlarni qayta ishlatish "zerikarli" deb topilgan.
+- Temp (egasi: 87 soniyalik 008 "zerikarli", subtitr ovozga mos emas edi). Endi namuna `scripts/009-yoqolgan-ming-som-tez.json`:
+  40–55 soniya; birinchi 2 soniyada savol va "javob oxirida"; `tempo` 1.18 (ohang o'zgarmay tezlashadi), `maxGap` 0.14, `lead` 0.08, `tail` 0.14.
+  Har sahnada `sub` — `say` bilan bir xil gap, raqamlar `{o'ttiz ming|30 000}` ko'rinishida: riddle.py har so'zning vaqtini ovozdan topadi va subtitr so'zma-so'z chiqadi.
+  `sfx`: `[["coin", "w3", 0.9]]` (3-so'z aytilganda tanga) — coin, ding, pop, huh, tick, riser, buzz, shimmer. `count: 3` — 3-2-1 sanoq sahnasi, `punch` — sahna boshida qisqa zoom.
 
 ## Til
 - Asosiy til o'zbek lotin: taxminan 3 ta reels'dan 2 tasi. Har 3-chisi rus tilida (eng yaxshi chiqqan o'zbekcha videoning ruscha versiyasi bo'lishi mumkin).

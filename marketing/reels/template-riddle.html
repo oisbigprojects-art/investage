@@ -27,6 +27,9 @@ svg g { transform-box: view-box; }
 .rule b { font: 800 60px/1.1 'Manrope'; letter-spacing: -.02em; }
 .sub { position: absolute; left: 50px; right: 50px; top: 1330px; z-index: 13; text-align: center; font: 800 86px/1.12 'Manrope'; letter-spacing: -.01em; color: #fff; -webkit-text-stroke: 14px #0c0e22; paint-order: stroke fill; }
 .sub em { font-style: normal; color: #FFCF33; }
+.sub .w { display: inline-block; margin: 0 .12em; transform-origin: 50% 70%; }
+.sub .w.on { color: #FFCF33; }
+.big.count span { font-size: 330px; line-height: 1; }
 .subru { position: absolute; left: 70px; right: 70px; top: 1565px; z-index: 13; text-align: center; font: 700 44px/1.2 'Inter'; color: #fff; -webkit-text-stroke: 9px #0c0e22; paint-order: stroke fill; }
 .rule b { white-space: nowrap; }
 .kb { position: absolute; inset: 0; overflow: hidden; background: #111; }
@@ -214,7 +217,21 @@ function chunks(text) {
   if (cur.length) out.push(cur.join(' '));
   return out;
 }
+/* So'zma-so'z subtitr: riddle.py ovozdan har so'z vaqtini topadi (s.words), so'z aytilganda chiqadi va sariq yonadi */
+function setupWords(s, t0) {
+  const lead = t0 + (s.lead || 0), out = []; let cur = [];
+  s.words.forEach((w, i) => {
+    cur.push(w);
+    const len = cur.map(x => x.t).join(' ').length, next = s.words[i + 1];
+    if (!next || w.br || cur.length >= 3 || len + next.t.length + 1 > 17) { out.push(cur); cur = []; }
+  });
+  return out.map((ws, k) => {
+    const a = lead + ws[0].a, nx = out[k + 1], b = nx ? lead + nx[0].a : lead + ws[ws.length - 1].b + 250;
+    return { a, b, words: ws.map(w => ({ t: w.t, a: lead + w.a, b: lead + w.b })) };
+  });
+}
 function setupSub(s, t0) {
+  if (s.words) return setupWords(s, t0);
   if (!s.text) return;
   const parts = chunks(s.text), tot = parts.reduce((a, p) => a + p.length, 0);
   const speech = (s.voiceDur || 3) * 1000; let t = t0 + (s.lead || 0);
@@ -263,7 +280,8 @@ window.build = function (spec) {
     if (s.img) {
       const [z0, z1, x0, x1, y0, y1] = s.kb || [1.04, 1.16, 0, 0, 0, 0];
       anim(sc.querySelector('.kb img'), [{ transform: `translate(${x0}px,${y0}px) scale(${z0})` }, { transform: `translate(${x1}px,${y1}px) scale(${z1})` }], s0, s1 - s0 + 400, 'linear');
-      anim(sc, [{ opacity: 0 }, { opacity: 1 }], s0, 320, 'linear');
+      anim(sc, [{ opacity: 0 }, { opacity: 1 }], s0, s.punch ? 120 : 320, 'linear');
+      if (s.punch) anim(sc.querySelector('.kb'), [{ transform: `scale(${s.punch})` }, { transform: 'scale(1)' }], s0, 300, 'cubic-bezier(.2,.8,.3,1)');
     }
     anim(sc, [{ visibility: 'hidden' }, { visibility: 'visible' }], s0, 1, 'step-end');
     if (idx < scenes.length - 1) anim(sc, [{ visibility: 'visible' }, { visibility: 'hidden' }], s1, 1, 'step-end', { fill: 'forwards' });
@@ -281,7 +299,10 @@ window.build = function (spec) {
     if (s.tag) { const e = h('div', 'tag', esc(s.tag)); sc.appendChild(e); anim(e, [{ opacity: 0, transform: 'translateX(-50%) scale(.6) rotate(-4deg)' }, { opacity: 1, transform: 'translateX(-50%) scale(1) rotate(-2deg)' }], s0 + 120, 460, E_BACK); }
     if (s.rule) { const e = h('div', 'rule', `<i>${esc(s.rule.kicker)}</i><b>${esc(s.rule.title)}</b>`); sc.appendChild(e); anim(e, [{ opacity: 0, transform: 'translateY(-40px) scale(.92)' }, { opacity: 1, transform: 'none' }], s0 + 300, 560, E_BACK); }
     if (s.big) { const e = h('div', 'big', (s.big.kicker ? `<small>${esc(s.big.kicker)}</small>` : '') + s.big.lines.map(l => `<span>${esc(l)}</span>`).join('')); sc.appendChild(e);
-      e.querySelectorAll('span, small').forEach((x, i) => anim(x, [{ opacity: 0, transform: 'translateY(40px) scale(.85)' }, { opacity: 1, transform: 'none' }], s0 + 150 + i * 380, 520, E_BACK)); }
+      e.querySelectorAll('span, small').forEach((x, i) => anim(x, [{ opacity: 0, transform: 'translateY(40px) scale(.85)' }, { opacity: 1, transform: 'none' }], s0 + 120 + i * (s.words ? 200 : 380), s.words ? 380 : 520, E_BACK)); }
+    if (s.count) { const e = h('div', 'big count', '<span></span>'); sc.appendChild(e); const sp = e.querySelector('span'), step = (s1 - s0) / s.count;
+      for (let k = 0; k < s.count; k++) anim(sp, [{ opacity: 0, transform: 'scale(1.6)' }, { opacity: 1, transform: 'scale(1)', offset: .25 }, { opacity: 1, transform: 'scale(.92)' }], s0 + k * step, step, 'ease-out', { composite: 'replace', fill: 'none' });
+      TICKS.push(ms => { if (ms >= s0 && ms < s1) sp.textContent = s.count - Math.floor((ms - s0) / step); }); }
     if (s.url) { const e = h('div', 'url', esc(s.url)); sc.appendChild(e); anim(e, [{ opacity: 0, transform: 'scale(.7)' }, { opacity: 1, transform: 'scale(1)' }], s0 + (s.urlAt || 2000), 520, E_BACK); anim(e, [{ transform: 'scale(1)' }, { transform: 'scale(1.04)' }, { transform: 'scale(1)' }], s0 + (s.urlAt || 2000) + 700, 900, 'ease-in-out', { iterations: Infinity, composite: 'add' }); }
     if (s.note) sc.appendChild(h('div', 'note', esc(s.note)));
     const sb = setupSub(s, s0); if (sb) subs.push(...sb);
@@ -307,9 +328,17 @@ window.build = function (spec) {
   /* Subtitr */
   const sub = document.getElementById('sub'); let last = null;
   TICKS.push(ms => {
-    const c = subs.find(x => ms >= x.a && ms < x.b + 120) || null;
-    if (c !== last) { sub.innerHTML = c ? c.html : ''; last = c; }
-    if (c) { const q = Math.min(1, (ms - c.a) / 130); sub.style.transform = `scale(${1.14 - .14 * q})`; }
+    const c = subs.find(x => ms >= x.a && ms < x.b + (x.words ? 0 : 120)) || null;
+    if (c !== last) { sub.innerHTML = c ? (c.words ? c.words.map(w => `<span class="w">${esc(w.t)}</span>`).join('') : c.html) : ''; last = c; }
+    if (c && c.words) {
+      sub.style.transform = 'none';
+      sub.querySelectorAll('.w').forEach((e, i) => {
+        const w = c.words[i], q = Math.min(1, Math.max(0, (ms - w.a) / 110));
+        e.style.opacity = ms < w.a ? 0 : 1;
+        e.style.transform = `scale(${ms < w.a ? .6 : 1.18 - .18 * q})`;
+        e.classList.toggle('on', ms >= w.a && ms < w.b + 60);
+      });
+    } else if (c) { const q = Math.min(1, (ms - c.a) / 130); sub.style.transform = `scale(${1.14 - .14 * q})`; }
   });
   anim(document.getElementById('stage'), [{ opacity: 1 }, { opacity: 0 }], DURATION - 350, 350, 'ease-in');
   return { duration: DURATION, bounds };

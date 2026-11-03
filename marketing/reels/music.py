@@ -19,9 +19,14 @@ def _env(n, a, r):
 
 
 def _lowpass(x, k):
+    """Sirg'aluvchi o'rtacha, np.convolve(x, ones(k)/k, 'same') bilan bir xil, lekin cumsum orqali (katta k da ham tez)."""
     if k <= 1:
         return x
-    return np.convolve(x, np.ones(k) / k, mode='same')
+    z = np.zeros(k - 1)
+    s = np.concatenate([[0.0], np.cumsum(np.concatenate([z, x, z]))])
+    full = (s[k:] - s[:-k]) / k
+    o = (k - 1) // 2
+    return full[o: o + len(x)]
 
 
 def _note(midi):
@@ -105,10 +110,11 @@ def _impact(rng):
     return (boom + noise) * 0.8
 
 
-def make_audio(bounds, duration, path, seed=1, voices=None, music=1.0, hits=()):
+def make_audio(bounds, duration, path, seed=1, voices=None, music=1.0, hits=(), extra=(), whoosh=1.0):
     """voices: [(boshlanish_s, np.ndarray shape (n, 2) float -1..1), ...] — diktor ovozi.
     Ovoz yangrayotganda musiqa avtomatik pasayadi (ducking), ovoz esa ustida aniq eshitiladi.
-    music: fon musiqasi balandligi (1 = to'liq); hits: qo'shimcha "impact" urilishlari vaqtlari (soniya)."""
+    music: fon musiqasi balandligi (1 = to'liq); hits: qo'shimcha "impact" urilishlari vaqtlari (soniya);
+    extra: [(boshlanish_s, mono np.ndarray), ...] — tovush effektlari (sfx.py); whoosh: sahna o'tishidagi shovqin balandligi."""
     rng = np.random.default_rng(seed)
     n = int(duration * SR) + SR
     drums, bass, pad, arp, fx = (np.zeros(n) for _ in range(5))
@@ -145,10 +151,12 @@ def make_audio(bounds, duration, path, seed=1, voices=None, music=1.0, hits=()):
 
     _add(fx, 0.0, _impact(rng))
     for a, _ in bounds[1:]:
-        _add(fx, max(0.0, a - 0.45), _whoosh(rng))
+        _add(fx, max(0.0, a - 0.45), _whoosh(rng) * whoosh)
     _add(fx, bounds[-1][0] + 0.2, _impact(rng) * 0.5)
     for t_hit in hits:
         _add(fx, t_hit, _impact(rng) * 0.7)
+    for t_fx, sig in extra:
+        _add(fx, max(0.0, t_fx), sig)
 
     mix_l = drums * 0.9 + bass * 0.8 + pad * 0.55 + arp * 0.9 + fx * 0.9
     mix_r = drums * 0.9 + bass * 0.8 + np.roll(pad, 220) * 0.55 + np.roll(arp, 110) * 0.9 + fx * 0.9

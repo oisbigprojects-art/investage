@@ -1,0 +1,526 @@
+{
+  "voice": "voicelab:voice_8bae02c6-d078-4757-9d62-0fce6da23cf7",
+  "rate": 1.04,
+  "template": "template-riddle.html",
+  "badge": "Topishmoq",
+  "tempo": 1.18,
+  "maxGap": 0.14,
+  "lead": 0.08,
+  "tail": 0.14,
+  "music": 0.34,
+  "whoosh": 0.6,
+  "scenes": [
+    {
+      "say": "Boshida o'ttiz ming edi. Bir ming so'm qayerga yo'qoldi?",
+      "ru": "Куда пропала 1 000 сумов? Ответ — в конце.",
+      "img": "out/008/ai/s11.jpg",
+      "kb": [
+        1.18,
+        1.04,
+        0,
+        0,
+        -60,
+        -20
+      ],
+      "rule": {
+        "kicker": "Topishmoq · javob oxirida",
+        "title": "1 000 so‘m qayerda?"
+      },
+      "hit": true,
+      "sub": "Boshida {o'ttiz ming|30 000} edi. Bir ming so'm qayerga yo'qoldi?",
+      "wipe": false,
+      "punch": 1.18,
+      "fromWord": 3
+    },
+    {
+      "say": "Uch do'st choyxonada osh yeyishdi.",
+      "ru": "Три друга поели плов в чайхане.",
+      "img": "out/008/ai/s01.jpg",
+      "kb": [
+        1.0,
+        1.1,
+        0,
+        0,
+        0,
+        -50
+      ],
+      "sub": "Uch do'st choyxonada osh yeyishdi.",
+      "wipe": false,
+      "punch": 1.08
+    },
+    {
+      "say": "Hisob o'ttiz ming so'm chiqdi, har biri o'n ming so'mdan to'ladi.",
+      "ru": "Счёт 30 000 сумов, каждый заплатил по 10 000.",
+      "img": "out/008/ai/s02.jpg",
+      "kb": [
+        1.12,
+        1.0,
+        -30,
+        30,
+        0,
+        0
+      ],
+      "rule": {
+        "kicker": "Hisob",
+        "title": "3 × 10 000 = 30 000"
+      },
+      "sub": "Hisob {o'ttiz ming|30 000} so'm chiqdi, har biri {o'n ming|10 000} so'mdan to'ladi.",
+      "wipe": false,
+      "punch": 1.08,
+      "sfx": [
+        [
+          "coin",
+          "w1",
+          0.9
+        ],
+        [
+          "coin",
+          "w6",
+          0.9
+        ]
+      ]
+    },
+    {
+      "say": "Keyin choyxonachi esladi: bugun chegirma bor, osh yigirma besh ming so'm ekan.",
+      "ru": "Потом чайханщик вспомнил: сегодня скидка, плов стоит 25 000.",
+      "img": "out/008/ai/s03.jpg",
+      "kb": [
+        1.0,
+        1.15,
+        0,
+        20,
+        40,
+        -40
+      ],
+      "rule": {
+        "kicker": "Chegirma bilan",
+        "title": "Osh: 25 000 so‘m"
+      },
+      "sub": "Keyin choyxonachi esladi: bugun chegirma bor, osh {yigirma besh ming|25 000} so'm ekan.",
+      "wipe": false,
+      "punch": 1.08,
+      "sfx": [
+        [
+          "ding",
+          "w4",
+          0.45
+        ]
+      ]
+    },
+    {
+      "say": "U shogirdiga besh ming so'm berib, mehmonlarga qaytarib berishni aytdi.",
+      "ru": "Он дал ученику 5 000 сумов, чтобы вернуть гостям.",
+      "img": "out/008/ai/s04.jpg",
+      "kb": [
+        1.12,
+        1.02,
+        20,
+        -20,
+        0,
+        30
+      ],
+      "rule": {
+        "kicker": "Qaytim",
+        "title": "30 000 − 25 000 = 5 000"
+      },
+      "sub": "U shogirdiga {besh ming|5 000} so'm berib, mehmonlarga qaytarib berishni aytdi.",
+      "wipe": false,
+      "punch": 1.08,
+      "sfx": [
+        [
+          "coin",
+          "w2",
+          0.9
+        ]
+      ]
+    },
+    {
+      "say": "Shogird o'ylab qoldi: besh mingni uchga teng bo'lib bo'lmaydi-ku.",
+      "ru": "Ученик задумался: 5 000 не делится поровну на троих.",
+      "img": "out/008/ai/s05.jpg",
+      "kb": [
+        1.0,
+        1.2,
+        0,
+        0,
+        60,
+        -20
+      ],
+      "rule": {
+        "kicker": "Muammo",
+        "title": "5 000 ÷ 3 = ?"
+      },
+      "sub": "Shogird o'ylab qoldi: {besh mingni|5 000 ni} uchga teng bo'lib bo'lmaydi-ku.",
+      "wipe": false,
+      "punch": 1.08,
+      "sfx": [
+        [
+          "huh",
+          0.05,
+          0.8
+        ]
+      ]
+    },
+    {
+      "say": "U ikki ming so'mni o'ziga oldi, har bir do'stga ming so'mdan qaytardi.",
+      "ru": "Он взял 2 000 себе и вернул каждому другу по 1 000.",
+      "img": "out/008/ai/s06.jpg",
+      "kb": [
+        1.04,
+        1.16,
+        -40,
+        40,
+        0,
+        0
+      ],
+      "rule": {
+        "kicker": "Shogird",
+        "title": "2 000 o‘ziga, 3 × 1 000 qaytdi"
+      },
+      "sub": "U {ikki ming|2 000} so'mni o'ziga oldi, har bir do'stga ming so'mdan qaytardi.",
+      "wipe": false,
+      "punch": 1.08,
+      "sfx": [
+        [
+          "coin",
+          "w1",
+          0.8
+        ],
+        [
+          "coin",
+          "w8",
+          0.7
+        ],
+        [
+          "coin",
+          "w9",
+          0.7
+        ]
+      ]
+    },
+    {
+      "say": "Har bir do'st to'qqiz ming so'mdan to'ladi.",
+      "ru": "Каждый друг заплатил по 9 000.",
+      "img": "out/008/ai/board.jpg",
+      "kb": [
+        1.06,
+        1.08,
+        0,
+        0,
+        0,
+        0
+      ],
+      "big": {
+        "kicker": "Har bir do‘st",
+        "lines": [
+          "10 000 − 1 000",
+          "= 9 000"
+        ]
+      },
+      "sub": "Har bir do'st {to'qqiz ming|9 000} so'mdan to'ladi.",
+      "wipe": false,
+      "punch": 1.0,
+      "sfx": [
+        [
+          "pop",
+          0.2,
+          0.7
+        ],
+        [
+          "pop",
+          0.6,
+          0.7
+        ]
+      ]
+    },
+    {
+      "say": "Uch karra to'qqiz, yigirma yetti ming.",
+      "ru": "Три раза по 9 000 — 27 000.",
+      "img": "out/008/ai/board.jpg",
+      "kb": [
+        1.08,
+        1.1,
+        0,
+        0,
+        0,
+        0
+      ],
+      "big": {
+        "kicker": "Uch do‘st",
+        "lines": [
+          "3 × 9 000",
+          "= 27 000"
+        ]
+      },
+      "sub": "Uch karra {to'qqiz,|9 000,} {yigirma yetti ming.|27 000.}",
+      "wipe": false,
+      "punch": 1.0,
+      "sfx": [
+        [
+          "pop",
+          0.2,
+          0.7
+        ],
+        [
+          "pop",
+          0.6,
+          0.7
+        ]
+      ]
+    },
+    {
+      "say": "Shogirdda ikki ming. Jami yigirma to'qqiz ming.",
+      "ru": "У ученика 2 000. Итого 29 000.",
+      "img": "out/008/ai/board.jpg",
+      "kb": [
+        1.1,
+        1.12,
+        0,
+        0,
+        0,
+        0
+      ],
+      "big": {
+        "kicker": "Jami",
+        "lines": [
+          "27 000 + 2 000",
+          "= 29 000"
+        ]
+      },
+      "sub": "Shogirdda {ikki ming.|2 000.} Jami {yigirma to'qqiz ming.|29 000.}",
+      "wipe": false,
+      "punch": 1.0,
+      "sfx": [
+        [
+          "pop",
+          0.2,
+          0.7
+        ],
+        [
+          "pop",
+          0.6,
+          0.7
+        ]
+      ]
+    },
+    {
+      "say": "Boshida o'ttiz ming edi. Bir ming so'm qayerga yo'qoldi?",
+      "ru": "Вначале было 30 000. Куда пропала 1 000?",
+      "img": "out/008/ai/s11.jpg",
+      "kb": [
+        1.0,
+        1.22,
+        0,
+        0,
+        0,
+        -50
+      ],
+      "rule": {
+        "kicker": "Boshida 30 000 edi",
+        "title": "30 000 − 29 000 = ?"
+      },
+      "hit": true,
+      "sub": "Boshida {o'ttiz ming|30 000} edi. Bir ming so'm qayerga yo'qoldi?",
+      "wipe": false,
+      "punch": 1.14,
+      "sfx": [
+        [
+          "riser",
+          "w4",
+          0.5
+        ]
+      ]
+    },
+    {
+      "say": "Javobingizni izohda yozing.",
+      "ru": "Напишите ответ в комментариях",
+      "img": "out/008/ai/s11.jpg",
+      "kb": [
+        1.22,
+        1.32,
+        0,
+        0,
+        -50,
+        -80
+      ],
+      "big": {
+        "kicker": "O‘ylab ko‘ring",
+        "lines": [
+          "Javobni",
+          "izohda yozing"
+        ]
+      },
+      "sub": "Javobingizni izohda yozing.",
+      "wipe": false,
+      "punch": 1.0
+    },
+    {
+      "count": 3,
+      "dur": 2.4,
+      "img": "out/008/ai/s11.jpg",
+      "kb": [
+        1.32,
+        1.4,
+        0,
+        0,
+        -80,
+        -90
+      ],
+      "wipe": false,
+      "ru": "Напишите ответ в комментариях",
+      "sfx": [
+        [
+          "tick",
+          0.0,
+          1
+        ],
+        [
+          "tick",
+          0.8,
+          1
+        ],
+        [
+          "tick",
+          1.6,
+          1
+        ],
+        [
+          "riser",
+          0.2,
+          0.6
+        ]
+      ]
+    },
+    {
+      "say": "Javob: hech qanday pul yo'qolmagan. Xato hisobda.",
+      "ru": "Ответ: никакие деньги не пропали. Ошибка в подсчёте.",
+      "img": "out/008/ai/s13.jpg",
+      "kb": [
+        1.14,
+        1.0,
+        0,
+        0,
+        -40,
+        20
+      ],
+      "rule": {
+        "kicker": "Javob",
+        "title": "Pul yo‘qolmagan"
+      },
+      "hit": true,
+      "sub": "Javob: hech qanday pul yo'qolmagan. Xato hisobda.",
+      "wipe": false,
+      "punch": 1.2,
+      "sfx": [
+        [
+          "ding",
+          "w4",
+          0.5
+        ]
+      ]
+    },
+    {
+      "say": "Do'stlar to'lagan yigirma yetti mingning ichida choyxonachining yigirma besh mingi ham, shogirdning ikki mingi ham bor.",
+      "ru": "В 27 000, которые заплатили друзья, уже есть 25 000 чайханщика и 2 000 ученика.",
+      "img": "out/008/ai/board.jpg",
+      "kb": [
+        1.0,
+        1.04,
+        0,
+        0,
+        0,
+        0
+      ],
+      "big": {
+        "kicker": "27 000 ning ichida",
+        "lines": [
+          "25 000 + 2 000",
+          "= 27 000"
+        ]
+      },
+      "sub": "Do'stlar to'lagan {yigirma yetti mingning|27 000 ning} ichida choyxonachining {yigirma besh mingi|25 000} ham, shogirdning {ikki mingi|2 000} ham bor.",
+      "wipe": false,
+      "punch": 1.0
+    },
+    {
+      "say": "Shogirdning pulini ustiga yana qo'shib bo'lmaydi.",
+      "ru": "Деньги ученика нельзя прибавлять ещё раз.",
+      "img": "out/008/ai/board.jpg",
+      "kb": [
+        1.04,
+        1.07,
+        0,
+        0,
+        0,
+        0
+      ],
+      "big": {
+        "kicker": "Xato shu yerda",
+        "lines": [
+          "27 000 + 2 000",
+          "noto‘g‘ri"
+        ]
+      },
+      "sub": "Shogirdning pulini ustiga yana qo'shib bo'lmaydi.",
+      "wipe": false,
+      "punch": 1.0,
+      "sfx": [
+        [
+          "buzz",
+          "w4",
+          0.5
+        ]
+      ]
+    },
+    {
+      "say": "Yigirma yetti ming, ustiga qaytarilgan uch ming, jami o'ttiz ming.",
+      "ru": "27 000 плюс возвращённые 3 000 — ровно 30 000.",
+      "img": "out/008/ai/board.jpg",
+      "kb": [
+        1.07,
+        1.1,
+        0,
+        0,
+        0,
+        0
+      ],
+      "big": {
+        "kicker": "To‘g‘ri hisob",
+        "lines": [
+          "27 000 + 3 000",
+          "= 30 000"
+        ]
+      },
+      "sub": "{Yigirma yetti ming,|27 000,} ustiga qaytarilgan {uch ming,|3 000,} jami {o'ttiz ming.|30 000.}",
+      "wipe": false,
+      "punch": 1.0,
+      "sfx": [
+        [
+          "shimmer",
+          "w4",
+          0.6
+        ]
+      ]
+    },
+    {
+      "say": "Loyihangiz hisobini investorga aniq ko'rsating. Investeyj nuqta uz.",
+      "ru": "Покажите инвестору точные расчёты своего проекта.",
+      "img": "out/008/ai/s19.jpg",
+      "kb": [
+        1.0,
+        1.1,
+        0,
+        -20,
+        0,
+        -30
+      ],
+      "sub": "Loyihangiz hisobini investorga aniq ko'rsating. {Investeyj nuqta uz.|investage.uz}",
+      "wipe": false,
+      "punch": 1.08,
+      "dur": 4.6,
+      "urlAt": 1800,
+      "url": "investage.uz"
+    }
+  ],
+  "caption": "1 000 so‘m qayerga yo‘qoldi? 🤔\n\nUch do‘st, choyxona va hisob-kitob. Hammasi oddiydek, lekin bir ming so‘m “yo‘qolib qoladi”.\n\nJavobingizni izohda yozing, to‘g‘ri javob videoning oxirida 👇\n\nRU: Куда пропала 1 000 сумов? Напишите ответ в комментариях.\n\n🚀 Loyihangizga sarmoya toping yoki sarmoya kiritish uchun loyiha tanlang: investage.uz (havola profilda)\n\n#topishmoq #mantiq #biznes #pul #hisob #startap #investor #uzbekistan #ozbekiston #toshkent #investage"
+}

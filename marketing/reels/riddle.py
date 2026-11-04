@@ -27,7 +27,12 @@ from stick import decode
 
 LEAD, TAIL = 0.15, 0.35
 CLEAN = 'highpass=f=85,afftdn=nf=-40,acompressor=threshold=0.12:ratio=2.5:attack=6:release=140:makeup=1.4'
-PUNCH = 'highpass=f=70,equalizer=f=3200:t=q:w=1.2:g=3,acompressor=threshold=0.1:ratio=3:attack=4:release=90:makeup=1.6'
+# Telegram ovozli xabaridagi bo'g'iq ovozni "mikrofondagidek" qiladi: out/voice/X.ogg -> X-studio.wav (ffmpeg -af STUDIO), ssenariyda "clean": ""
+STUDIO = ('highpass=f=95:p=2,afftdn=nf=-50:nr=8,lowshelf=f=140:g=-4,equalizer=f=250:t=q:w=1:g=-3,equalizer=f=1800:t=q:w=1.2:g=5,'
+          'equalizer=f=3200:t=q:w=1.3:g=8,equalizer=f=5200:t=q:w=1.2:g=8,highshelf=f=8000:g=7,'
+          'aexciter=level_in=1:level_out=1:amount=3:drive=7:blend=0:freq=5500:ceil=16000,'
+          'acompressor=threshold=0.08:ratio=3.5:attack=5:release=90:makeup=2.5,deesser=i=0.5:m=0.5:f=0.5,alimiter=limit=0.9')
+PUNCH ='highpass=f=70,equalizer=f=3200:t=q:w=1.2:g=3,acompressor=threshold=0.1:ratio=3:attack=4:release=90:makeup=1.6'
 TOKEN = re.compile(r'\{([^|}]+)\|([^}]+)\}|(\S+)')
 VOWELS = re.compile(r"[aeiou]|o['‘’]", re.I)
 
@@ -137,9 +142,12 @@ def prepare(spec):
             sig = tts(s['say'], spec['voice'], spec.get('rate', 1)).mean(axis=1)
         elif s.get('clip'):
             f, a, b = s['clip']
-            if f not in cache:
-                cache[f] = decode(os.path.join(HERE, f), CLEAN)
-            sig = cache[f][int(a * SR): int(b * SR)].copy()
+            if f not in cache:                   # "clean": "" — fayl oldindan tozalangan (masalan, studiya EQ), qayta filtrlanmaydi
+                cache[f] = decode(os.path.join(HERE, f), spec.get('clean', CLEAN) or None)
+            cuts = sorted(s.get('cuts', []))         # [[boshi, oxiri], ...] asl fayl soniyalarida: tutilish va ortiqcha tovushlar kesiladi
+            edges = [a] + [x for c in cuts for x in c] + [b]
+            sig = np.concatenate([cache[f][int(edges[i] * SR): int(edges[i + 1] * SR)] for i in range(0, len(edges), 2)])
+            clip_t = lambda t: (min(t, b) - a) - sum(min(max(t, c0), c1) - c0 for c0, c1 in cuts)
             if s.get('sub'):                     # odam yozuvi: biroz tezlashtirib, pauzalarni qisqartirib, so'z vaqtlarini topamiz
                 if spec.get('clipTempo', 1) != 1:
                     sig = ffilter(sig, f"atempo={spec['clipTempo']}")
@@ -147,7 +155,7 @@ def prepare(spec):
                 sig = tighten(sig, spec.get('clipGap', 0.25), spans)
                 if s.get('wordsAt'):             # Whisper aniqlagan so'z vaqtlari (asl fayl soniyalarida)
                     k = spec.get('clipTempo', 1)
-                    s['words'] = [{'t': w, 'a': round(remap((wa - a) / k, spans) * 1000), 'b': round(remap((wb - a) / k, spans) * 1000),
+                    s['words'] = [{'t': w, 'a': round(remap(clip_t(wa) / k, spans) * 1000), 'b': round(remap(clip_t(wb) / k, spans) * 1000),
                                    'br': bool(re.search(r'[.,:;?!—]$', w))} for w, wa, wb in s['wordsAt']]
                 else:
                     s['words'] = align(sig, tokens(s['sub']))

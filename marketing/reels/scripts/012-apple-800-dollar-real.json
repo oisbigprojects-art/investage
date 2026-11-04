@@ -1,0 +1,872 @@
+{
+  "template": "template-riddle.html",
+  "badge": "Haqiqiy voqea",
+  "music": 0.45,
+  "whoosh": 0.8,
+  "seed": 7,
+  "caption": "U 800 dollar oldi va milliardlarni boy berdi 😳\n\n1976-yil 1-aprelda Apple’ni uch kishi ochgan: Steve Jobs, Steve Wozniak va Ronald Wayne. Wayne 10% ulush olgan va Apple’ning ilk logotipini ham o‘zi chizgan.\n\n12 kundan keyin u qarz xavfidan qo‘rqib chiqib ketdi va ulushini 800 dollarga qaytardi (keyinroq yana 1 500 dollar olgan).\n\nBugun Apple qiymati 5 trillion dollardan oshdi. 1994-yilda Wayne shartnoma qog‘ozini ham bir necha ming dollarga sotgan, 2011-yilda esa o‘sha hujjatlar Sotheby’s auksionida 1,59 million dollarga sotildi.\n\nUlushingiz — eng qimmat narsangiz. Siz o‘rnida nima qilardingiz? Izohda yozing 👇\n\nRU: В 1976 году третий основатель Apple продал свои 10% за $800. Сегодня Apple стоит больше $5 трлн.\n\nManbalar: Fortune, KQED, Wikipedia.\nFotolar (Wikimedia Commons): Ronald Wayne — Aljawad, CC BY-SA 3.0; garaj — Mathieu Thouvenin, CC BY-SA 2.0; Apple-1 — The wub, CC BY-SA 4.0; Apple Park — Daniel L. Lu va Dicklyon, CC BY-SA 4.0; Toshkent City — Medinabegim, CC BY-SA 4.0; Jobs, Wozniak (Homestead High School), ilk logotip va 100 dollar — jamoat mulki.\n\n🚀 Loyihangizga sarmoya toping yoki sarmoya kiritish uchun loyiha tanlang: investage.uz (havola profilda)\n\n#apple #biznes #startap #startup #investitsiya #investor #ulush #tarix #uzbekistan #toshkent #investage",
+  "scenes": [
+    {
+      "img": "out/012/f/wayne.jpg",
+      "kb": [
+        1.0,
+        1.05,
+        0,
+        0,
+        0,
+        -10
+      ],
+      "big": {
+        "kicker": "1976-yil",
+        "lines": [
+          "U $800 oldi…",
+          "milliardlarni boy berdi"
+        ]
+      },
+      "bigY": 250,
+      "ru": "Он взял $800… и упустил миллиарды",
+      "sfx": [
+        [
+          "hit",
+          0.05,
+          0.6
+        ],
+        [
+          "coin",
+          0.6,
+          0.8
+        ]
+      ],
+      "wipe": false,
+      "punch": 1.05,
+      "clip": [
+        "out/voice/apple-studio.wav",
+        0.12,
+        4.86
+      ],
+      "sub": "Bu odam {sakkiz yuz dollar|$800} oldi… va milliardlarni boy berdi.",
+      "wordsAt": [
+        [
+          "Bu",
+          0.24,
+          0.84
+        ],
+        [
+          "odam",
+          0.84,
+          1.36
+        ],
+        [
+          "$800",
+          1.36,
+          2.36
+        ],
+        [
+          "oldi…",
+          2.36,
+          2.74
+        ],
+        [
+          "va",
+          2.76,
+          3.36
+        ],
+        [
+          "milliardlarni",
+          3.62,
+          4.22
+        ],
+        [
+          "boy",
+          4.22,
+          4.38
+        ],
+        [
+          "berdi.",
+          4.38,
+          4.68
+        ]
+      ]
+    },
+    {
+      "img": "out/012/f/garaj.jpg",
+      "kb": [
+        1.04,
+        1.0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "big": {
+        "kicker": "1-aprel, 1976-yil",
+        "lines": [
+          "Uch do‘st",
+          "Apple’ni ochdi"
+        ]
+      },
+      "bigY": 250,
+      "ru": "1 апреля 1976 года трое друзей основали Apple",
+      "sfx": [],
+      "wipe": false,
+      "punch": 1.05,
+      "clip": [
+        "out/voice/apple-studio.wav",
+        6.1,
+        11.58
+      ],
+      "sub": "{Ming to'qqiz yuz yetmish oltinchi yil,|1976-yil,} birinchi aprel. Uch do'st Apple kompaniyasini ochadi.",
+      "wordsAt": [
+        [
+          "1976-yil,",
+          5.84,
+          7.56
+        ],
+        [
+          "birinchi",
+          7.64,
+          8.08
+        ],
+        [
+          "aprel.",
+          8.08,
+          8.48
+        ],
+        [
+          "Uch",
+          8.68,
+          9.28
+        ],
+        [
+          "do‘st",
+          9.28,
+          9.68
+        ],
+        [
+          "Apple",
+          9.68,
+          10.1
+        ],
+        [
+          "kompaniyasini",
+          10.38,
+          10.98
+        ],
+        [
+          "ochadi.",
+          10.98,
+          11.32
+        ]
+      ]
+    },
+    {
+      "img": "out/012/f/uchlik.jpg",
+      "kb": [
+        1.0,
+        1.03,
+        0,
+        0,
+        0,
+        0
+      ],
+      "big": {
+        "kicker": "Shartnoma bo‘yicha",
+        "lines": [
+          "Ulushlar"
+        ]
+      },
+      "bigY": 250,
+      "ru": "По договору: Джобс 45%, Возняк 45%, Уэйн 10%",
+      "sfx": [
+        [
+          "pop",
+          0.9,
+          0.6
+        ],
+        [
+          "pop",
+          1.6,
+          0.6
+        ],
+        [
+          "pop",
+          2.5,
+          0.8
+        ]
+      ],
+      "wipe": false,
+      "punch": 1.05,
+      "tense": true,
+      "clip": [
+        "out/voice/apple-studio.wav",
+        13.24,
+        19.98
+      ],
+      "sub": "Shartnoma bo'yicha Jobs va Wozniakka {qirq besh foizdan,|45% dan,} Ronald Wayne'ga esa {o'n foiz.|10%.}",
+      "wordsAt": [
+        [
+          "Shartnoma",
+          13.04,
+          13.64
+        ],
+        [
+          "bo‘yicha",
+          13.64,
+          14.66
+        ],
+        [
+          "Jobs",
+          14.68,
+          15.28
+        ],
+        [
+          "va",
+          15.28,
+          15.5
+        ],
+        [
+          "Wozniakka",
+          15.54,
+          16.14
+        ],
+        [
+          "45% dan,",
+          16.14,
+          17.26
+        ],
+        [
+          "Ronald",
+          17.44,
+          18.04
+        ],
+        [
+          "Wayne’ga",
+          18.04,
+          18.52
+        ],
+        [
+          "esa",
+          18.52,
+          18.7
+        ],
+        [
+          "10%.",
+          18.7,
+          19.7
+        ]
+      ],
+      "cuts": [
+        [
+          13.9,
+          14.27
+        ],
+        [
+          14.9,
+          15.12
+        ]
+      ]
+    },
+    {
+      "img": "out/012/f/logo.jpg",
+      "kb": [
+        1.05,
+        1.0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "big": {
+        "kicker": "12 kundan keyin",
+        "lines": [
+          "Wayne qo‘rqib",
+          "chiqib ketdi"
+        ]
+      },
+      "bigY": 250,
+      "ru": "Через 12 дней Уэйн испугался долгов и вышел из компании",
+      "sfx": [
+        [
+          "paper",
+          0.3,
+          0.8
+        ]
+      ],
+      "wipe": false,
+      "punch": 1.05,
+      "tense": true,
+      "clip": [
+        "out/voice/apple-studio.wav",
+        21.04,
+        26.76
+      ],
+      "sub": "Lekin {o'n ikki|12} kundan keyin Wayne qarzlardan qo'rqib, kompaniyadan chiqib ketadi.",
+      "wordsAt": [
+        [
+          "Lekin",
+          20.72,
+          21.32
+        ],
+        [
+          "12",
+          21.44,
+          22.04
+        ],
+        [
+          "kundan",
+          22.04,
+          22.5
+        ],
+        [
+          "keyin",
+          22.5,
+          22.92
+        ],
+        [
+          "Wayne",
+          23.02,
+          23.62
+        ],
+        [
+          "qarzlardan",
+          23.66,
+          24.26
+        ],
+        [
+          "qo‘rqib,",
+          24.26,
+          24.86
+        ],
+        [
+          "kompaniyadan",
+          25.18,
+          25.78
+        ],
+        [
+          "chiqib",
+          25.78,
+          26.26
+        ],
+        [
+          "ketadi.",
+          26.26,
+          26.52
+        ]
+      ]
+    },
+    {
+      "img": "out/012/f/dollar.jpg",
+      "kb": [
+        1.0,
+        1.06,
+        0,
+        0,
+        0,
+        0
+      ],
+      "big": {
+        "kicker": "10% ulushi uchun",
+        "lines": [
+          "atigi $800"
+        ]
+      },
+      "bigY": 250,
+      "ru": "За свою долю 10% — всего $800",
+      "sfx": [
+        [
+          "coin",
+          0.5,
+          0.9
+        ],
+        [
+          "coin",
+          0.75,
+          0.8
+        ]
+      ],
+      "wipe": false,
+      "punch": 1.05,
+      "tense": true,
+      "clip": [
+        "out/voice/apple-studio.wav",
+        28.0,
+        31.8
+      ],
+      "sub": "{O'n foiz|10%} ulushi uchun atigi {sakkiz yuz dollar|$800} oladi.",
+      "wordsAt": [
+        [
+          "10%",
+          27.34,
+          28.54
+        ],
+        [
+          "ulushi",
+          28.54,
+          29.0
+        ],
+        [
+          "uchun",
+          29.0,
+          29.3
+        ],
+        [
+          "atigi",
+          29.3,
+          30.08
+        ],
+        [
+          "$800",
+          30.08,
+          31.24
+        ],
+        [
+          "oladi.",
+          31.24,
+          31.6
+        ]
+      ]
+    },
+    {
+      "img": "out/012/f/park2.jpg",
+      "kb": [
+        1.0,
+        1.25,
+        0,
+        0,
+        0,
+        0
+      ],
+      "big": {
+        "kicker": "2026-yil",
+        "lines": [
+          "Apple qiymati",
+          "$5 trilliondan oshdi"
+        ]
+      },
+      "bigY": 250,
+      "ru": "2026 год: Apple стоит больше $5 трлн",
+      "sfx": [
+        [
+          "riser",
+          0.0,
+          0.5
+        ],
+        [
+          "hit",
+          0.9,
+          0.6
+        ]
+      ],
+      "wipe": false,
+      "punch": 1.14,
+      "drop": true,
+      "clip": [
+        "out/voice/apple-studio.wav",
+        33.2,
+        37.64
+      ],
+      "sub": "Bugun esa Apple'ning qiymati {besh trillion dollardan|$5 trilliondan} oshdi.",
+      "wordsAt": [
+        [
+          "Bugun",
+          32.94,
+          33.54
+        ],
+        [
+          "esa",
+          33.54,
+          33.72
+        ],
+        [
+          "Apple’ning",
+          33.72,
+          34.28
+        ],
+        [
+          "qiymati",
+          34.36,
+          34.96
+        ],
+        [
+          "$5 trilliondan",
+          35.24,
+          37.04
+        ],
+        [
+          "oshdi.",
+          37.04,
+          37.4
+        ]
+      ]
+    },
+    {
+      "img": "out/012/f/park.jpg",
+      "kb": [
+        1.05,
+        1.0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "big": {
+        "kicker": "Uning 10% ulushi",
+        "lines": [
+          "milliardlab dollar",
+          "turishi mumkin edi"
+        ]
+      },
+      "bigY": 250,
+      "ru": "Его 10% могли бы стоить миллиарды долларов",
+      "sfx": [
+        [
+          "shimmer",
+          0.4,
+          0.5
+        ]
+      ],
+      "wipe": false,
+      "punch": 1.05,
+      "clip": [
+        "out/voice/apple-studio.wav",
+        39.92,
+        43.08
+      ],
+      "sub": "Uning ulushi milliardlab dollar turishi mumkin edi.",
+      "wordsAt": [
+        [
+          "Uning",
+          39.52,
+          40.12
+        ],
+        [
+          "ulushi",
+          40.12,
+          40.58
+        ],
+        [
+          "milliardlab",
+          40.66,
+          41.26
+        ],
+        [
+          "dollar",
+          41.26,
+          41.64
+        ],
+        [
+          "turishi",
+          41.64,
+          42.16
+        ],
+        [
+          "mumkin edi.",
+          42.18,
+          42.78
+        ]
+      ]
+    },
+    {
+      "img": "out/012/f/apple1.jpg",
+      "kb": [
+        1.0,
+        1.05,
+        0,
+        0,
+        0,
+        0
+      ],
+      "big": {
+        "kicker": "Bu hammasi emas. 1994-yil",
+        "lines": [
+          "Shartnoma qog‘ozini",
+          "ham arzonga sotdi"
+        ]
+      },
+      "bigY": 250,
+      "ru": "В 1994 он продал за несколько тысяч $ и сам договор",
+      "sfx": [
+        [
+          "huh",
+          0.2,
+          0.7
+        ]
+      ],
+      "wipe": false,
+      "punch": 1.05,
+      "drop": true,
+      "clip": [
+        "out/voice/apple-studio.wav",
+        44.5,
+        53.3
+      ],
+      "sub": "Lekin bu hali hammasi emas. {Ming to'qqiz yuz to'qson to'rtinchi yilda|1994-yilda} u shartnoma qog'ozini ham {bir necha ming dollarga|bir necha ming $ ga} sotib yuboradi.",
+      "wordsAt": [
+        [
+          "Lekin",
+          44.26,
+          44.86
+        ],
+        [
+          "bu",
+          44.86,
+          45.04
+        ],
+        [
+          "hali",
+          45.04,
+          45.34
+        ],
+        [
+          "hammasi",
+          45.38,
+          45.98
+        ],
+        [
+          "emas.",
+          45.98,
+          46.16
+        ],
+        [
+          "1994-yilda",
+          47.52,
+          49.32
+        ],
+        [
+          "u",
+          49.32,
+          49.58
+        ],
+        [
+          "shartnoma",
+          49.76,
+          50.36
+        ],
+        [
+          "qog‘ozini",
+          50.42,
+          51.02
+        ],
+        [
+          "ham",
+          51.02,
+          51.32
+        ],
+        [
+          "bir necha",
+          51.32,
+          51.8
+        ],
+        [
+          "ming $ ga",
+          51.8,
+          52.46
+        ],
+        [
+          "sotib",
+          52.46,
+          52.86
+        ],
+        [
+          "yuboradi.",
+          52.86,
+          53.16
+        ]
+      ]
+    },
+    {
+      "img": "out/012/f/auksion.jpg",
+      "kb": [
+        1.0,
+        1.06,
+        0,
+        0,
+        0,
+        0
+      ],
+      "big": {
+        "kicker": "2011-yil",
+        "lines": [
+          "O‘sha qog‘oz",
+          "$1 590 000 ga ketdi"
+        ]
+      },
+      "bigY": 250,
+      "ru": "В 2011 году этот договор ушёл с аукциона за $1,59 млн",
+      "sfx": [
+        [
+          "thud",
+          0.45,
+          0.9
+        ],
+        [
+          "thud",
+          0.75,
+          0.9
+        ],
+        [
+          "hit",
+          0.95,
+          0.7
+        ]
+      ],
+      "wipe": false,
+      "punch": 1.05,
+      "clip": [
+        "out/voice/apple-studio.wav",
+        54.52,
+        61.8
+      ],
+      "sub": "{Ikki ming o'n birinchi yilda|2011-yilda} esa o'sha qog'oz auksionda {bir million besh yuz to'qson ming dollarga|$1 590 000 ga} sotildi.",
+      "wordsAt": [
+        [
+          "2011-yilda",
+          54.54,
+          55.94
+        ],
+        [
+          "esa,",
+          55.94,
+          56.1
+        ],
+        [
+          "u",
+          56.52,
+          56.84
+        ],
+        [
+          "shartnoma",
+          56.84,
+          57.3
+        ],
+        [
+          "qog‘ozi",
+          57.3,
+          57.46
+        ],
+        [
+          "auksionda",
+          57.84,
+          58.44
+        ],
+        [
+          "$1 590 000 ga",
+          58.44,
+          61.2
+        ],
+        [
+          "sotildi.",
+          61.2,
+          61.62
+        ]
+      ]
+    },
+    {
+      "img": "out/012/f/toshkent.jpg",
+      "kb": [
+        1.15,
+        1.0,
+        0,
+        0,
+        -40,
+        20
+      ],
+      "big": {
+        "kicker": "Xulosa",
+        "lines": [
+          "Ulushingizni",
+          "arzon baholamang"
+        ]
+      },
+      "bigY": 250,
+      "ru": "Не продавайте свою долю дёшево. Инвесторы — на investage.uz",
+      "sfx": [
+        [
+          "shimmer",
+          0.2,
+          0.5
+        ],
+        [
+          "ding",
+          1.7,
+          0.35
+        ]
+      ],
+      "wipe": false,
+      "punch": 1.14,
+      "url": "investage.uz",
+      "urlAt": 4200,
+      "lift": true,
+      "clip": [
+        "out/voice/apple-studio.wav",
+        63.34,
+        71.38
+      ],
+      "sub": "Xulosa: ulushingizni hech qachon arzon baholamang. Investorlar bilan to'g'ri kelishing: {Investeyj nuqta uz.|investage.uz}",
+      "dur": 1,
+      "wordsAt": [
+        [
+          "Xulosa:",
+          63.58,
+          64.18
+        ],
+        [
+          "ulushingizni",
+          64.18,
+          65.24
+        ],
+        [
+          "hech",
+          65.24,
+          65.5
+        ],
+        [
+          "qachon",
+          65.5,
+          65.86
+        ],
+        [
+          "arzon",
+          65.86,
+          66.28
+        ],
+        [
+          "baholamang.",
+          66.28,
+          66.8
+        ],
+        [
+          "Investorlar",
+          67.36,
+          67.96
+        ],
+        [
+          "bilan",
+          67.96,
+          68.24
+        ],
+        [
+          "to‘g‘ri",
+          68.24,
+          68.78
+        ],
+        [
+          "kelishing.",
+          68.78,
+          69.2
+        ],
+        [
+          "investage.uz",
+          69.74,
+          71.12
+        ]
+      ]
+    }
+  ],
+  "score": "cinematic",
+  "clipTempo": 1.1,
+  "clipGap": 0.16,
+  "lead": 0.08,
+  "tail": 0.15,
+  "clean": ""
+}

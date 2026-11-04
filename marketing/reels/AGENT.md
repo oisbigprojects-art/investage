@@ -60,10 +60,15 @@ TASDIQ_KERAK: ha
 ## Shablon: Haqiqiy voqea (riddle.py, "score": "cinematic")
 - Namuna: `scripts/011-apple-800-dollar.json`. Egasi so'ragan format: hayotda bo'lgan qiziq voqea (biznes, ulush, investor),
   ikki burilishli, 30–55 s. Har fakt ishonchli manbadan tekshiriladi va caption'da manba yoziladi.
-- Rasmlar: yangiliklardagi fotolar mualliflik huquqi bilan himoyalangan, ishlatilmaydi. Gemini bilan "photorealistic vintage film photograph"
-  uslubida chiziladi, real odamlarning yuzi chizilmaydi (joy, buyum, qo'llar). Videoda `aiLabel`, caption'da "Rasmlar AI yordamida tasvirlangan".
+- Rasmlar: egasi AI rasmlarni rad etdi ("real qil"), AI belgisi ham kerak emas. Haqiqiy fotolar faqat Wikimedia Commons'dan, jamoat mulki
+  yoki CC BY / CC BY-SA litsenziyali (API: commons.wikimedia.org/w/api.php, imageinfo + extmetadata). Muallif va litsenziya caption'da yoziladi.
+  Yangiliklar saytlari va agentlik fotolari ishlatilmaydi. Gorizontal fotolar xira fon ustida kartochka qilib 1080x1920 kadrga joylanadi,
+  bunday kadrlarda `kb` zoom 1.05 dan oshmaydi (chetlar kesilmasin). Namuna: `scripts/012-apple-800-dollar-real.json`.
 - Musiqa: `score.py` (pianino, torli, tik-tak). Sahnada `tense` (tik-tak), `drop` (burilish oldidan jimlik), `lift` (umidli final).
 - Ovoz: egasining yozuvi (`clip` + `sub`); subtitr uchun ovoz Whisper large-v3 bilan matnga o'giriladi (`wordsAt` — so'z vaqtlari).
+  Telegram ovozli xabari (Opus 30 kbit/s) bo'g'iq eshitiladi: studiya EQ zanjiri bilan `out/voice/<nom>-studio.wav` yasaladi, ssenariyda
+  `"clean": ""`. Tutilish va ortiqcha tovushlar `cuts` bilan kesiladi (asl fayl soniyalarida), keyin Whisper bilan gap butunligi tekshiriladi.
+  Egasiga ovozni Diktofon ilovasida yozishni tavsiya qiling.
   Model `~/.cache/whisper-large-v3` da; egasining xom ovoz yozuvlari repoga tushmaydi (out/voice).
 - POV hazil ("g'oyani kimga aytsang") egasiga yoqmadi.
 

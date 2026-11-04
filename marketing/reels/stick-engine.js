@@ -335,7 +335,8 @@ function grain(alpha = 0.05) {
 // --- ssenariy qurilishi
 const S = { scenes: [], cues: [], total: 0, lines: {}, lang: 'uz' };
 const tr = (uz, ru) => (S.lang === 'ru' ? ru : uz);
-const scene = (dur, draw) => { S.scenes.push({ dur, draw, at: S.total }); S.total += dur; };
+// flags: musiqa uchun (score.make_cinematic): {lift, drop, tense}
+const scene = (dur, draw, flags = {}) => { S.scenes.push({ dur, draw, at: S.total, flags }); S.total += dur; };
 const cue = (t, name, gain = 1, rate = 1, cut = 0) => S.cues.push({ t, name, gain, rate, cut });
 const say = (t, line, gain = 1, rate = 1) => {
   const l = S.lines[line];
@@ -353,7 +354,7 @@ window.build = function (spec) {
   S.lines = spec.lines || {};
   S.lang = spec.lang || 'uz';
   window.EPISODES[spec.episode]({ scene, cue, say, D });
-  return { duration: S.total * 1000, cues: S.cues, bounds: S.scenes.map((s) => [s.at * 1000, (s.at + s.dur) * 1000]) };
+  return { duration: S.total * 1000, cues: S.cues, bounds: S.scenes.map((s) => [s.at * 1000, (s.at + s.dur) * 1000]), flags: S.scenes.map((s) => s.flags) };
 };
 window.seek = function (ms) {
   const t = ms / 1000;

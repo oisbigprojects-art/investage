@@ -120,7 +120,69 @@ def open_page(p, spec, info):
     page.goto('file:///' + os.path.join(HERE, spec.get('template', 'template-stick.html')).replace('\\', '/'))
     page.evaluate('document.fonts.load("800 80px Manrope")')
     page.evaluate('document.fonts.ready')
-    return browser, page, page.evaluate('spec => window.build(spec)', {'episode': spec.get('episode'), 'lines': info, 'lang': spec.get('lang', 'uz')})
+    return browser, page, page.evaluate('spec => window.build(spec)', {'episode': spec.get('episode'), 'lines': info, 'lang': spec.get('lang', 'uz'), 'timing': spec.get('timing'), 'durations': spec.get('durations')})
+
+
+def with_score(spec, meta, fx, dur):
+    """Fon musiqasi (score.make_cinematic: pianino va torli, lift dan keyin major) + tovush effektlari ustidan."""
+    from score import make_cinematic
+    tmp = os.path.join(tempfile.gettempdir(), 'investage_stick_score.wav')
+    bounds = [(a / 1000, b / 1000) for a, b in meta['bounds']]
+    make_cinematic(meta['flags'], bounds, dur, tmp, spec.get('seed', 1), None, 1.0, (), (), spec.get('whoosh', 0.25))
+    with wave.open(tmp, 'rb') as w:
+        music = np.frombuffer(w.readframes(w.getnframes()), dtype=np.int16).astype(np.float32).reshape(-1, 2) / 32767
+    n = min(len(music), len(fx))
+    out = music[:n] * spec.get('music', 0.55) + fx[:n] * spec.get('sfx', 0.9)
+    return np.tanh(out * 1.1) * 0.95
+
+
+def load_samples(cues):
+    """'s:nom' cue'lari uchun out/sfx/nom.mp3 yozuvini SFX lug'atiga qo'shadi (cho'qqisi 0.6 ga normallanadi)."""
+    from sfx import SFX
+    for name in {c['name'] for c in cues if c.get('name', '').startswith('s:')}:
+        if name in SFX:
+            continue
+        sig = decode(os.path.join(HERE, 'out', 'sfx', name[2:] + '.mp3'))
+        sig = sig * (0.6 / (np.max(np.abs(sig)) + 1e-9))
+        SFX[name] = (lambda x=sig: x.copy())
+
+
+def with_track(spec, fx, dur, meta=None):
+    """Tayyor musiqa trek (litsenziyasi tekshirilgan fayl): track_from soniyadan boshlab, oxirida so'nadi, effektlar ustida."""
+    t = spec['track']
+    start, delay = t.get('from', 0), 0.0
+    if t.get('align') and meta:
+        # musiqaning avj nuqtasi (hit) ko'rsatilgan sahna boshiga + offset ga tushsin
+        a = t['align']
+        want = meta['bounds'][a['scene']][0] / 1000 + a.get('offset', 0)
+        start = a['hit'] - want
+        if start < 0:
+            start, delay = 0.0, -start
+    music = decode_stereo(os.path.join(HERE, t['file']), start, dur)
+    if delay:
+        music = np.concatenate([np.zeros((int(delay * SR), 2), np.float32), music])[: len(music)]
+    fade = int(t.get('fade', 1.5) * SR)
+    music[-fade:] *= np.linspace(1, 0, fade)[:, None]
+    music *= t.get('gain', 0.8) / (np.max(np.abs(music)) + 1e-9)
+    n = min(len(music), len(fx))
+    out = music[:n] + fx[:n] * spec.get('sfx', 0.7)
+    if spec.get('voice_track'):
+        # diktor yo'lagi: musiqa uning ostida silliq pasayadi (ducking)
+        vo = decode(os.path.join(HERE, spec['voice_track']))[:n]
+        vo = np.pad(vo, (0, n - len(vo)))
+        vo *= spec.get('voice', 0.9) / (np.max(np.abs(vo)) + 1e-9)
+        env = np.convolve((np.abs(vo) > 0.02).astype(np.float32), np.ones(int(0.25 * SR)) / int(0.25 * SR), 'same')
+        duck = 1 - spec.get('duck', 0.55) * np.clip(env * 3, 0, 1)
+        out = music[:n] * duck[:, None] + fx[:n] * spec.get('sfx', 0.7) + vo[:, None]
+    return np.tanh(out * 1.05) * 0.96
+
+
+def decode_stereo(src, start, dur):
+    raw = subprocess.run([imageio_ffmpeg.get_ffmpeg_exe(), '-loglevel', 'error', '-ss', str(start), '-t', str(dur), '-i', src,
+                          '-f', 's16le', '-ac', '2', '-ar', str(SR), '-'], capture_output=True, check=True).stdout
+    x = np.frombuffer(raw, dtype=np.int16).astype(np.float32).reshape(-1, 2) / 32768
+    need = int(dur * SR)
+    return np.pad(x, ((0, max(0, need - len(x))), (0, 0)))[:need].copy()
 
 
 def render(spec, out):
@@ -130,7 +192,12 @@ def render(spec, out):
     with sync_playwright() as p:
         browser, page, meta = open_page(p, spec, info)
         dur = meta['duration'] / 1000
+        load_samples(meta['cues'])
         audio = mix(meta['cues'], clips, dur)
+        if spec.get('score') == 'cinematic':
+            audio = with_score(spec, meta, audio, dur)
+        elif spec.get('track'):
+            audio = with_track(spec, audio, dur, meta)
         wav = os.path.join(tempfile.gettempdir(), 'investage_stick_audio.wav')
         with wave.open(wav, 'wb') as w:
             w.setnchannels(2); w.setsampwidth(2); w.setframerate(SR)

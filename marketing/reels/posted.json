@@ -62,5 +62,13 @@
     "video": "public/reels/011-apple-800-dollar.mp4",
     "media_id": "18077911691459519",
     "permalink": "https://www.instagram.com/reel/DfSal9Yj9-4/"
+  },
+  {
+    "date": "2026-11-04",
+    "topic": "Haqiqiy voqea: Apple va Ronald Wayne, 011 ning yangi versiyasi (Wikimedia haqiqiy fotolari, tiniqlashtirilgan ovoz, AI belgisisiz)",
+    "script": "scripts/012-apple-800-dollar-real.json",
+    "video": "public/reels/012-apple-800-dollar-real.mp4",
+    "media_id": "18116881466169142",
+    "permalink": "https://www.instagram.com/reel/DfToOSICJGe/"
   }
 ]

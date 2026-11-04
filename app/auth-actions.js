@@ -7,6 +7,7 @@ import { createClient, getSession } from '@/lib/supabase/server';
 import { originUrl } from '@/lib/site-url';
 import { getT } from '@/lib/i18n/server';
 import { MIN_PW } from '@/lib/password';
+import { QUESTIONS, postalError, sanitize } from '@/lib/onboarding';
 
 
 const back = (path, key, msg) => redirect(`${path}?${key}=${encodeURIComponent(msg)}`);
@@ -68,24 +69,37 @@ export async function login(formData) {
   redirect('/kabinet');
 }
 
-// Google bilan kirish: Supabase Google sahifasiga yo'naltiradi, qaytishda /auth/callback sessiya ochadi
-export async function googleSignIn() {
+// Google bilan kirish (Google'ning o'z tugmasi): brauzer Google'dan ID token oladi, biz uni Supabase'ga beramiz.
+// Foydalanuvchi supabase.co sahifasiga o'tmaydi, Google oynasida investage.uz ko'rinadi.
+// nonce: brauzer tasodifiy qiymatning xeshini Google'ga bergan, asl qiymatini bu yerga yuboradi (token qayta ishlatilmasin).
+export async function googleIdToken(token, nonce) {
   const t = await getT();
-  const origin = await originUrl();
+  if (typeof token !== 'string' || token.length > 4096 || typeof nonce !== 'string' || nonce.length > 200) return { error: t('auth.err_google') };
   const supabase = await createClient();
-  const { data, error } = await supabase.auth.signInWithOAuth({ provider: 'google', options: { redirectTo: `${origin}/auth/callback` } });
-  if (error || !data?.url) back('/kirish', 'xato', t('auth.err_google'));
-  redirect(data.url);
+  const { error } = await supabase.auth.signInWithIdToken({ provider: 'google', token, nonce });
+  if (error) return { error: t('auth.err_google') };
+  // Ikki bosqichli kirish yoqilgan bo'lsa, middleware kabinet o'rniga kod sahifasini ochadi
+  return { next: '/kabinet' };
 }
 
-// Google bilan birinchi kirish: rol tanlanadi va shartlarga rozilik beriladi
-export async function finishOnboarding(formData) {
+// Birinchi kirishdagi majburiy anketa: hudud, pochta indeksi, rolga qarab qisqa savollar va shartlarga rozilik
+export async function finishOnboarding(_prev, formData) {
   const t = await getT();
-  const role = String(formData.get('role') || '');
-  if (formData.get('agree') !== 'on') back('/xush-kelibsiz', 'xato', t('auth.err_agree'));
-  const supabase = await createClient();
-  const { error } = await supabase.rpc('finish_onboarding', { p_role: role });
-  if (error) back('/xush-kelibsiz', 'xato', t('auth.err_google'));
+  const { supabase, user, profile } = await getSession();
+  if (!user) redirect('/kirish');
+  const google = (user.app_metadata?.provider || 'email') !== 'email';
+  const role = google ? String(formData.get('role') || '') : profile.role;
+  if (!QUESTIONS[role]) return { error: t('ob.err_role') };
+  const region = String(formData.get('region') || '');
+  const postal = String(formData.get('postal') || '').trim().toUpperCase().slice(0, 12);
+  const perr = postalError(region, postal);
+  if (perr) return { error: t(perr) };
+  const raw = Object.fromEntries(QUESTIONS[role].map((q) => [q.id, q.type === 'multi' ? formData.getAll(q.id).map(String) : String(formData.get(q.id) || '')]));
+  const answers = sanitize(role, raw);
+  if (!answers) return { error: t('ob.err_answers') };
+  if (formData.get('agree') !== 'on') return { error: t('auth.err_agree') };
+  const { error } = await supabase.rpc('finish_onboarding', { p_role: role, p_region: region, p_postal: postal, p_answers: answers });
+  if (error) return { error: /indeksi/.test(error.message) ? t('ob.err_postal_region') : t('ob.err_save') };
   redirect('/kabinet');
 }
 

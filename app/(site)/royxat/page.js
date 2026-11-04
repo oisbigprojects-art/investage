@@ -25,7 +25,7 @@ export default async function SignupPage({ searchParams }) {
       <h1>{t('signup.title')}</h1>
       <p className="muted">{t('signup.sub')}</p>
       <Flash searchParams={sp} />
-      <GoogleButton label={t('auth.google')} orLabel={t('auth.or')} />
+      <GoogleButton orLabel={t('auth.or')} errLabel={t('auth.err_google')} lang={t.lang} />
       <form action={signup} className="card form">
         <fieldset className="role-radio">
           <legend>{t('signup.who')}</legend>

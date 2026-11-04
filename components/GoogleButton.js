@@ -1,20 +1,105 @@
-import { googleSignIn } from '@/app/auth-actions';
+'use client';
 
-// Google sozlanmaguncha (NEXT_PUBLIC_GOOGLE_AUTH=1) tugma ko'rinmaydi
-export default function GoogleButton({ label, orLabel }) {
-  if (process.env.NEXT_PUBLIC_GOOGLE_AUTH !== '1') return null;
+import { useEffect, useRef, useState } from 'react';
+import { googleIdToken } from '@/app/auth-actions';
+
+// Google OAuth mijoz identifikatori ochiq ma'lumot (sir emas). Supabase'dagi Google sozlamasidagi bilan bir xil.
+const CLIENT_ID = process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID || '674908567819-gjio61t5c3ucfnr9milbara47cr1936o.apps.googleusercontent.com';
+const SRC = 'https://accounts.google.com/gsi/client';
+let loading;
+
+function loadScript() {
+  if (!loading) {
+    loading = new Promise((resolve, reject) => {
+      const s = document.createElement('script');
+      s.src = SRC;
+      s.async = true;
+      s.onload = resolve;
+      s.onerror = () => {
+        loading = null;
+        reject(new Error('gsi'));
+      };
+      document.head.appendChild(s);
+    });
+  }
+  return loading;
+}
+
+async function makeNonce() {
+  const raw = btoa(String.fromCharCode(...crypto.getRandomValues(new Uint8Array(32))));
+  const hash = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(raw));
+  return [raw, [...new Uint8Array(hash)].map((b) => b.toString(16).padStart(2, '0')).join('')];
+}
+
+// Google'ning o'z tugmasi: oyna Google'da ochiladi va unda investage.uz ko'rinadi (supabase.co emas).
+// Google sozlanmaguncha (NEXT_PUBLIC_GOOGLE_AUTH=1) tugma ko'rinmaydi.
+export default function GoogleButton({ orLabel, errLabel, lang = 'uz' }) {
+  const box = useRef(null);
+  const [error, setError] = useState('');
+  const [busy, setBusy] = useState(false);
+  const on = process.env.NEXT_PUBLIC_GOOGLE_AUTH === '1';
+
+  useEffect(() => {
+    if (!on) return undefined;
+    let gone = false;
+    let ro;
+    (async () => {
+      try {
+        const [[raw, hashed]] = await Promise.all([makeNonce(), loadScript()]);
+        if (gone || !box.current) return;
+        window.google.accounts.id.initialize({
+          client_id: CLIENT_ID,
+          nonce: hashed,
+          ux_mode: 'popup',
+          context: 'signin',
+          callback: async ({ credential }) => {
+            setBusy(true);
+            setError('');
+            const r = await googleIdToken(credential, raw).catch(() => ({ error: errLabel }));
+            if (r?.next) {
+              window.location.assign(r.next);
+              return;
+            }
+            setBusy(false);
+            setError(r?.error || errLabel);
+          },
+        });
+        // Google tugmasining kengligi pikselda beriladi: konteynerga moslab chiziladi va ekran o'lchami o'zgarsa qayta chiziladi
+        let drawn = 0;
+        const draw = () => {
+          const w = Math.round(Math.min(400, Math.max(200, box.current?.clientWidth || 320)));
+          if (gone || !box.current || Math.abs(w - drawn) < 8) return;
+          drawn = w;
+          window.google.accounts.id.renderButton(box.current, {
+            type: 'standard',
+            theme: document.documentElement.dataset.theme === 'dark' ? 'filled_black' : 'outline',
+            size: 'large',
+            shape: 'pill',
+            text: 'continue_with',
+            logo_alignment: 'center',
+            width: w,
+            locale: lang,
+          });
+        };
+        draw();
+        ro = new ResizeObserver(draw);
+        ro.observe(box.current);
+      } catch {
+        if (!gone) setError(errLabel);
+      }
+    })();
+    return () => {
+      gone = true;
+      ro?.disconnect();
+    };
+  }, [on, lang, errLabel]);
+
+  if (!on) return null;
   return (
-    <form action={googleSignIn} className="google-form">
-      <button className="btn btn-ghost google-btn" type="submit">
-        <svg width="18" height="18" viewBox="0 0 48 48" aria-hidden="true">
-          <path fill="#EA4335" d="M24 9.5c3.5 0 6.6 1.2 9 3.6l6.7-6.7C35.6 2.6 30.2 0 24 0 14.6 0 6.5 5.4 2.6 13.2l7.8 6.1C12.3 13.7 17.7 9.5 24 9.5z" />
-          <path fill="#4285F4" d="M46.5 24.5c0-1.6-.1-3.1-.4-4.5H24v9h12.7c-.6 3-2.2 5.5-4.7 7.2l7.3 5.7c4.3-4 6.2-9.8 6.2-17.4z" />
-          <path fill="#FBBC05" d="M10.4 28.7c-.5-1.5-.8-3-.8-4.7s.3-3.2.8-4.7l-7.8-6.1C.9 16.5 0 20.1 0 24s.9 7.5 2.6 10.8l7.8-6.1z" />
-          <path fill="#34A853" d="M24 48c6.2 0 11.4-2 15.3-5.6L32 36.7c-2.1 1.4-4.8 2.3-8 2.3-6.3 0-11.7-4.2-13.6-9.8l-7.8 6.1C6.5 42.6 14.6 48 24 48z" />
-        </svg>
-        {label}
-      </button>
+    <div className="google-form">
+      <div ref={box} className="google-gsi" aria-busy={busy} />
+      {error && <p className="small center google-err" role="alert">{error}</p>}
       <p className="muted small center google-or">{orLabel}</p>
-    </form>
+    </div>
   );
 }

@@ -6,7 +6,7 @@ import { getSession } from '@/lib/supabase/server';
 // Kabinetga kirishda animatsiya (startap va investorga alohida)
 export default async function KabinetLayout({ children }) {
   const [t, { profile }] = await Promise.all([getT(), getSession()]);
-  // Google bilan kirgan yangi foydalanuvchi avval rolini tanlaydi
+  // Yangi foydalanuvchi avval anketani to'ldiradi (Google bilan kirgan bo'lsa, rolini ham tanlaydi)
   if (profile && profile.onboarded === false) redirect('/xush-kelibsiz');
   return (
     <>

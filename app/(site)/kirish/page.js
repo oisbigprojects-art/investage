@@ -23,7 +23,7 @@ export default async function LoginPage({ searchParams }) {
       <h1>{t('login.title')}</h1>
       <p className="muted">{t('login.sub')}</p>
       <Flash searchParams={sp} />
-      <GoogleButton label={t('auth.google')} orLabel={t('auth.or')} />
+      <GoogleButton orLabel={t('auth.or')} errLabel={t('auth.err_google')} lang={t.lang} />
       <form action={login} className="card form">
         <label>
           {t('form.email')}

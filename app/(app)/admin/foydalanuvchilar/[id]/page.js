@@ -3,6 +3,7 @@ import { notFound } from 'next/navigation';
 import { adminContext } from '@/lib/admin';
 import { Flash } from '@/components/ui';
 import { clearVideo, setBlocked } from '@/app/admin-actions';
+import { describe, regionName } from '@/lib/onboarding';
 
 const fmt = (iso) => (iso ? new Date(iso).toLocaleString('uz-UZ', { day: 'numeric', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit', hour12: false, timeZone: 'Asia/Tashkent' }) : '—');
 
@@ -11,7 +12,10 @@ export default async function AdminUser({ params, searchParams }) {
   const { id } = await params;
   const sp = await searchParams;
   const { supabase } = await adminContext();
-  const { data: u, error } = await supabase.rpc('admin_user_detail', { p_id: id });
+  const [{ data: u, error }, { data: ank }] = await Promise.all([
+    supabase.rpc('admin_user_detail', { p_id: id }),
+    supabase.rpc('admin_user_anketa', { p_id: id }),
+  ]);
   if (error || !u) notFound();
   const rows = [
     ['Email', u.email],
@@ -42,6 +46,18 @@ export default async function AdminUser({ params, searchParams }) {
           ))}
         </dl>
       </section>
+
+      {ank?.region && (
+        <section className="card">
+          <h2>Anketa</h2>
+          <dl className="admin-facts">
+            {[['Hudud', regionName(ank.region)], ['Pochta indeksi', ank.postal_code || '—'], ...describe(ank.role, ank.anketa)].map(([k, v]) => (
+              <div key={k}><dt className="muted small">{k}</dt><dd>{v}</dd></div>
+            ))}
+          </dl>
+        </section>
+      )}
+      {ank && ank.onboarded === false && <p className="muted small">Anketa hali to'ldirilmagan.</p>}
 
       {u.startup && (
         <section className="card">

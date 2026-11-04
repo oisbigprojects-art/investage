@@ -2,55 +2,48 @@ import Link from 'next/link';
 import { redirect } from 'next/navigation';
 import { getSession } from '@/lib/supabase/server';
 import { getT } from '@/lib/i18n/server';
-import { Flash } from '@/components/ui';
-import { finishOnboarding } from '@/app/auth-actions';
+import { pickStrings } from '@/lib/i18n';
+import { localize } from '@/lib/onboarding';
+import OnboardingForm from '@/components/OnboardingForm';
 
 export async function generateMetadata() {
   const t = await getT();
   return { title: t('ob.title') };
 }
 
-// Google bilan birinchi kirish: rol va shartlarga rozilik
-export default async function OnboardingPage({ searchParams }) {
-  const sp = await searchParams;
+// Birinchi kirish (email yoki Google): majburiy anketa. To'ldirilmaguncha kabinet ochilmaydi.
+// Google bilan kirganlar rolni ham shu yerda tanlaydi; email bilan ro'yxatdan o'tganlar uni avval tanlagan.
+export default async function OnboardingPage() {
   const t = await getT();
   const { user, profile } = await getSession();
   if (!user) redirect('/kirish');
   if (profile?.onboarded) redirect('/kabinet');
 
+  const chooseRole = (user.app_metadata?.provider || 'email') !== 'email';
+  const st = localize('startup', t.lang);
+  const inv = localize('investor', t.lang);
+  const questions = chooseRole ? { startup: st.questions, investor: inv.questions } : { fixed: (profile.role === 'startup' ? st : inv).questions };
+  const raw = pickStrings(t, ['signup.who', 'signup.startup', 'signup.startup_sub', 'signup.investor', 'signup.investor_sub', 'ob.role_fixed', 'ob.region', 'ob.region_pick', 'ob.postal', 'ob.postal_hint', 'ob.postal_hint_abroad', 'ob.submit']);
+  const s = Object.fromEntries(Object.entries(raw).map(([k, v]) => [k.split('.')[1], v]));
+
   return (
     <div className="auth">
       <h1>{t('ob.title')}</h1>
       <p className="muted">{t('ob.sub')}</p>
-      <Flash searchParams={sp} />
-      <form action={finishOnboarding} className="card form">
-        <fieldset className="role-radio">
-          <legend>{t('signup.who')}</legend>
-          <label className="radio-card">
-            <input type="radio" name="role" value="startup" required />
-            <span>
-              <strong>{t('signup.startup')}</strong>
-              <small>{t('signup.startup_sub')}</small>
-            </span>
-          </label>
-          <label className="radio-card">
-            <input type="radio" name="role" value="investor" required />
-            <span>
-              <strong>{t('signup.investor')}</strong>
-              <small>{t('signup.investor_sub')}</small>
-            </span>
-          </label>
-        </fieldset>
-        <label className="agree small">
-          <input type="checkbox" name="agree" required />
-          <span>
+      <OnboardingForm
+        s={s}
+        regions={st.regions}
+        questions={questions}
+        chooseRole={chooseRole}
+        roleLabel={profile.role === 'startup' ? t('signup.startup') : t('signup.investor')}
+        agree={
+          <>
             {t('signup.agree_pre')} <Link href="/shartlar" target="_blank">{t('legal.terms_title')}</Link>{' '}
             {t('signup.agree_mid')} <Link href="/maxfiylik" target="_blank">{t('legal.privacy_title')}</Link>
             {t('signup.agree_post')}
-          </span>
-        </label>
-        <button className="btn btn-gold" type="submit">{t('ob.submit')}</button>
-      </form>
+          </>
+        }
+      />
     </div>
   );
 }

@@ -1269,3 +1269,47 @@ html.menu-open { overflow: hidden; }
   .ab-node { width: 84px; height: 84px; border-radius: 20px; }
   .ab-hub { width: 60px; height: 60px; font-size: 1.7rem; }
 }
+
+/* ------------------------------------------------------------ Tayyorlik testi (/test) */
+.rt-page { max-width: 640px; margin: 24px auto 0; display: flex; flex-direction: column; gap: 16px; }
+.rt-card { padding: 32px; display: flex; flex-direction: column; gap: 16px; animation: rt-in 0.28s var(--ease); }
+@keyframes rt-in { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: none; } }
+.rt-card h1 { font-size: clamp(1.9rem, 5vw, 2.6rem); letter-spacing: -0.045em; margin: 0; }
+.rt-card h2 { font-size: 1.35rem; letter-spacing: -0.03em; margin: 0; }
+.rt-intro .btn { align-self: flex-start; min-width: 220px; }
+.rt-kicker { margin: 0; color: var(--gold-ink); font-weight: 700; font-size: 0.85rem; text-transform: uppercase; letter-spacing: 0.06em; }
+.rt-progress { height: 6px; border-radius: 99px; background: var(--pill); overflow: hidden; }
+.rt-progress span { display: block; height: 100%; background: var(--gold); border-radius: 99px; transition: width 0.3s var(--ease); }
+.rt-meta { display: flex; justify-content: space-between; color: var(--muted); font-size: 0.85rem; font-weight: 600; }
+.rt-q { font-size: clamp(1.35rem, 4vw, 1.7rem) !important; line-height: 1.25; }
+.rt-opts { display: flex; flex-direction: column; gap: 10px; }
+.rt-opt { text-align: left; font: 500 1rem/1.35 var(--font); color: var(--text); background: var(--panel); border: 1px solid var(--line); border-radius: 18px; padding: 16px 18px; cursor: pointer; transition: border-color 0.15s var(--ease), background 0.15s var(--ease), transform 0.15s var(--ease); }
+.rt-opt:hover { border-color: var(--gold-line); }
+.rt-opt:active { transform: scale(0.99); }
+.rt-opt.on { border-color: var(--gold); background: var(--gold-wash); font-weight: 600; }
+.rt-back { align-self: flex-start; background: none; border: 0; padding: 4px 0; color: var(--muted); font: 600 0.9rem var(--font); cursor: pointer; }
+.rt-back:hover { color: var(--text); }
+.rt-score { align-items: center; text-align: center; }
+.rt-actions { justify-content: center; flex-wrap: wrap; gap: 10px; }
+.rt-ring { position: relative; display: grid; place-items: center; }
+.rt-ring svg { position: absolute; inset: 0; width: 100%; height: 100%; transform: rotate(-90deg); }
+.rt-ring circle { fill: none; stroke-width: 12; }
+.rt-ring-bg { stroke: var(--pill-hi); }
+.rt-ring-fg { stroke-linecap: round; transition: stroke-dashoffset 1s var(--ease); animation: rt-ring 1.1s var(--ease); }
+@keyframes rt-ring { from { stroke-dashoffset: 440; } }
+.rt-ok .rt-ring-fg { stroke: var(--ok); }
+.rt-mid .rt-ring-fg { stroke: var(--gold); }
+.rt-low .rt-ring-fg { stroke: #e2703a; }
+.rt-ring-num { display: flex; align-items: baseline; gap: 2px; font-family: var(--display); }
+.rt-ring-num b { font-size: 3.4rem; letter-spacing: -0.05em; line-height: 1; }
+.rt-ring-num span { color: var(--muted); font-weight: 700; }
+.rt-tips { margin: 0; padding: 0; list-style: none; counter-reset: tip; display: flex; flex-direction: column; gap: 14px; }
+.rt-tips li { counter-increment: tip; position: relative; padding: 16px 16px 16px 58px; border: 1px solid var(--line-soft); border-radius: 18px; background: var(--bg-2); }
+.rt-tips li::before { content: counter(tip); position: absolute; left: 16px; top: 15px; width: 28px; height: 28px; border-radius: 99px; background: var(--gold); color: #1d1d1d; display: grid; place-items: center; font: 800 0.9rem var(--display); }
+.rt-tips strong { display: block; margin-bottom: 4px; }
+.rt-tips p { margin: 0; color: var(--muted); line-height: 1.5; }
+.rt-cta { padding: 36px; border-radius: 28px; }
+.home-test { display: flex; align-items: center; justify-content: space-between; gap: 20px 32px; flex-wrap: wrap; padding: 28px 32px; }
+.home-test h2 { font-size: clamp(1.5rem, 3vw, 2rem); letter-spacing: -0.04em; margin: 4px 0 6px; }
+.home-test p.muted { margin: 0; max-width: 52ch; }
+@media (max-width: 560px) { .rt-card { padding: 22px; } .rt-cta { padding: 26px 22px; } .home-test { padding: 22px; } }

@@ -301,6 +301,17 @@ export default async function Home() {
       </section>
 
       <section className="section">
+        <div className="card home-test">
+          <div>
+            <p className="rt-kicker">{t('rt.home_kicker')}</p>
+            <h2>{t('rt.title')}</h2>
+            <p className="muted">{t('rt.home_text')}</p>
+          </div>
+          <Link className="btn btn-gold" href="/test">{t('rt.start')}</Link>
+        </div>
+      </section>
+
+      <section className="section">
         <details className="card calc-fold">
           <summary>{t('calc.title')}</summary>
           <ValuationCalc strings={pickStrings(t, CALC_KEYS)} lang={t.lang} />

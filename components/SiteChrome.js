@@ -31,6 +31,7 @@ export default async function SiteChrome({ children }) {
               <Link href="/biz-haqimizda">{t('nav.about')}</Link>
               <Link href="/startaplar">{t('nav.startups')}</Link>
               <Link href="/investorlar">{t('nav.investors')}</Link>
+              <Link href="/test">{t('rt.nav')}</Link>
               <Link href="/yangiliklar">{t('news.title')}</Link>
               <Link href="/yordam">{t('nav.help')}</Link>
               <Link href="/kirish">{t('nav.login')}</Link>

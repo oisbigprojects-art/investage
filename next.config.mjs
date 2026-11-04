@@ -39,6 +39,8 @@ const nextConfig = {
   poweredByHeader: false,
   // Logotip yuklash (1 MB gacha) uchun server action hajmi
   experimental: { serverActions: { bodySizeLimit: '2mb' } },
+  // Test natijasi rasmi shriftlarni fayldan o'qiydi: ular serverga birga yuklansin
+  outputFileTracingIncludes: { '/api/test-rasm': ['./app/api/test-rasm/*.woff'] },
   async headers() {
     return [{ source: '/:path*', headers: securityHeaders }];
   },

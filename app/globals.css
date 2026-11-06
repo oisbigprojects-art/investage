@@ -8,7 +8,8 @@
   --line-soft: #eeeeea;
   --text: #1d1d1d;
   --muted: #6a6a66;
-  --faint: #9b9b95;
+  --faint: #70706a; /* mayda yordamchi matn: #f5f5f3 va oq fonda kontrast >= 4.5 */
+  --faint-line: #9b9b95; /* chegara va chiziqlar uchun ochroq kulrang */
   --gold: #f6be13;
   --gold-hi: #ffd24a;
   --gold-ink: #8f6a00;
@@ -46,7 +47,8 @@
   --line-soft: #2a2a25;
   --text: #f1f0ea;
   --muted: #aeada5;
-  --faint: #7c7b73;
+  --faint: #8a8981;
+  --faint-line: #7c7b73;
   --gold-ink: #f6c945;
   --gold-wash: rgba(246, 190, 19, 0.13);
   --gold-line: rgba(246, 190, 19, 0.42);
@@ -146,6 +148,7 @@ p { margin: 0 0 0.9em; }
 .chip-bad { color: var(--bad); background: var(--bad-wash); border-color: rgba(210, 63, 63, 0.3); }
 .chip-stage-goya { color: var(--muted); }
 .chip-stage-mvp { color: var(--gold-ink); }
+:root:not([data-theme='dark']) .chip-stage-mvp { color: #866400; } /* kulrang chip fonida kontrast >= 4.5 */
 .chip-stage-daromad { color: var(--ok); }
 .verified { display: inline-flex; align-items: center; gap: 6px; color: var(--gold-ink); font-size: 0.82rem; font-weight: 600; }
 
@@ -316,9 +319,9 @@ p { margin: 0 0 0.9em; }
 .page-head p { max-width: 60ch; margin: 0; }
 .filters { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 26px; }
 .filter { padding: 9px 20px; border-radius: 999px; border: 1px solid var(--line); background: var(--panel); color: var(--muted); font-weight: 500; font-size: 0.92rem; }
-.filter:hover { color: var(--text); border-color: var(--faint); text-decoration: none; }
+.filter:hover { color: var(--text); border-color: var(--faint-line); text-decoration: none; }
 .filter.is-on { background: var(--gold); border-color: var(--gold); color: #1d1d1d; font-weight: 600; }
-.empty { display: flex; flex-direction: column; align-items: center; gap: 4px; padding: 56px 24px; text-align: center; border: 1px dashed var(--faint); border-radius: 28px; color: var(--muted); }
+.empty { display: flex; flex-direction: column; align-items: center; gap: 4px; padding: 56px 24px; text-align: center; border: 1px dashed var(--faint-line); border-radius: 28px; color: var(--muted); }
 .empty h3 { color: var(--text); font-size: 1.25rem; margin-bottom: 4px; }
 .empty p { max-width: 44ch; margin-bottom: 18px; }
 
@@ -367,7 +370,7 @@ input, textarea, select {
 }
 textarea { resize: vertical; min-height: 96px; }
 input::placeholder, textarea::placeholder { color: var(--faint); }
-input:hover, textarea:hover, select:hover { border-color: var(--faint); }
+input:hover, textarea:hover, select:hover { border-color: var(--faint-line); }
 input:focus, textarea:focus, select:focus { outline: none; border-color: var(--gold); box-shadow: 0 0 0 3px var(--gold-wash); }
 .two { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 220px), 1fr)); gap: 16px; }
 .role-radio { border: 0; padding: 0; margin: 0; display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
@@ -431,7 +434,7 @@ input:focus, textarea:focus, select:focus { outline: none; border-color: var(--g
 .skel-side { height: 40px; }
 
 .icon-btn { position: relative; display: grid; place-items: center; width: 42px; height: 42px; border-radius: 50%; border: 1px solid var(--line); background: var(--panel); color: var(--muted); cursor: pointer; list-style: none; transition: color 0.18s var(--ease), border-color 0.18s var(--ease); }
-.icon-btn:hover { color: var(--text); border-color: var(--faint); }
+.icon-btn:hover { color: var(--text); border-color: var(--faint-line); }
 .icon-btn::-webkit-details-marker { display: none; }
 .side-user .icon-btn { width: 36px; height: 36px; }
 
@@ -518,7 +521,7 @@ input[type='file']::file-selector-button { margin-right: 12px; padding: 6px 12px
 .scard-wrap .save-icon { position: absolute; right: 14px; bottom: 12px; margin: 0; }
 .save-form { margin: 0; }
 .save-btn { display: grid; place-items: center; width: 38px; height: 38px; border-radius: 50%; border: 1px solid var(--line); background: var(--panel); color: var(--muted); cursor: pointer; transition: border-color 0.18s var(--ease), color 0.18s var(--ease), background 0.18s var(--ease); }
-.save-btn:hover { color: var(--text); border-color: var(--faint); }
+.save-btn:hover { color: var(--text); border-color: var(--faint-line); }
 .save-btn.is-saved { color: var(--gold-ink); border-color: var(--gold-line); background: var(--gold-wash); }
 .request-form + .request-form, .access form + form { margin-top: 10px; }
 .access form.save-form { margin-top: 0; }
@@ -1077,7 +1080,7 @@ html.menu-open { overflow: hidden; }
 .doc-actions form { margin: 0; }
 .doc-actions .btn { display: inline-flex; align-items: center; gap: 6px; }
 .doc-upload .two { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; }
-.drop { display: flex; flex-direction: column; align-items: center; gap: 4px; text-align: center; padding: 26px 18px; border: 1px dashed var(--faint); border-radius: 18px; background: var(--panel-2); cursor: pointer; transition: border-color 0.2s var(--ease), background 0.2s var(--ease); }
+.drop { display: flex; flex-direction: column; align-items: center; gap: 4px; text-align: center; padding: 26px 18px; border: 1px dashed var(--faint-line); border-radius: 18px; background: var(--panel-2); cursor: pointer; transition: border-color 0.2s var(--ease), background 0.2s var(--ease); }
 .drop:hover { border-color: var(--gold-line); background: var(--gold-wash); }
 .drop.has-file { border-style: solid; border-color: var(--gold-line); background: var(--gold-wash); }
 .drop input[type='file'] { position: absolute; width: 1px; height: 1px; opacity: 0; pointer-events: none; }

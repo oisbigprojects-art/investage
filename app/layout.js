@@ -41,7 +41,7 @@ export const viewport = {
 export default async function RootLayout({ children }) {
   const [lang, theme] = await Promise.all([getLang(), getTheme()]);
   return (
-    <html lang={lang} data-theme={theme} className={`${inter.variable} ${display.variable}`}>
+    <html lang={lang} data-theme={theme} className={`${inter.variable} ${display.variable}`} suppressHydrationWarning>
       <body>
         {children}
         <Suspense fallback={null}>

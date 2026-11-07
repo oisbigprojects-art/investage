@@ -1,9 +1,17 @@
-// Bosh sahifaga har safar kirilganda (yangilaganda ham) ko'rinadigan kirish animatsiyasi. Faqat CSS, kutubxonasiz.
+import SplashGate from './SplashGate';
+import { SPLASH_KEY } from '@/lib/splash-key';
+
+// Bosh sahifaning kirish animatsiyasi (~1,2 s): faqat brauzer oynasidagi birinchi kirishda ko'rsatiladi.
 // Logotip ochiladi, ostida o'sib borayotgan investitsiya ustunlari va o'sish chizig'i chiziladi, so'ng parda tepaga siljiydi.
-// Animatsiyani kamaytirishni tanlaganlarga ko'rsatilmaydi.
+// Shu oynada qayta kirilsa yoki sahifa yangilansa ko'rinmaydi (sessionStorage); animatsiyani kamaytirishni tanlaganlarga ham ko'rinmaydi.
+// Skript parda chizilishidan oldin ishlaydi, shuning uchun takroriy kirishda parda bir lahzaga ham ko'rinmaydi.
+const GATE = `try{var d=document.documentElement;if(sessionStorage.getItem('${SPLASH_KEY}'))d.classList.add('no-splash');else sessionStorage.setItem('${SPLASH_KEY}','1');window.__invSplash=1}catch(e){document.documentElement.classList.add('no-splash')}`;
+
 export default function Splash() {
   return (
     <>
+      <script dangerouslySetInnerHTML={{ __html: GATE }} />
+      <SplashGate />
       <div id="splash" className="splash" aria-hidden="true">
         <div className="splash-box">
           <img className="splash-logo" src="/logo-dark.webp" alt="" width="240" height="65" />

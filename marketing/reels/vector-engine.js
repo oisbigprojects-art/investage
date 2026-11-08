@@ -141,8 +141,30 @@ function subtitle(words, t, o = {}) {
   // words: [[so'z, boshlanish, tugash], ...] sahna vaqti bo'yicha
   const shown = words.filter((w) => t >= w[1] - 0.02);
   if (!shown.length) return;
-  const size = o.size || 52, y = o.y || 1590, maxW = 900;
+  // o.ru — butun gapning ruscha tarjimasi: o'zbekchadan pastda, kichikroq va ingichkaroq, to'q yarim shaffof chiziqda
+  const size = o.size || (o.ru ? 48 : 52), maxW = 900;
+  let y = o.y || 1590;
   ctx.save();
+  if (o.ru) {
+    ctx.font = `800 ${size}px ${FONT}`;
+    let n = 1, cw = 0;
+    for (const w of words) { const ww = ctx.measureText(w[0] + ' ').width; if (cw + ww > maxW && cw) { n++; cw = ww; } else cw += ww; }
+    const rs = 38, rl = [];
+    ctx.font = `600 ${rs}px ${FONT}`;
+    let cur = '';
+    for (const w of o.ru.split(' ')) { const tst = cur ? cur + ' ' + w : w; if (ctx.measureText(tst).width > 900 && cur) { rl.push(cur); cur = w; } else cur = tst; }
+    if (cur) rl.push(cur);
+    const ruH = rl.length * rs * 1.25 + 26, gap = 22, bottom = o.bottom || 1680;
+    const ruTop = bottom - ruH;
+    y = ruTop - gap - ((n - 1) / 2) * size * 1.22 - size * 0.6;
+    const k = ease.out(prog(t, words[0][1] - 0.05, words[0][1] + 0.25));
+    ctx.globalAlpha = k;
+    const bw = Math.max(...rl.map((s) => ctx.measureText(s).width)) + 48;
+    ctx.fillStyle = 'rgba(8,5,30,.55)'; ctx.beginPath(); ctx.roundRect(540 - bw / 2, ruTop, bw, ruH, 20); ctx.fill();
+    ctx.fillStyle = '#E6ECFF'; ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+    rl.forEach((s, i) => ctx.fillText(s, 540, ruTop + 13 + rs * 1.25 * (i + 0.5)));
+    ctx.globalAlpha = 1;
+  }
   ctx.font = `800 ${size}px ${FONT}`;
   const lines = []; let cur = [];
   for (const w of words) {

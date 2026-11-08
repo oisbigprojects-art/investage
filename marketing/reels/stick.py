@@ -120,7 +120,7 @@ def open_page(p, spec, info):
     page.goto('file:///' + os.path.join(HERE, spec.get('template', 'template-stick.html')).replace('\\', '/'))
     page.evaluate('document.fonts.load("800 80px Manrope")')
     page.evaluate('document.fonts.ready')
-    return browser, page, page.evaluate('spec => window.build(spec)', {'episode': spec.get('episode'), 'lines': info, 'lang': spec.get('lang', 'uz'), 'timing': spec.get('timing'), 'durations': spec.get('durations')})
+    return browser, page, page.evaluate('spec => window.build(spec)', {'episode': spec.get('episode'), 'lines': info, 'lang': spec.get('lang', 'uz'), 'timing': spec.get('timing'), 'durations': spec.get('durations'), 'ru': spec.get('ru')})
 
 
 def with_score(spec, meta, fx, dur):

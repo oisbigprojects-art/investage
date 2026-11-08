@@ -30,3 +30,16 @@ Ustunlar: S — startapchilarga, I — investorlarga, P — Investage platformas
 26. [S] "Agar...?" seriali: agar asoschilar ulushni shartnomasiz bo'lishsa-chi? (vesting nima — to'qima misol)
 27. [S] "Agar...?" seriali: agar pulni mahsulotdan oldin reklamaga sarflasang-chi? (runway nima — to'qima misol)
 28. [I] "Agar...?" seriali: agar investor bitta startapga hamma pulini kiritsa-chi? (portfel, to'qima misol, moliyaviy maslahat emas)
+
+## 2026-11-08 haftalik hisobot (1–8-noyabr, egasining ovozi bilan chiqqan formatlar)
+Akkauntda 5 ta post, 14 obunachi. Faqat Instagram API raqamlari:
+- 014 Coca-Cola (haqiqiy voqea): 1 110 ko'rish, 892 akkaunt, 19 like, o'rtacha tomosha 18,5 s, 3 soniyada o'tkazish 36,3% — haftaning eng yaxshisi.
+- 016 Airbnb (haqiqiy voqea): 30 ko'rish, 8 akkaunt, 9 like, 17,1 s, o'tkazish 41,7%.
+- 020 "100 000 $ bersa" (savol, bugun joylandi): hozircha 80 ko'rish, 7 like, o'rtacha tomosha 35,3 s — eng uzoq ushlab turdi, erta natija.
+- 006 reklama: 56 ko'rish, 12 akkaunt, 9 like, 2 izoh, 1 ulashish, o'tkazish 63%.
+- Saqlash va izoh deyarli 0. Xulosa: haqiqiy voqea + egasining ovozi qamrov beradi, savol formati ko'proq ushlab turadi; ha/yo'q izoh savolini kuchaytirish kerak.
+
+Keyingi hafta uchun yangi mavzular (faktlar joylashdan oldin ishonchli manbadan tekshiriladi, manba caption'da):
+29. [E] Haqiqiy voqea: Instagram'ni Facebook 2012-yilda 1 mlrd $ ga sotib olgan, o'shanda jamoasi juda kichik bo'lgan (xodimlar sonini manbadan tekshirish)
+30. [E] Haqiqiy voqea: WhatsApp asoschisi Brian Acton'ni 2009-yilda Facebook ishga olmagan, 2014-yilda Facebook WhatsApp'ni sotib olgan (summani manbadan tekshirish)
+31. [S] Savol formati (020 kabi): do'stingiz g'oyangizga 50% ulush so'rasa, berasizmi? Ha/yo'q izoh savoli; ulush va vesting sodda tilda (moliyaviy maslahat emas)

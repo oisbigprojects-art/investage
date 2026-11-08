@@ -10,7 +10,7 @@ L = json.load(open(os.path.join(HERE, LINES), encoding='utf-8'))
 L = [r if isinstance(r, list) else [r, r, ''] for r in L]
 # Raqamli so'zlarning aytilishi (so'z vaqtini og'irlik bo'yicha taqsimlash uchun)
 SPOKEN = {'80': 'sakson', '72.': 'yetmish ikki', '72,': 'yetmish ikki', '8,': 'sakkiz', '900': "to'qqiz yuz", '90': "to'qson", '20': 'yigirma', '70': 'yetmish', '72': 'yetmish ikki', '1': 'bir', '1938-yil,': "ming to'qqiz yuz o'ttiz sakkizinchi yil", '28': 'yigirma sakkiz', '40': 'qirq', '31': "o'ttiz bir", '2025-yilda': 'ikki ming yigirma beshinchi yilda', '200': 'ikki yuz', '2008-yil.': 'ikki ming sakkizinchi yil', '7': 'yetti', '150': 'yuz ellik', '10': "o'n", '2008.': 'ikki ming sakkizinchi', '12': "o'n ikki", '100': 'yuz', '1,5': 'bir yarim','1888-yilda': 'ming sakkiz yuz sakson sakkizinchi yilda', '2': 'ikki', '9': "to'qqiz", '9 ta.': "to'qqizta", '1886-yil,': 'ming sakkiz yuz sakson oltinchi yil', '5': 'besh', '45': 'qirq besh',
-          '1888-yilda,': 'ming sakkiz yuz sakson sakkizinchi yilda', '2,2': 'ikki milliard ikki yuz million', 'milliardgacha.': 'milliongacha'}
+          '1888-yilda,': 'ming sakkiz yuz sakson sakkizinchi yilda', '2,2': 'ikki milliard ikki yuz million', 'milliardgacha.': 'milliongacha', '1953-yilda': "ming to'qqiz yuz ellik uchinchi yilda", '1969-yilda': "ming to'qqiz yuz oltmish to'qqizinchi yilda", '1953-yilda,': "ming to'qqiz yuz ellik uchinchi yilda"}
 VOW = re.compile(r"[aeiouo‘’'AEIOU]", re.I)
 
 def weight(w):

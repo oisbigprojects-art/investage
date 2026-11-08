@@ -220,6 +220,8 @@ function drawScene(sc, t, g) {
   ctx.save();
   ctx.translate(540 + Math.sin(g * 0.37) * 9, 960 + Math.cos(g * 0.29) * 12);
   ctx.rotate(Math.sin(g * 0.21) * 0.006);
+  // kamera siljiganda chetda qora chiziq qolmasin: kadr biroz kattaroq chiziladi
+  ctx.scale(1.035, 1.035);
   ctx.translate(-540, -960);
   sc.draw(t, g);
   ctx.restore();

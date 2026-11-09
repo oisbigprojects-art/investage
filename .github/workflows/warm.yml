@@ -1,0 +1,23 @@
+# Saytni uyg'oq tutish: Vercel serveri bir necha daqiqa so'rov kelmasa "uxlab qoladi" va keyingi
+# birinchi tashrif 3-4 soniya kutadi. Har ~10 daqiqada asosiy sahifalarga oddiy so'rov yuboriladi.
+# Ma'lumotlar keshdan olinadi, bazaga yuk tushmaydi. GitHub jadvalni ba'zan bir necha daqiqaga kechiktiradi.
+name: Saytni uyg'oq tutish
+
+on:
+  schedule:
+    - cron: '*/10 * * * *'
+  workflow_dispatch:
+
+permissions: {}
+
+jobs:
+  ping:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 3
+    steps:
+      - name: Sahifalarga so'rov
+        run: |
+          for p in / /startaplar /investorlar /kirish; do
+            curl -s -o /dev/null --max-time 30 -A 'investage-warm' \
+              -w "$p %{http_code} %{time_starttransfer}s\n" "https://investage.uz$p" || echo "$p xato"
+          done

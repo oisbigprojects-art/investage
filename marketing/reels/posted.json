@@ -102,5 +102,13 @@
     "video": "public/reels/021-samsung-30.mp4",
     "media_id": "17915015979563516",
     "permalink": "https://www.instagram.com/reel/DffJFM7HWrf/"
+  },
+  {
+    "date": "2026-11-09",
+    "topic": "Karusel (8 slayd): investorga birinchi xabar — 4 qatorlik shablon, «bunday emas / bunday» misollari, to'qima namunaviy xabar; chaqiriq: saqlash va do'stga yuborish (2026-11-09 profil tahlili bo'yicha)",
+    "script": "../carousels/001-investorga-xabar/slides.html",
+    "video": "public/carousels/001-investorga-xabar/",
+    "media_id": "18373591318246617",
+    "permalink": "https://www.instagram.com/p/DfhyMYMlH3b/"
   }
 ]

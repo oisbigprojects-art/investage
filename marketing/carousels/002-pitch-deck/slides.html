@@ -1,0 +1,180 @@
+<!doctype html>
+<html lang="uz">
+<head>
+<meta charset="utf-8">
+<title>Pitch deck — 10 slayd — karusel</title>
+<!-- Instagram karuseli: 1080x1350 (4:5). Render: python ../render.py 002-pitch-deck
+     001 bilan bir xil uslub. Apostrof: o‘ va g‘ uchun doim ‘ (U+2018).
+     Misollar to'qima («Daftar» — 001 karuselidagi o'ylab topilgan startap), bozor raqami ataylab yozilmagan. -->
+<style>
+@font-face { font-family: 'Manrope'; src: url('../../reels/fonts/Manrope.ttf') format('truetype'); font-weight: 200 800; }
+:root { --bg: #121210; --ink: #f1f0ea; --muted: #c8c8c8; --gold: #f6be13; --card: #1d1d1a; --line: #2e2e2a; --green: #57cc8a; }
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { background: #000; font-family: Manrope, sans-serif; color: var(--ink); }
+.slide { width: 1080px; height: 1350px; background: var(--bg); position: relative; overflow: hidden; padding: 92px 96px 0; display: flex; flex-direction: column; }
+.slide::before { content: ''; position: absolute; width: 900px; height: 900px; right: -380px; top: -380px; border-radius: 50%; background: radial-gradient(circle, rgba(246,190,19,.16), rgba(246,190,19,0) 65%); }
+.top { display: flex; justify-content: space-between; align-items: center; font-size: 30px; font-weight: 700; color: var(--muted); letter-spacing: 1px; position: relative; }
+.brand { display: flex; align-items: center; gap: 14px; color: var(--ink); }
+.mark { width: 52px; height: 52px; border-radius: 14px; background: var(--gold); color: #121210; font-weight: 800; font-size: 30px; display: grid; place-items: center; letter-spacing: -2px; }
+.kicker { margin-top: 50px; font-size: 34px; font-weight: 800; color: var(--gold); letter-spacing: 4px; text-transform: uppercase; position: relative; }
+h1 { font-size: 92px; line-height: 1.05; font-weight: 800; letter-spacing: -3px; margin-top: 24px; position: relative; }
+h2 { font-size: 70px; line-height: 1.08; font-weight: 800; letter-spacing: -2px; margin-top: 20px; position: relative; }
+.gold { color: var(--gold); }
+p.lead { font-size: 37px; line-height: 1.34; color: var(--muted); font-weight: 600; margin-top: 22px; position: relative; }
+.blk { margin-top: 36px; background: var(--card); border: 2px solid var(--line); border-radius: 34px; padding: 40px 46px; position: relative; }
+.blk .hd { display: flex; align-items: center; gap: 22px; }
+.blk .n { flex: 0 0 76px; height: 76px; border-radius: 20px; background: var(--gold); color: #121210; display: grid; place-items: center; font-size: 36px; font-weight: 800; }
+.blk h3 { font-size: 58px; font-weight: 800; letter-spacing: -1px; }
+.blk .d { margin-top: 20px; font-size: 40px; line-height: 1.38; font-weight: 600; }
+.blk .ex { margin-top: 18px; padding-top: 18px; border-top: 2px dashed var(--line); font-size: 34px; line-height: 1.38; color: var(--muted); font-weight: 600; }
+.blk .ex i { font-style: normal; color: var(--green); font-weight: 800; }
+.grid { margin-top: 36px; display: grid; grid-template-columns: 1fr 1fr; gap: 18px 22px; position: relative; }
+.gi { background: var(--card); border: 2px solid var(--line); border-radius: 26px; padding: 22px 26px; display: flex; align-items: center; gap: 18px; font-size: 36px; font-weight: 800; }
+.gi b { flex: 0 0 56px; height: 56px; border-radius: 16px; background: var(--gold); color: #121210; display: grid; place-items: center; font-size: 30px; }
+.grp { grid-column: 1 / -1; font-size: 27px; font-weight: 800; color: var(--muted); letter-spacing: 3px; text-transform: uppercase; margin-top: 8px; }
+.bad { margin-top: 44px; background: #f4f1e8; border-radius: 26px; padding: 34px 38px; position: relative; color: #2a2a2a; transform: rotate(-1.5deg); box-shadow: 0 20px 50px rgba(0,0,0,.45); }
+.bad .t { font-size: 34px; font-weight: 800; margin-bottom: 14px; }
+.bad .tiny { font-size: 19px; line-height: 1.35; font-weight: 500; color: #555; }
+.bad .x { position: absolute; right: -20px; top: -36px; width: 96px; height: 96px; border-radius: 50%; background: #e85050; color: #fff; font-size: 58px; font-weight: 800; display: grid; place-items: center; transform: rotate(1.5deg); }
+.hookline { margin-top: 48px; font-size: 46px; line-height: 1.3; font-weight: 800; position: relative; }
+.list { margin-top: 50px; display: flex; flex-direction: column; gap: 56px; position: relative; }
+.li { display: flex; gap: 30px; align-items: flex-start; font-size: 52px; line-height: 1.32; font-weight: 700; }
+.li b { flex: 0 0 80px; height: 80px; border-radius: 20px; background: var(--gold); color: #121210; display: grid; place-items: center; font-size: 36px; }
+.li span { display: block; font-size: 38px; margin-top: 8px; color: var(--muted); font-weight: 600; margin-top: 4px; }
+.foot { margin-top: auto; padding: 24px 0 64px; display: flex; justify-content: space-between; align-items: center; font-size: 32px; font-weight: 700; color: var(--muted); position: relative; }
+.swipe { color: var(--gold); }
+.cta { margin-top: 50px; background: var(--gold); color: #121210; border-radius: 40px; padding: 46px 52px; font-size: 54px; font-weight: 800; line-height: 1.22; position: relative; }
+.site { margin-top: 40px; font-size: 40px; font-weight: 700; color: var(--muted); position: relative; }
+.site b { color: var(--ink); }
+</style>
+</head>
+<body>
+
+<!-- 1. Hook: matnga to'la slayd ❌ -->
+<section class="slide">
+  <div class="top"><div class="brand"><div class="mark">!N</div>investage</div><div>1/9</div></div>
+  <div class="kicker">Pitch deck</div>
+  <h1>Taqdimotingiz <span class="gold">shunday</span> ko‘rinadimi?</h1>
+  <div class="bad"><div class="x">✕</div>
+    <div class="t">Bizning loyiha haqida (14/48)</div>
+    <div class="tiny">Kompaniyamiz 2024-yilda tashkil etilgan bo‘lib, innovatsion yondashuv asosida bozorda yetakchi o‘rinni egallashni maqsad qilgan. Jamoamiz tajribali mutaxassislardan iborat va mijozlarga eng yaxshi xizmatni taqdim etadi. Biz kelajakda mahsulotimizni yanada rivojlantirib, yangi bozorlarga chiqish, hamkorlarni ko‘paytirish va investorlar bilan uzoq muddatli munosabatlar o‘rnatishni rejalashtirmoqdamiz. Bozor juda katta va o‘sib bormoqda, raqobatchilarimizdan ko‘p jihatdan ustunmiz, shuning uchun loyihamiz albatta muvaffaqiyatli bo‘ladi…</div>
+  </div>
+  <div class="hookline">48 slayd va matn devori ko‘pincha oxirigacha o‘qilmaydi.<br><span class="gold">Kerakli 10 slayd →</span></div>
+  <div class="foot"><div>Saqlab qo‘ying 🔖</div><div class="swipe">Suring →</div></div>
+</section>
+
+<!-- 2. 10 slayd ro'yxati (saqlash uchun asosiy slayd) -->
+<section class="slide">
+  <div class="top"><div class="brand"><div class="mark">!N</div>investage</div><div>2/9</div></div>
+  <div class="kicker">Keng tarqalgan tuzilma</div>
+  <h2>10 slayd — <span class="gold">4 savolga javob</span></h2>
+  <div class="grid">
+    <div class="grp">Nima qilasiz?</div>
+    <div class="gi"><b>1</b>Muammo</div><div class="gi"><b>2</b>Yechim</div>
+    <div class="gi"><b>3</b>Mahsulot</div><div class="gi"><b>4</b>Bozor</div>
+    <div class="grp">Pulni qanday topasiz?</div>
+    <div class="gi"><b>5</b>Biznes model</div><div class="gi"><b>6</b>Raqobat</div>
+    <div class="grp">Nima qildingiz, kim quryapti?</div>
+    <div class="gi"><b>7</b>Natijalar</div><div class="gi"><b>8</b>Jamoa</div>
+    <div class="grp">Qancha kerak?</div>
+    <div class="gi"><b>9</b>Moliya</div><div class="gi"><b>10</b>So‘rov</div>
+  </div>
+  <div class="foot"><div>Saqlab qo‘ying 🔖</div><div class="swipe">→</div></div>
+</section>
+
+<!-- 3. Muammo + Yechim -->
+<section class="slide">
+  <div class="top"><div class="brand"><div class="mark">!N</div>investage</div><div>3/9</div></div>
+  <div class="kicker">1–2-slayd</div>
+  <h2>Nima <span class="gold">qilasiz?</span></h2>
+  <div class="blk"><div class="hd"><div class="n">1</div><h3>Muammo</h3></div>
+    <div class="d">Kimning qaysi og‘rig‘i — bitta aniq gapda.</div>
+    <div class="ex"><i>Misol:</i> Kichik do‘konlar savdo va qarzni daftarda yuritadi — qarzlar yo‘qoladi.</div></div>
+  <div class="blk"><div class="hd"><div class="n">2</div><h3>Yechim</h3></div>
+    <div class="d">Muammoni qanday hal qilasiz — texnik tafsilotsiz.</div>
+    <div class="ex"><i>Misol:</i> Telefon ilovasi: savdo va qarz bir bosishda yoziladi.</div></div>
+  <div class="foot"><div>Misollar to‘qima</div><div class="swipe">→</div></div>
+</section>
+
+<!-- 4. Mahsulot + Bozor -->
+<section class="slide">
+  <div class="top"><div class="brand"><div class="mark">!N</div>investage</div><div>4/9</div></div>
+  <div class="kicker">3–4-slayd</div>
+  <h2>Ko‘rsating va <span class="gold">o‘lchang</span></h2>
+  <div class="blk"><div class="hd"><div class="n">3</div><h3>Mahsulot</h3></div>
+    <div class="d">Ko‘rsating, tasvirlamang: ekran rasmlari yoki qisqa demo.</div>
+    <div class="ex"><i>Misol:</i> 3 ta ekran — savdo, qarzlar, kunlik hisobot.</div></div>
+  <div class="blk"><div class="hd"><div class="n">4</div><h3>Bozor</h3></div>
+    <div class="d">Mijozingiz kim va ular nechta — raqam <b class="gold">manbasi bilan</b>.</div>
+    <div class="ex"><i>Misol:</i> Toshkentdagi kichik oziq-ovqat do‘konlari: [soni] — [manba].</div></div>
+  <div class="foot"><div>Misollar to‘qima</div><div class="swipe">→</div></div>
+</section>
+
+<!-- 5. Biznes model + Raqobat -->
+<section class="slide">
+  <div class="top"><div class="brand"><div class="mark">!N</div>investage</div><div>5/9</div></div>
+  <div class="kicker">5–6-slayd</div>
+  <h2>Pulni qanday <span class="gold">topasiz?</span></h2>
+  <div class="blk"><div class="hd"><div class="n">5</div><h3>Biznes model</h3></div>
+    <div class="d">Kim, qancha va qanday to‘laydi.</div>
+    <div class="ex"><i>Misol:</i> Oylik obuna: bitta do‘kon — 49 000 so‘m.</div></div>
+  <div class="blk"><div class="hd"><div class="n">6</div><h3>Raqobat</h3></div>
+    <div class="d">Mijoz hozir nima ishlatadi va siz nimasi bilan yaxshisiz. “Raqobatchimiz yo‘q” demang.</div>
+    <div class="ex"><i>Misol:</i> Daftar, Excel, qimmat kassa tizimlari — biz arzon va telefonda.</div></div>
+  <div class="foot"><div>Misollar to‘qima</div><div class="swipe">→</div></div>
+</section>
+
+<!-- 6. Natijalar + Jamoa -->
+<section class="slide">
+  <div class="top"><div class="brand"><div class="mark">!N</div>investage</div><div>6/9</div></div>
+  <div class="kicker">7–8-slayd</div>
+  <h2>Natija va <span class="gold">jamoa</span></h2>
+  <div class="blk"><div class="hd"><div class="n">7</div><h3>Natijalar</h3></div>
+    <div class="d">Raqamlar: mijozlar, tushum, o‘sish. Taxmin emas, fakt.</div>
+    <div class="ex"><i>Misol:</i> 3 oyda 400 ta do‘kon, oxirgi oyda +30%.</div></div>
+  <div class="blk"><div class="hd"><div class="n">8</div><h3>Jamoa</h3></div>
+    <div class="d">Kim nima qiladi va nega aynan siz bu ishni uddalaysiz.</div>
+    <div class="ex"><i>Misol:</i> Asoschi 5 yil savdo tizimlarini sotgan, texnik hamkor — dasturchi.</div></div>
+  <div class="foot"><div>Misollar to‘qima</div><div class="swipe">→</div></div>
+</section>
+
+<!-- 7. Moliya + So'rov -->
+<section class="slide">
+  <div class="top"><div class="brand"><div class="mark">!N</div>investage</div><div>7/9</div></div>
+  <div class="kicker">9–10-slayd</div>
+  <h2>Qancha <span class="gold">kerak?</span></h2>
+  <div class="blk"><div class="hd"><div class="n">9</div><h3>Moliya</h3></div>
+    <div class="d">Hozirgi tushum va xarajat, keyingi 12–18 oy rejasi.</div>
+    <div class="ex"><i>Misol:</i> Oylik xarajat [summa], 12 oyda maqsad — 2 000 ta do‘kon.</div></div>
+  <div class="blk"><div class="hd"><div class="n">10</div><h3>So‘rov</h3></div>
+    <div class="d">Qancha kerak, nimaga sarflanadi va qancha muddatga yetadi.</div>
+    <div class="ex"><i>Misol:</i> 50 000 $: mahsulot 40%, sotuv 60% — 12 oyga yetadi.</div></div>
+  <div class="foot"><div>Misollar to‘qima</div><div class="swipe">→</div></div>
+</section>
+
+<!-- 8. Qoidalar -->
+<section class="slide">
+  <div class="top"><div class="brand"><div class="mark">!N</div>investage</div><div>8/9</div></div>
+  <div class="kicker">Har bir slayd uchun</div>
+  <h2>4 ta <span class="gold">qoida</span></h2>
+  <div class="list">
+    <div class="li"><b>1</b><div>Bitta slayd — bitta fikr<span>Sarlavha o‘sha fikrni aytsin</span></div></div>
+    <div class="li"><b>2</b><div>So‘z emas, raqam<span>“Juda tez o‘syapmiz” emas, “oyiga +30%”</span></div></div>
+    <div class="li"><b>3</b><div>Kam matn, katta shrift<span>Telefonda ham o‘qilsin</span></div></div>
+    <div class="li"><b>4</b><div>Tartibni moslang<span>Natijangiz kuchli bo‘lsa, uni oldinroq qo‘ying</span></div></div>
+  </div>
+  <div class="foot"><div>investage.uz</div><div class="swipe">→</div></div>
+</section>
+
+<!-- 9. Bitta aniq chaqiriq -->
+<section class="slide">
+  <div class="top"><div class="brand"><div class="mark">!N</div>investage</div><div>9/9</div></div>
+  <div class="kicker">Foydali bo‘ldimi?</div>
+  <h1 style="font-size:90px">Saqlab qo‘ying 🔖</h1>
+  <div class="cta">va taqdimot tayyorlayotgan do‘stingizga yuboring ✈️</div>
+  <div class="site">Deck tayyor bo‘lsa, startapingizni investorlarga ko‘rsating:<br><b>investage.uz</b> · havola profilda</div>
+  <div class="foot"><div>@investage</div><div></div></div>
+</section>
+
+</body>
+</html>

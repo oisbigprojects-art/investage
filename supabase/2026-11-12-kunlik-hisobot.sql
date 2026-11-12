@@ -20,7 +20,7 @@ declare
   w_u bigint; w_su bigint; w_req bigint;
   a_st bigint; a_inv bigint; a_su bigint;
   p_fb bigint; p_ver bigint; p_prop bigint; p_old bigint;
-  names text; todo text := ''; txt text;
+  names text; todo text := ''; txt text; nl text := chr(10);
 begin
   -- Kecha
   select count(*) filter (where role = 'startup'), count(*) filter (where role = 'investor')
@@ -52,27 +52,27 @@ begin
   select count(*) into p_prop from agent_proposals where status = 'pending';
   select count(*) into p_old from access_requests where status = 'pending' and created_at < now() - interval '3 days';
 
-  if p_fb > 0 then todo := todo || '• ' || p_fb || ' ta yangi murojaat → investage.uz/admin/murojaatlar' || E'\n'; end if;
-  if p_ver > 0 then todo := todo || '• ' || p_ver || ' ta tasdiqlanmagan startap → investage.uz/admin/startaplar' || E'\n'; end if;
-  if p_prop > 0 then todo := todo || '• ' || p_prop || ' ta agent taklifi → investage.uz/admin/agent' || E'\n'; end if;
-  if p_old > 0 then todo := todo || '• ' || p_old || ' ta so''rov 3 kundan beri javobsiz' || E'\n'; end if;
-  if todo = '' then todo := '✅ Kutilayotgan ish yo''q' || E'\n'; end if;
+  if p_fb > 0 then todo := todo || '• ' || p_fb || ' ta yangi murojaat → investage.uz/admin/murojaatlar' || nl; end if;
+  if p_ver > 0 then todo := todo || '• ' || p_ver || ' ta tasdiqlanmagan startap → investage.uz/admin/startaplar' || nl; end if;
+  if p_prop > 0 then todo := todo || '• ' || p_prop || ' ta agent taklifi → investage.uz/admin/agent' || nl; end if;
+  if p_old > 0 then todo := todo || '• ' || p_old || ' ta so''rov 3 kundan beri javobsiz' || nl; end if;
+  if todo = '' then todo := '✅ Kutilayotgan ish yo''q' || nl; end if;
 
-  txt := '📅 Investage — kunlik hisobot (' || to_char(d, 'DD.MM.YYYY') || ')' || E'\n\n'
-    || 'KECHA' || E'\n'
-    || '👥 Yangi foydalanuvchi: ' || (n_st + n_inv) || ' (startap ' || n_st || ', investor ' || n_inv || ')' || E'\n'
-    || '🚀 Yangi startap: ' || n_su || coalesce(' — ' || names, '') || E'\n'
-    || '📨 So''rovlar: ' || n_req || ' yangi, ' || n_ok || ' tasdiqlandi, ' || n_no || ' rad etildi' || E'\n'
-    || '💬 Yozishmalar: ' || n_msg || ' xabar' || E'\n'
-    || '🔖 Saqlangan startaplar: ' || n_saved || E'\n'
-    || '🆘 Murojaatlar: ' || n_fb || E'\n'
-    || '🤖 Yordamchi botga savollar: ' || n_bot || E'\n'
-    || '📝 So''rovnoma javoblari: ' || n_sv || E'\n\n'
-    || 'OXIRGI 7 KUN' || E'\n'
-    || '👥 ' || w_u || ' foydalanuvchi, 🚀 ' || w_su || ' startap, 📨 ' || w_req || ' so''rov' || E'\n\n'
-    || 'JAMI' || E'\n'
-    || '👥 ' || (a_st + a_inv) || ' foydalanuvchi (startap ' || a_st || ', investor ' || a_inv || '), 🚀 ' || a_su || ' startap' || E'\n\n'
-    || 'SIZDAN KUTILMOQDA' || E'\n'
+  txt := '📅 Investage — kunlik hisobot (' || to_char(d, 'DD.MM.YYYY') || ')' || nl || nl
+    || 'KECHA' || nl
+    || '👥 Yangi foydalanuvchi: ' || (n_st + n_inv) || ' (startap ' || n_st || ', investor ' || n_inv || ')' || nl
+    || '🚀 Yangi startap: ' || n_su || coalesce(' — ' || names, '') || nl
+    || '📨 So''rovlar: ' || n_req || ' yangi, ' || n_ok || ' tasdiqlandi, ' || n_no || ' rad etildi' || nl
+    || '💬 Yozishmalar: ' || n_msg || ' xabar' || nl
+    || '🔖 Saqlangan startaplar: ' || n_saved || nl
+    || '🆘 Murojaatlar: ' || n_fb || nl
+    || '🤖 Yordamchi botga savollar: ' || n_bot || nl
+    || '📝 So''rovnoma javoblari: ' || n_sv || nl || nl
+    || 'OXIRGI 7 KUN' || nl
+    || '👥 ' || w_u || ' foydalanuvchi, 🚀 ' || w_su || ' startap, 📨 ' || w_req || ' so''rov' || nl || nl
+    || 'JAMI' || nl
+    || '👥 ' || (a_st + a_inv) || ' foydalanuvchi (startap ' || a_st || ', investor ' || a_inv || '), 🚀 ' || a_su || ' startap' || nl || nl
+    || 'SIZDAN KUTILMOQDA' || nl
     || todo;
 
   perform private.tg_send(left(txt, 4000));
@@ -84,10 +84,10 @@ revoke all on function private.daily_report() from public, anon, authenticated;
 -- Jadval: har kuni 04:00 UTC = 09:00 Toshkent. Qayta ishga tushirilsa, eski jadval almashtiriladi.
 do $$
 begin
-  if exists (select 1 from cron.job where jobname = 'investage-daily-report') then
-    perform cron.unschedule('investage-daily-report');
+  if exists (select 1 from cron.job where jobname = 'investage_daily_report') then
+    perform cron.unschedule('investage_daily_report');
   end if;
-  perform cron.schedule('investage-daily-report', '0 4 * * *', 'select private.daily_report()');
+  perform cron.schedule('investage_daily_report', '0 4 * * *', 'select private.daily_report()');
 end $$;
 
 -- Sinov: birinchi hisobot darhol yuboriladi

@@ -117,7 +117,7 @@ declare v jsonb := '[]'::jsonb; r record; v_item jsonb;
 begin
   perform private.agent_check(p_secret);
   update private.mod_queue set status = 'pending' where status = 'working' and taken_at < now() - interval '10 minutes';
-  update private.mod_queue set status = 'error', done_at = now(), note = '3 marta urinildi' where status = 'pending' and tries >= 3;
+  update private.mod_queue set status = 'error', done_at = now(), note = left('3 marta urinildi: ' || coalesce(note, ''), 400) where status = 'pending' and tries >= 3;
   for r in
     update private.mod_queue q set status = 'working', tries = q.tries + 1, taken_at = now()
      where q.id in (select id from private.mod_queue where status = 'pending' order by id

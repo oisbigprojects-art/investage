@@ -4,11 +4,12 @@ import { useEffect, useLayoutEffect, useRef, useState } from 'react';
 import Link from 'next/link';
 import { SendIcon } from './icons';
 import { findAnswer, isGreeting, related } from '@/lib/bot/match';
+import { askAssistant } from '@/app/assistant-actions';
 
 const MAX = 300;
 
-// Sayt yordamchisi. Javoblar tayyor bazadan olinadi — tashqi xizmat ishlatilmaydi va
-// bot o'zidan javob to'qimaydi. Rol serverda aniqlanadi, shuning uchun mavzular aralashmaydi.
+// Sayt yordamchisi. Avval tayyor bazadan javob qidiriladi; topilmasa, AI yordamchi (Claude) faqat sayt
+// qoidalari asosida javob beradi va bilmasa jamoaga yo'naltiradi. Rol serverda aniqlanadi.
 export default function Bot({ faq, starters, greeting, labels: L }) {
   const [open, setOpen] = useState(false);
   const [msgs, setMsgs] = useState([]);
@@ -17,6 +18,7 @@ export default function Bot({ faq, starters, greeting, labels: L }) {
   const listRef = useRef(null);
   const boxRef = useRef(null);
   const asked = useRef([]);
+  const [busy, setBusy] = useState(false);
 
   useLayoutEffect(() => {
     const el = listRef.current;
@@ -31,13 +33,13 @@ export default function Bot({ faq, starters, greeting, labels: L }) {
     return () => document.removeEventListener('keydown', onKey);
   }, [open]);
 
-  function ask(question) {
+  async function ask(question) {
     const q = (question ?? text).trim().slice(0, MAX);
-    if (!q) return;
+    if (!q || busy) return;
     setText('');
     if (boxRef.current) boxRef.current.style.height = 'auto';
 
-    let answer;
+    let answer = null;
     if (isGreeting(q)) {
       answer = { text: greeting, kind: 'ok' };
     } else {
@@ -45,12 +47,26 @@ export default function Bot({ faq, starters, greeting, labels: L }) {
       if (hit) {
         asked.current = [...asked.current, hit.id];
         answer = { text: hit.a, kind: 'ok' };
-      } else {
-        answer = { text: L.no_match, kind: 'miss' };
       }
     }
 
-    setMsgs((p) => [...p, { role: 'user', text: q }, { role: 'bot', ...answer }]);
+    if (answer) {
+      setMsgs((p) => [...p, { role: 'user', text: q }, { role: 'bot', ...answer }]);
+    } else {
+      // Tayyor javob yo'q: AI yordamchidan so'raymiz
+      const history = msgs.slice(-6).map((m) => ({ role: m.role, text: m.text }));
+      setMsgs((p) => [...p, { role: 'user', text: q }]);
+      setBusy(true);
+      let r = null;
+      try {
+        r = await askAssistant(q, history);
+      } catch {}
+      setBusy(false);
+      setMsgs((p) => [
+        ...p,
+        r?.ok ? { role: 'bot', text: r.answer, kind: r.confident ? 'ok' : 'miss' } : { role: 'bot', text: L.no_match, kind: 'miss' },
+      ]);
+    }
     setChips(related(faq, asked.current, 3));
     boxRef.current?.focus();
   }
@@ -108,7 +124,13 @@ export default function Bot({ faq, starters, greeting, labels: L }) {
             </div>
           ))}
 
-          {chips.length > 0 && (
+          {busy && (
+            <div className="bot-msg bot-them" aria-label="…">
+              <p className="bot-typing"><i /><i /><i /></p>
+            </div>
+          )}
+
+          {chips.length > 0 && !busy && (
             <div className="bot-chips">
               <span className="muted small">{msgs.length ? L.more : L.pick}</span>
               {chips.map((c) => (
@@ -138,7 +160,7 @@ export default function Bot({ faq, starters, greeting, labels: L }) {
             }}
             onKeyDown={onKeyDown}
           />
-          <button className="btn btn-gold bot-send" type="submit" disabled={!text.trim()} aria-label={L.send}>
+          <button className="btn btn-gold bot-send" type="submit" disabled={!text.trim() || busy} aria-label={L.send}>
             <SendIcon size={17} />
           </button>
         </form>

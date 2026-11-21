@@ -38,7 +38,8 @@ async function checkBatch(db, secret, items) {
       const { error: e2 } = await db.rpc('agent_mod_done', {
         p_secret: secret, p_id: it.id, p_verdict: r.verdict, p_severity: r.severity, p_reason: r.reason,
       });
-      return { id: it.id, verdict: r.verdict, saved: !e2 };
+      // Xato bo'lsa sababi ham qaytadi (bazadagi signal javobida ko'rinadi, maxfiy ma'lumot yo'q)
+      return { id: it.id, verdict: r.verdict, saved: !e2, ...(r.verdict === 'error' ? { error: r.reason } : {}) };
     })
   );
 }

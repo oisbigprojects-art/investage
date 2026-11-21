@@ -14,11 +14,21 @@ export async function POST(request) {
   if (!aiReady()) return json({ ok: false, error: 'ANTHROPIC_API_KEY sozlanmagan' }, 503);
 
   const db = agentDb();
-  const { data: items, error } = await db.rpc('agent_mod_take', { p_secret: secret, p_limit: 3 });
-  if (error) return json({ ok: false }, 401);
+  const started = Date.now();
+  const results = [];
+  // Navbat bo'shaguncha 3 tadan tekshiriladi (40 soniya chegarasi bilan)
+  while (Date.now() - started < 40_000) {
+    const { data: items, error } = await db.rpc('agent_mod_take', { p_secret: secret, p_limit: 3 });
+    if (error) return json({ ok: false }, 401);
+    if (!items?.length) break;
+    results.push(...(await checkBatch(db, secret, items)));
+  }
+  return json({ ok: true, checked: results.length, results });
+}
 
-  const results = await Promise.all(
-    (items || []).map(async (it) => {
+async function checkBatch(db, secret, items) {
+  return Promise.all(
+    items.map(async (it) => {
       let r;
       try {
         r = await moderate(it);
@@ -31,5 +41,4 @@ export async function POST(request) {
       return { id: it.id, verdict: r.verdict, saved: !e2 };
     })
   );
-  return json({ ok: true, checked: results.length, results });
 }

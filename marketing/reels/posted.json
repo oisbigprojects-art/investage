@@ -1,146 +1,146 @@
 [
-  {
-    "date": "2026-10-29",
-    "topic": "Investor startapingizda nimaga qaraydi: jamoa, raqamlar, ochiqlik (eski sodda versiya, ovozsiz — egasi Instagram'dan o'chirdi)",
-    "script": "scripts/001-investor-nimaga-qaraydi.json",
-    "video": "public/reels/001-investor-nimaga-qaraydi.mp4",
-    "media_id": "17889541029687350",
-    "permalink": "https://www.instagram.com/reel/DfFMrBKDvql/"
-  },
-  {
-    "date": "2026-10-29",
-    "topic": "Investor startapingizda nimaga qaraydi: jamoa, raqamlar, ochiqlik (Reels 2.0, Javohir ovozi)",
-    "script": "scripts/002-investor-nimaga-qaraydi-ovozli.json",
-    "video": "public/reels/002-investor-nimaga-qaraydi-ovozli.mp4",
-    "media_id": "18110036324617958",
-    "permalink": "https://www.instagram.com/reel/DfFU1LZDzZ8/"
-  },
-  {
-    "date": "2026-10-30",
-    "topic": "Agar...? 1-qism: birinchi investorga 51% berish va ulush kichrayishi (2D qahramonlar, 5 ovoz)",
-    "script": "scripts/003-agar-51-foiz.json",
-    "video": "public/reels/003-agar-51-foiz.mp4",
-    "media_id": "18129753272488195",
-    "permalink": "https://www.instagram.com/reel/DfHqy2gDJjV/"
-  },
-  {
-    "date": "2026-11-01",
-    "topic": "Investordan \"yo'q\" eshitganda nima qilish kerak: stickman, tovush effektlari, ruscha versiya",
-    "script": "scripts/005-yoq-eshitganda.json",
-    "video": "public/reels/005-yoq-eshitganda-ru.mp4",
-    "media_id": "18063835001558732",
-    "permalink": "https://www.instagram.com/reel/DfM35lYEzvz/"
-  },
-  {
-    "date": "2026-11-01",
-    "topic": "Investage reklamasi: motion-grafika, egasining ovozi, ruscha yozuvlar (profilda pin uchun)",
-    "script": "scripts/006-investage-reklama.json",
-    "video": "public/reels/006-investage-reklama.mp4",
-    "media_id": "17956542192278156",
-    "permalink": "https://www.instagram.com/reel/DfM-Da4lffU/"
-  },
-  {
-    "date": "2026-11-02",
-    "topic": "Topishmoq: yo'qolgan 1 000 so'm (AI rasmlar, VoiceLab Amir diktori, ruscha tarjima)",
-    "script": "scripts/008-yoqolgan-ming-som.json",
-    "video": "public/reels/008-yoqolgan-ming-som.mp4",
-    "media_id": "17946514197359635",
-    "permalink": "https://www.instagram.com/reel/DfP3U3EEzRg/"
-  },
-  {
-    "date": "2026-11-03",
-    "topic": "Topishmoq: yo'qolgan 1 000 so'm, tez versiya (53 s, so'zma-so'z subtitr, SFX) — 008 o'rniga",
-    "script": "scripts/009-yoqolgan-ming-som-tez.json",
-    "video": "public/reels/009-yoqolgan-ming-som-tez.mp4",
-    "media_id": "18114448577614287",
-    "permalink": "https://www.instagram.com/reel/DfRPGdEkcr9/"
-  },
-  {
-    "date": "2026-11-03",
-    "topic": "Haqiqiy voqea: Ronald Wayne Apple'dagi 10% ulushini $800 ga sotgan (egasining ovozi, AI foto uslubi, hujjatli musiqa)",
-    "script": "scripts/011-apple-800-dollar.json",
-    "video": "public/reels/011-apple-800-dollar.mp4",
-    "media_id": "18077911691459519",
-    "permalink": "https://www.instagram.com/reel/DfSal9Yj9-4/"
-  },
-  {
-    "date": "2026-11-04",
-    "topic": "Haqiqiy voqea: Apple va Ronald Wayne, 011 ning yangi versiyasi (Wikimedia haqiqiy fotolari, tiniqlashtirilgan ovoz, AI belgisisiz)",
-    "script": "scripts/012-apple-800-dollar-real.json",
-    "video": "public/reels/012-apple-800-dollar-real.mp4",
-    "media_id": "18116881466169142",
-    "permalink": "https://www.instagram.com/reel/DfToOSICJGe/"
-  },
-  {
-    "date": "2026-11-04",
-    "topic": "Haqiqiy voqea: Coca-Cola birinchi yili kuniga 9 stakan, bugun 2,2 milliard (Kurzgesagt uslubidagi vektor animatsiya, egasining ovozi, savol hook)",
-    "script": "scripts/014-coca-cola-9-stakan.json",
-    "video": "public/reels/014-coca-cola-9-stakan.mp4",
-    "media_id": "18119161643277368",
-    "permalink": "https://www.instagram.com/reel/DfVGJjcjplY/"
-  },
-  {
-    "date": "2026-11-05",
-    "topic": "Haqiqiy voqea: 2008-yilda 7 investor Airbnb'ning 10% ulushini 150 000 $ ga olmagan, 2020-yil IPO kuni 100 mlrd $ dan ortiq (014 xulosalari: raqam o'rtada, Airbnb tushuntirildi, ha/yo'q izoh savoli)",
-    "script": "scripts/016-airbnb-7-investor.json",
-    "video": "public/reels/016-airbnb-7-investor.mp4",
-    "media_id": "18107869169200765",
-    "permalink": "https://www.instagram.com/reel/DfW69W-mRBz/"
-  },
-  {
-    "date": "2026-11-08",
-    "topic": "Savol: investor 100 000 $ bersa, qanday biznes qilasiz (kafe / onlayn do'kon / xizmat, g'oya emas reja, 40/30/20/10 taqsimot misoli; egasining ovozi, faqat o'zbekcha subtitr, izohga g'oya chaqirig'i)",
-    "script": "scripts/020-100-ming-biznes.json",
-    "video": "public/reels/020-100-ming-biznes.mp4",
-    "media_id": "18124741583516588",
-    "permalink": "https://www.instagram.com/reel/Dfewa5MDrnQ/"
-  },
-  {
-    "date": "2026-11-08",
-    "topic": "Haqiqiy voqea, viktorina: Samsung birinchi nima sotgan (A shakar / B ugra / C televizor; 1938 baliq-sabzavot-ugra, 1953 shakar, 1969 elektronika, 2025 tushum 200 mlrd $+). 30 s format: savol 0-soniyada, izohga chaqiriq javobdan oldin, subtitr markazda, oxirida Nokia savoli",
-    "script": "scripts/021-samsung-30.json",
-    "video": "public/reels/021-samsung-30.mp4",
-    "media_id": "17915015979563516",
-    "permalink": "https://www.instagram.com/reel/DffJFM7HWrf/"
-  },
-  {
-    "date": "2026-11-09",
-    "topic": "Karusel (8 slayd): investorga birinchi xabar — 4 qatorlik shablon, «bunday emas / bunday» misollari, to'qima namunaviy xabar; chaqiriq: saqlash va do'stga yuborish (2026-11-09 profil tahlili bo'yicha)",
-    "script": "../carousels/001-investorga-xabar/slides.html",
-    "video": "public/carousels/001-investorga-xabar/",
-    "media_id": "18373591318246617",
-    "permalink": "https://www.instagram.com/p/DfhyMYMlH3b/"
-  },
-  {
-    "date": "2026-11-10",
-    "topic": "Karusel (9 slayd): pitch deck — 10 slayd, 4 savolga javob; to'qima «Daftar» misollari; chaqiriq: saqlash va do'stga yuborish",
-    "script": "../carousels/002-pitch-deck/slides.html",
-    "video": "public/carousels/002-pitch-deck/",
-    "media_id": "18004511843800976",
-    "permalink": "https://www.instagram.com/p/Dfkcg1XCYPU/"
-  },
-  {
-    "date": "2026-11-24",
-    "topic": "O‘zbek kompaniyalari 1-qism: Payme — 51% 2019-yilda 5,5 mln $ (TBC), qolgan 49% 2023-yilda 55,7 mln $ (×10). Ovozsiz, HyperFrames UI-motion uslubi (@motionthekx namunasi), teal+to‘q sariq palitra, yangi alifbo, musiqa: Creative Technology Showreel (Pixabay), 36 s, javob 19-soniyada; keyingisi Uzum",
-    "script": "hf/023-payme-v5/",
-    "video": "public/reels/023-payme-10-baravar.mp4",
-    "media_id": "18038636267664853",
-    "permalink": "https://www.instagram.com/reel/DgGUTRrCEtV/"
-  },
-  {
-    "date": "2026-11-24",
-    "topic": "Özbek kompaniyalari 2-qism: Uzum — 1 milliard $ ga 17 oyda (2022-10 → 2024-03, 1,16 mlrd $, birinchi unikorn); hozirgi holat 2025-08: 17 mln oylik foydalanuvchi, 16 000 sotuvchi, 1 500+ punkt, kuniga 200 000+ buyurtma, ≈1,5 mlrd $ (Tencent). Hook: aylanuvchi 17 000 000 + sirli «?» ilova → Uzum logosi. Remotion (React), marjon/qora/oq palitra, yangi alifbo, musiqa: Tech House vibes (Mixkit), 45 s, 60 fps; keyingisi Click",
-    "script": "../remotion/src/UzumV4.jsx",
-    "video": "public/reels/024-uzum-17-oy.mp4",
-    "media_id": "17915623542568709",
-    "permalink": "https://www.instagram.com/reel/DgHVkOJlP4v/"
-  },
-  {
-    "date": "2026-11-25",
-    "topic": "Biznesga 100 mln söm kerak — qayerdan olasiz? Bank (≈23%, 3 yilda 139 mln + garov; Markaziy bank 2026), qarindoş, investor (20% uluş, misol); össa — kredit arzon, yopilsa — investor xavfsiz. Kollaj-explainer (namuna: birfoiz_), AI odamlar (Google AI Studio Nano Banana 2 Lite, qahramon Bekzod), qog'oz/stiker uslubi, musiqasiz, egasining klon ovozi (Navoiy calm), 47 s, CTA: izohda 1/2/3",
-    "script": "hf/026-100-mln/",
-    "video": "public/reels/026-100-mln-qayerdan.mp4",
-    "media_id": "18039884843659116",
-    "permalink": "https://www.instagram.com/reel/DgIwISqCfxL/"
-  }
+ {
+  "date": "2026-10-29",
+  "topic": "Investor startapingizda nimaga qaraydi: jamoa, raqamlar, ochiqlik (eski sodda versiya, ovozsiz — egasi Instagram'dan o'chirdi)",
+  "script": "scripts/001-investor-nimaga-qaraydi.json",
+  "video": "public/reels/001-investor-nimaga-qaraydi.mp4",
+  "media_id": "17889541029687350",
+  "permalink": "https://www.instagram.com/reel/DfFMrBKDvql/"
+ },
+ {
+  "date": "2026-10-29",
+  "topic": "Investor startapingizda nimaga qaraydi: jamoa, raqamlar, ochiqlik (Reels 2.0, Javohir ovozi)",
+  "script": "scripts/002-investor-nimaga-qaraydi-ovozli.json",
+  "video": "public/reels/002-investor-nimaga-qaraydi-ovozli.mp4",
+  "media_id": "18110036324617958",
+  "permalink": "https://www.instagram.com/reel/DfFU1LZDzZ8/"
+ },
+ {
+  "date": "2026-10-30",
+  "topic": "Agar...? 1-qism: birinchi investorga 51% berish va ulush kichrayishi (2D qahramonlar, 5 ovoz)",
+  "script": "scripts/003-agar-51-foiz.json",
+  "video": "public/reels/003-agar-51-foiz.mp4",
+  "media_id": "18129753272488195",
+  "permalink": "https://www.instagram.com/reel/DfHqy2gDJjV/"
+ },
+ {
+  "date": "2026-11-01",
+  "topic": "Investordan \"yo'q\" eshitganda nima qilish kerak: stickman, tovush effektlari, ruscha versiya",
+  "script": "scripts/005-yoq-eshitganda.json",
+  "video": "public/reels/005-yoq-eshitganda-ru.mp4",
+  "media_id": "18063835001558732",
+  "permalink": "https://www.instagram.com/reel/DfM35lYEzvz/"
+ },
+ {
+  "date": "2026-11-01",
+  "topic": "Investage reklamasi: motion-grafika, egasining ovozi, ruscha yozuvlar (profilda pin uchun)",
+  "script": "scripts/006-investage-reklama.json",
+  "video": "public/reels/006-investage-reklama.mp4",
+  "media_id": "17956542192278156",
+  "permalink": "https://www.instagram.com/reel/DfM-Da4lffU/"
+ },
+ {
+  "date": "2026-11-02",
+  "topic": "Topishmoq: yo'qolgan 1 000 so'm (AI rasmlar, VoiceLab Amir diktori, ruscha tarjima)",
+  "script": "scripts/008-yoqolgan-ming-som.json",
+  "video": "public/reels/008-yoqolgan-ming-som.mp4",
+  "media_id": "17946514197359635",
+  "permalink": "https://www.instagram.com/reel/DfP3U3EEzRg/"
+ },
+ {
+  "date": "2026-11-03",
+  "topic": "Topishmoq: yo'qolgan 1 000 so'm, tez versiya (53 s, so'zma-so'z subtitr, SFX) — 008 o'rniga",
+  "script": "scripts/009-yoqolgan-ming-som-tez.json",
+  "video": "public/reels/009-yoqolgan-ming-som-tez.mp4",
+  "media_id": "18114448577614287",
+  "permalink": "https://www.instagram.com/reel/DfRPGdEkcr9/"
+ },
+ {
+  "date": "2026-11-03",
+  "topic": "Haqiqiy voqea: Ronald Wayne Apple'dagi 10% ulushini $800 ga sotgan (egasining ovozi, AI foto uslubi, hujjatli musiqa)",
+  "script": "scripts/011-apple-800-dollar.json",
+  "video": "public/reels/011-apple-800-dollar.mp4",
+  "media_id": "18077911691459519",
+  "permalink": "https://www.instagram.com/reel/DfSal9Yj9-4/"
+ },
+ {
+  "date": "2026-11-04",
+  "topic": "Haqiqiy voqea: Apple va Ronald Wayne, 011 ning yangi versiyasi (Wikimedia haqiqiy fotolari, tiniqlashtirilgan ovoz, AI belgisisiz)",
+  "script": "scripts/012-apple-800-dollar-real.json",
+  "video": "public/reels/012-apple-800-dollar-real.mp4",
+  "media_id": "18116881466169142",
+  "permalink": "https://www.instagram.com/reel/DfToOSICJGe/"
+ },
+ {
+  "date": "2026-11-04",
+  "topic": "Haqiqiy voqea: Coca-Cola birinchi yili kuniga 9 stakan, bugun 2,2 milliard (Kurzgesagt uslubidagi vektor animatsiya, egasining ovozi, savol hook)",
+  "script": "scripts/014-coca-cola-9-stakan.json",
+  "video": "public/reels/014-coca-cola-9-stakan.mp4",
+  "media_id": "18119161643277368",
+  "permalink": "https://www.instagram.com/reel/DfVGJjcjplY/"
+ },
+ {
+  "date": "2026-11-05",
+  "topic": "Haqiqiy voqea: 2008-yilda 7 investor Airbnb'ning 10% ulushini 150 000 $ ga olmagan, 2020-yil IPO kuni 100 mlrd $ dan ortiq (014 xulosalari: raqam o'rtada, Airbnb tushuntirildi, ha/yo'q izoh savoli)",
+  "script": "scripts/016-airbnb-7-investor.json",
+  "video": "public/reels/016-airbnb-7-investor.mp4",
+  "media_id": "18107869169200765",
+  "permalink": "https://www.instagram.com/reel/DfW69W-mRBz/"
+ },
+ {
+  "date": "2026-11-08",
+  "topic": "Savol: investor 100 000 $ bersa, qanday biznes qilasiz (kafe / onlayn do'kon / xizmat, g'oya emas reja, 40/30/20/10 taqsimot misoli; egasining ovozi, faqat o'zbekcha subtitr, izohga g'oya chaqirig'i)",
+  "script": "scripts/020-100-ming-biznes.json",
+  "video": "public/reels/020-100-ming-biznes.mp4",
+  "media_id": "18124741583516588",
+  "permalink": "https://www.instagram.com/reel/Dfewa5MDrnQ/"
+ },
+ {
+  "date": "2026-11-08",
+  "topic": "Haqiqiy voqea, viktorina: Samsung birinchi nima sotgan (A shakar / B ugra / C televizor; 1938 baliq-sabzavot-ugra, 1953 shakar, 1969 elektronika, 2025 tushum 200 mlrd $+). 30 s format: savol 0-soniyada, izohga chaqiriq javobdan oldin, subtitr markazda, oxirida Nokia savoli",
+  "script": "scripts/021-samsung-30.json",
+  "video": "public/reels/021-samsung-30.mp4",
+  "media_id": "17915015979563516",
+  "permalink": "https://www.instagram.com/reel/DffJFM7HWrf/"
+ },
+ {
+  "date": "2026-11-09",
+  "topic": "Karusel (8 slayd): investorga birinchi xabar — 4 qatorlik shablon, «bunday emas / bunday» misollari, to'qima namunaviy xabar; chaqiriq: saqlash va do'stga yuborish (2026-11-09 profil tahlili bo'yicha)",
+  "script": "../carousels/001-investorga-xabar/slides.html",
+  "video": "public/carousels/001-investorga-xabar/",
+  "media_id": "18373591318246617",
+  "permalink": "https://www.instagram.com/p/DfhyMYMlH3b/"
+ },
+ {
+  "date": "2026-11-10",
+  "topic": "Karusel (9 slayd): pitch deck — 10 slayd, 4 savolga javob; to'qima «Daftar» misollari; chaqiriq: saqlash va do'stga yuborish",
+  "script": "../carousels/002-pitch-deck/slides.html",
+  "video": "public/carousels/002-pitch-deck/",
+  "media_id": "18004511843800976",
+  "permalink": "https://www.instagram.com/p/Dfkcg1XCYPU/"
+ },
+ {
+  "date": "2026-11-24",
+  "topic": "O‘zbek kompaniyalari 1-qism: Payme — 51% 2019-yilda 5,5 mln $ (TBC), qolgan 49% 2023-yilda 55,7 mln $ (×10). Ovozsiz, HyperFrames UI-motion uslubi (@motionthekx namunasi), teal+to‘q sariq palitra, yangi alifbo, musiqa: Creative Technology Showreel (Pixabay), 36 s, javob 19-soniyada; keyingisi Uzum",
+  "script": "hf/023-payme-v5/",
+  "video": "public/reels/023-payme-10-baravar.mp4",
+  "media_id": "18038636267664853",
+  "permalink": "https://www.instagram.com/reel/DgGUTRrCEtV/"
+ },
+ {
+  "date": "2026-11-24",
+  "topic": "Özbek kompaniyalari 2-qism: Uzum — 1 milliard $ ga 17 oyda (2022-10 → 2024-03, 1,16 mlrd $, birinchi unikorn); hozirgi holat 2025-08: 17 mln oylik foydalanuvchi, 16 000 sotuvchi, 1 500+ punkt, kuniga 200 000+ buyurtma, ≈1,5 mlrd $ (Tencent). Hook: aylanuvchi 17 000 000 + sirli «?» ilova → Uzum logosi. Remotion (React), marjon/qora/oq palitra, yangi alifbo, musiqa: Tech House vibes (Mixkit), 45 s, 60 fps; keyingisi Click",
+  "script": "../remotion/src/UzumV4.jsx",
+  "video": "public/reels/024-uzum-17-oy.mp4",
+  "media_id": "17915623542568709",
+  "permalink": "https://www.instagram.com/reel/DgHVkOJlP4v/"
+ },
+ {
+  "date": "2026-11-25",
+  "topic": "Biznesga 100 mln söm kerak — qayerdan olasiz? Bank (≈23%, 3 yilda 139 mln + garov; Markaziy bank 2026), qarindoş, investor (20% uluş, misol); össa — kredit arzon, yopilsa — investor xavfsiz. Kollaj-explainer (namuna: birfoiz_), AI odamlar (Google AI Studio Nano Banana 2 Lite, qahramon Bekzod), qog'oz/stiker uslubi, musiqasiz, egasining klon ovozi (Navoiy calm), 47 s, CTA: izohda 1/2/3",
+  "script": "hf/026-100-mln/",
+  "video": "public/reels/026-100-mln-qayerdan.mp4",
+  "media_id": "18039884843659116",
+  "permalink": "https://www.instagram.com/reel/DgIwISqCfxL/"
+ }
 ]

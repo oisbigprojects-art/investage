@@ -1,0 +1,5 @@
+out/
+node_modules/
+# Mixkit/Pixabay litsenziyasi fayllarni tarqatishni taqiqlaydi — mahalliy nusxa: ../reels/out/sfx va ../reels/out/music
+public/sfx/
+public/music/

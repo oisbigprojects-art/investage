@@ -1,0 +1,16 @@
+{
+  "name": "investage-remotion",
+  "private": true,
+  "description": "Investage reels: Remotion (React) bilan motion grafika",
+  "scripts": {
+    "studio": "remotion studio src/index.jsx",
+    "render:uzum": "remotion render src/index.jsx Uzum out/024-uzum.mp4"
+  },
+  "dependencies": {
+    "@remotion/cli": "4.0.546",
+    "@remotion/fonts": "4.0.546",
+    "react": "18.3.1",
+    "react-dom": "18.3.1",
+    "remotion": "4.0.546"
+  }
+}

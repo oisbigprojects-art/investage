@@ -159,19 +159,24 @@ export default async function Home() {
   const t = await getT();
   const points = (role) => [1, 2, 3, 4].map((i) => t(`home.${role}_p${i}`));
   // Qidiruv tizimlari uchun tashkilot haqida tuzilgan ma'lumot (schema.org)
+  // logo: Google talabi — kvadrat, kamida 112×112 (public/logo-square.png, 512×512)
   const orgLd = {
     '@context': 'https://schema.org',
     '@type': 'Organization',
+    '@id': `${SITE_URL}/#organization`,
     name: 'Investage',
     url: SITE_URL,
-    logo: `${SITE_URL}/logo.webp`,
+    logo: { '@type': 'ImageObject', url: `${SITE_URL}/logo-square.png`, width: 512, height: 512 },
     description: t('meta.site_desc'),
     areaServed: 'UZ',
     contactPoint: [{ '@type': 'ContactPoint', contactType: 'customer support', email: CONTACT.email, telephone: CONTACT.phone, availableLanguage: ['uz', 'ru', 'en'] }],
   };
+  // Qidiruv natijasidagi sayt nomi uchun
+  const siteLd = { '@context': 'https://schema.org', '@type': 'WebSite', name: 'Investage', alternateName: 'investage.uz', url: SITE_URL, publisher: { '@id': `${SITE_URL}/#organization` } };
   return (
     <>
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(orgLd).replace(/</g, '\\u003c') }} />
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(siteLd).replace(/</g, '\\u003c') }} />
       <Splash />
       <section className="hero">
         <div className="hero-copy">

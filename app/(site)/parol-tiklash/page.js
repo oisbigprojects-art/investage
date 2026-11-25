@@ -20,7 +20,7 @@ export default async function ResetPage({ searchParams }) {
       <form action={requestReset} className="card form">
         <label>
           {t('form.email')}
-          <input name="email" type="email" required autoComplete="email" placeholder="name@company.com" />
+          <input name="email" type="email" required autoComplete="email" autoCapitalize="none" autoCorrect="off" spellCheck={false} maxLength={200} placeholder="name@company.com" />
         </label>
         <Turnstile key={Date.now()} />
         <button className="btn btn-gold" type="submit">{t('reset.submit')}</button>

@@ -7,10 +7,28 @@ import { createClient, getSession } from '@/lib/supabase/server';
 import { originUrl } from '@/lib/site-url';
 import { getT } from '@/lib/i18n/server';
 import { MIN_PW } from '@/lib/password';
-import { QUESTIONS, postalError, sanitize } from '@/lib/onboarding';
+import { QUESTIONS, REGIONS, normalizePostal, postalError, postalRegions, sanitize } from '@/lib/onboarding';
 
 
 const back = (path, key, msg) => redirect(`${path}?${key}=${encodeURIComponent(msg)}`);
+
+// Email manzilini tozalash: telefon klaviaturasi qo'shgan bo'shliq, ko'rinmas belgi, bosh harf
+// ("Ism@Yandex.ru ", "ism @mail.ru") va oxiridagi nuqta olib tashlanadi. Supabase'ga doim bir xil ko'rinishda boradi.
+const cleanEmail = (v) =>
+  String(v || '').normalize('NFKC').replace(/[s​-‍﻿]/g, '').replace(/.+$/, '').toLowerCase().slice(0, 200);
+const EMAIL_RE = /^[^@s]+@[^@s]+.[a-z]{2,}$/;
+
+// Supabase xatosini foydalanuvchiga tushunarli matnga aylantiradi (aks holda inglizcha xom matn chiqardi)
+function signupError(t, error) {
+  if (error.code === 'captcha_failed') return t('auth.err_captcha');
+  if (error.code === 'email_address_invalid' || error.code === 'validation_failed') return t('auth.err_email');
+  if (error.code === 'user_already_exists' || error.code === 'email_exists') return t('auth.err_exists');
+  if (error.code === 'weak_password') return t('auth.err_fields', { n: MIN_PW });
+  if (error.code === 'over_email_send_rate_limit' || error.code === 'over_request_rate_limit' || error.status === 429) return t('auth.err_rate');
+  // Xat yuborilmadi (pochta serveri rad etdi va h.k.): sabab Vercel loglarida ko'rinadi
+  console.error('signup failed', error.code, error.status, error.message);
+  return t('auth.err_send');
+}
 
 // Turnstile tokeni: Supabase tekshiradi (Authentication → Attack Protection)
 const captcha = (formData) => String(formData.get('cf-turnstile-response') || '') || undefined;
@@ -27,7 +45,7 @@ async function passwordOk(email, password, captchaToken) {
 
 export async function signup(formData) {
   const t = await getT();
-  const email = String(formData.get('email') || '').trim();
+  const email = cleanEmail(formData.get('email'));
   const password = String(formData.get('password') || '');
   const full_name = String(formData.get('full_name') || '').trim();
   const role = formData.get('role') === 'startup' ? 'startup' : 'investor';
@@ -35,6 +53,7 @@ export async function signup(formData) {
   if (!email || password.length < MIN_PW || !full_name) {
     back('/royxat', 'xato', t('auth.err_fields', { n: MIN_PW }));
   }
+  if (!EMAIL_RE.test(email)) back('/royxat', 'xato', t('auth.err_email'));
   if (formData.get('agree') !== 'on') back('/royxat', 'xato', t('auth.err_agree'));
 
   const origin = await originUrl();
@@ -45,8 +64,7 @@ export async function signup(formData) {
     password,
     options: { data: { role, full_name }, emailRedirectTo: `${origin}/auth/callback`, captchaToken: captcha(formData) },
   });
-  if (error?.code === 'captcha_failed') back('/royxat', 'xato', t('auth.err_captcha'));
-  if (error) back('/royxat', 'xato', error.message);
+  if (error) back('/royxat', 'xato', signupError(t, error));
 
   // Email tasdiqlash o'chirilgan bo'lsa — darhol kabinetga
   if (data.session) redirect('/kabinet');
@@ -55,7 +73,7 @@ export async function signup(formData) {
 
 export async function login(formData) {
   const t = await getT();
-  const email = String(formData.get('email') || '').trim();
+  const email = cleanEmail(formData.get('email'));
   const password = String(formData.get('password') || '');
   const supabase = await createClient();
   const { error } = await supabase.auth.signInWithPassword({ email, password, options: { captchaToken: captcha(formData) } });
@@ -91,8 +109,13 @@ export async function finishOnboarding(_prev, formData) {
   const role = google ? String(formData.get('role') || '') : profile.role;
   if (!QUESTIONS[role]) return { error: t('ob.err_role') };
   const region = String(formData.get('region') || '');
-  const postal = String(formData.get('postal') || '').trim().toUpperCase().slice(0, 12);
+  const postal = normalizePostal(region, formData.get('postal'));
   const perr = postalError(region, postal);
+  if (perr === 'ob.err_postal_region') {
+    // Indeks qaysi viloyatniki ekanini aytamiz: foydalanuvchi nimani tuzatishni darhol ko'radi
+    const r = REGIONS.find((x) => x.v === postalRegions(postal)[0]);
+    return { error: t('ob.err_postal_region_is', { r: r?.[t.lang] || r?.uz || '' }) };
+  }
   if (perr) return { error: t(perr) };
   const raw = Object.fromEntries(QUESTIONS[role].map((q) => [q.id, q.type === 'multi' ? formData.getAll(q.id).map(String) : String(formData.get(q.id) || '')]));
   const answers = sanitize(role, raw);
@@ -120,12 +143,35 @@ export async function verifyMfa(formData) {
 // Tasdiqlash xatini qayta yuborish. Javob har doim bir xil: bunday email bor-yo'qligini oshkor qilmaymiz
 export async function resendConfirmation(formData) {
   const t = await getT();
-  const email = String(formData.get('email') || '').trim().slice(0, 200);
+  const email = cleanEmail(formData.get('email'));
   if (!email.includes('@')) redirect(`/kirish?xato=${encodeURIComponent(t('reset.err_email'))}&tasdiq=1`);
   const origin = await originUrl();
   const supabase = await createClient();
   await supabase.auth.resend({ type: 'signup', email, options: { emailRedirectTo: `${origin}/auth/callback`, captchaToken: captcha(formData) } });
   back('/kirish', 'xabar', t('auth.resend_sent'));
+}
+
+// Xatdagi tasdiqlash havolasi (/auth/confirm) faqat sahifa ochadi, tasdiqlash shu tugma bosilganda bo'ladi.
+// Sabab: Yandex, Mail.ru, Outlook kabi pochtalar xatdagi havolani xavfsizlik uchun oldindan ochib ko'radi
+// va bir martalik token foydalanuvchi bosmasdan oldin ishlatilib bo'lardi ("havola eskirgan" xatosi).
+const CONFIRM_NEXT = { recovery: '/yangi-parol', email_change: '/kabinet/sozlamalar' };
+const CONFIRM_TYPES = ['signup', 'email', 'recovery', 'email_change', 'invite', 'magiclink'];
+
+export async function confirmEmail(formData) {
+  const t = await getT();
+  const token_hash = String(formData.get('token_hash') || '').slice(0, 300);
+  const type = String(formData.get('type') || '');
+  if (token_hash && CONFIRM_TYPES.includes(type)) {
+    const supabase = await createClient();
+    const { error } = await supabase.auth.verifyOtp({ token_hash, type });
+    if (!error) {
+      if (type === 'email_change') back(CONFIRM_NEXT.email_change, 'xabar', t('auth.msg_email_changed'));
+      redirect(CONFIRM_NEXT[type] || '/kabinet');
+    }
+    console.error('verifyOtp failed', type, error.code, error.message);
+  }
+  if (type === 'recovery') back('/parol-tiklash', 'xato', t('reset.err_expired'));
+  redirect(`/kirish?xato=${encodeURIComponent(t('auth.err_link'))}&tasdiq=1`);
 }
 
 export async function logout() {
@@ -137,7 +183,7 @@ export async function logout() {
 // ---------------- Parolni tiklash: havola emailga yuboriladi ----------------
 export async function requestReset(formData) {
   const t = await getT();
-  const email = String(formData.get('email') || '').trim().slice(0, 200);
+  const email = cleanEmail(formData.get('email'));
   if (!email.includes('@')) back('/parol-tiklash', 'xato', t('reset.err_email'));
   const origin = await originUrl();
   const supabase = await createClient();
@@ -186,8 +232,8 @@ export async function changeEmail(formData) {
   const t = await getT();
   const { supabase, user } = await getSession();
   if (!user) redirect('/kirish');
-  const email = String(formData.get('email') || '').trim().slice(0, 200);
-  if (!email.includes('@') || email === user.email) back(SETTINGS, 'xato', t('set.err_email'));
+  const email = cleanEmail(formData.get('email'));
+  if (!EMAIL_RE.test(email) || email === user.email) back(SETTINGS, 'xato', t('set.err_email'));
   const origin = await originUrl();
   const { error } = await supabase.auth.updateUser({ email }, { emailRedirectTo: `${origin}/auth/callback?next=/kabinet/sozlamalar` });
   if (error) back(SETTINGS, 'xato', error.message);

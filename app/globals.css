@@ -138,6 +138,7 @@ p { margin: 0 0 0.9em; }
 .flash { padding: 13px 18px; border-radius: 16px; margin-bottom: 18px; font-size: 0.95rem; border: 1px solid transparent; }
 .flash-ok { background: var(--ok-wash); color: var(--ok); border-color: rgba(19, 138, 86, 0.3); }
 .flash-bad { background: var(--bad-wash); color: var(--bad); border-color: rgba(210, 63, 63, 0.3); }
+.postal-err { color: var(--bad); font-size: 0.85em; }
 
 /* ------------------------------------------------------------ Chips & marks */
 .chip { display: inline-flex; align-items: center; gap: 7px; font-size: 0.78rem; font-weight: 600; padding: 4px 11px; border-radius: 999px; background: var(--panel-2); color: var(--text); border: 1px solid var(--line); white-space: nowrap; }

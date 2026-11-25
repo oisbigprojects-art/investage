@@ -27,7 +27,7 @@ export default async function LoginPage({ searchParams }) {
       <form action={login} className="card form">
         <label>
           {t('form.email')}
-          <input name="email" type="email" required autoComplete="email" placeholder="name@company.com" />
+          <input name="email" type="email" required autoComplete="email" autoCapitalize="none" autoCorrect="off" spellCheck={false} maxLength={200} placeholder="name@company.com" />
         </label>
         <label>
           {t('form.password')}
@@ -44,7 +44,7 @@ export default async function LoginPage({ searchParams }) {
           <p className="muted small">{t('auth.resend_text')}</p>
           <label>
             {t('form.email')}
-            <input name="email" type="email" required autoComplete="email" placeholder="name@company.com" />
+            <input name="email" type="email" required autoComplete="email" autoCapitalize="none" autoCorrect="off" spellCheck={false} maxLength={200} placeholder="name@company.com" />
           </label>
           <Turnstile key={Date.now()} />
           <button className="btn btn-ghost" type="submit">

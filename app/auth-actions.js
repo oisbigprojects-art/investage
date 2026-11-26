@@ -7,7 +7,7 @@ import { createClient, getSession } from '@/lib/supabase/server';
 import { originUrl } from '@/lib/site-url';
 import { getT } from '@/lib/i18n/server';
 import { MIN_PW } from '@/lib/password';
-import { QUESTIONS, REGIONS, normalizePostal, postalError, postalRegions, sanitize } from '@/lib/onboarding';
+import { QUESTIONS, normalizePostal, postalError, postalRegions, sanitize } from '@/lib/onboarding';
 
 
 const back = (path, key, msg) => redirect(`${path}?${key}=${encodeURIComponent(msg)}`);
@@ -108,21 +108,23 @@ export async function finishOnboarding(_prev, formData) {
   const google = (user.app_metadata?.provider || 'email') !== 'email';
   const role = google ? String(formData.get('role') || '') : profile.role;
   if (!QUESTIONS[role]) return { error: t('ob.err_role') };
-  const region = String(formData.get('region') || '');
+  let region = String(formData.get('region') || '');
   const postal = normalizePostal(region, formData.get('postal'));
+  // To'g'ri indeks boshqa viloyatniki bo'lsa, rad etmaymiz: indeks aniqroq, viloyat unga qarab olinadi
+  if (postalError(region, postal) === 'ob.err_postal_region') region = postalRegions(postal)[0];
   const perr = postalError(region, postal);
-  if (perr === 'ob.err_postal_region') {
-    // Indeks qaysi viloyatniki ekanini aytamiz: foydalanuvchi nimani tuzatishni darhol ko'radi
-    const r = REGIONS.find((x) => x.v === postalRegions(postal)[0]);
-    return { error: t('ob.err_postal_region_is', { r: r?.[t.lang] || r?.uz || '' }) };
-  }
   if (perr) return { error: t(perr) };
   const raw = Object.fromEntries(QUESTIONS[role].map((q) => [q.id, q.type === 'multi' ? formData.getAll(q.id).map(String) : String(formData.get(q.id) || '')]));
   const answers = sanitize(role, raw);
   if (!answers) return { error: t('ob.err_answers') };
   if (formData.get('agree') !== 'on') return { error: t('auth.err_agree') };
   const { error } = await supabase.rpc('finish_onboarding', { p_role: role, p_region: region, p_postal: postal, p_answers: answers });
-  if (error) return { error: /indeksi/.test(error.message) ? t('ob.err_postal_region') : t('ob.err_save') };
+  if (error) {
+    console.error('finish_onboarding failed', region, postal, error.code, error.message);
+    // Bazadagi tekshiruv eski 7xxxxx indeksni hali qabul qilmasa (2026-11-26 SQL ishga tushirilmagan bo'lsa)
+    if (/indeksi/.test(error.message)) return { error: t(postal[0] === '7' ? 'ob.err_postal_old' : 'ob.err_postal_region') };
+    return { error: t('ob.err_save') };
+  }
   redirect('/kabinet');
 }
 

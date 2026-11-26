@@ -23,7 +23,7 @@ export default async function OnboardingPage() {
   const st = localize('startup', t.lang);
   const inv = localize('investor', t.lang);
   const questions = chooseRole ? { startup: st.questions, investor: inv.questions } : { fixed: (profile.role === 'startup' ? st : inv).questions };
-  const raw = pickStrings(t, ['signup.who', 'signup.startup', 'signup.startup_sub', 'signup.investor', 'signup.investor_sub', 'ob.role_fixed', 'ob.region', 'ob.region_pick', 'ob.postal', 'ob.postal_hint', 'ob.postal_hint_abroad', 'ob.postal_hint_region', 'ob.err_postal', 'ob.err_postal_abroad', 'ob.err_postal_old', 'ob.err_postal_unknown', 'ob.err_postal_region_is', 'ob.submit']);
+  const raw = pickStrings(t, ['signup.who', 'signup.startup', 'signup.startup_sub', 'signup.investor', 'signup.investor_sub', 'ob.role_fixed', 'ob.region', 'ob.region_pick', 'ob.postal', 'ob.postal_hint', 'ob.postal_hint_abroad', 'ob.postal_hint_region', 'ob.region_from_postal', 'ob.err_postal', 'ob.err_postal_abroad', 'ob.err_postal_old', 'ob.err_postal_unknown', 'ob.err_postal_region_is', 'ob.submit']);
   const s = Object.fromEntries(Object.entries(raw).map(([k, v]) => [k.split('.')[1], v]));
 
   return (

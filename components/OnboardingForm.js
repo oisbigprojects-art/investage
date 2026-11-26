@@ -10,21 +10,30 @@ export default function OnboardingForm({ s, regions, questions, chooseRole, role
   const [role, setRole] = useState('');
   const [region, setRegion] = useState('');
   const [postal, setPostal] = useState('');
+  const [auto, setAuto] = useState(false);
   const abroad = region === 'chet';
   const code = normalizePostal(region, postal);
   const cur = regions.find((r) => r.v === region);
-  // Yozish davomida qisqa izoh: indeks qaysi viloyatniki yoki nimasi noto'g'ri (yuborishdan oldin ko'rinadi)
+  // Yozish davomida qisqa izoh: indeksda nimasi noto'g'ri (yuborishdan oldin ko'rinadi)
   const full = abroad ? code.length >= 3 : code.length >= 6;
   const perr = region && full ? postalError(region, code) : '';
   const owner = regions.find((r) => r.v === postalRegions(code)[0]);
   const live = !perr ? '' : perr === 'ob.err_postal_region' ? s.err_postal_region_is.replace('{r}', owner?.label || '') : s[perr.slice(3)] || '';
 
-  // Indeks kiritilganda viloyat hali tanlanmagan bo'lsa, indeksga qarab tanlab qo'yamiz
+  // Indeks viloyatdan aniqroq: to'liq indeks boshqa viloyatniki bo'lsa, viloyatni indeksga qarab almashtiramiz
+  // (viloyat ro'yxatdan adashib tanlangan bo'lsa ham to'g'ri indeks rad etilmasin). Chet el indekslariga tegilmaydi.
   const onPostal = (v) => {
     setPostal(v);
-    if (region) return;
+    if (abroad) return;
     const match = postalRegions(normalizePostal('', v));
-    if (match.length) setRegion(match[0]);
+    if (match.length && !match.includes(region)) {
+      setRegion(match[0]);
+      setAuto(true);
+    }
+  };
+  const onRegion = (v) => {
+    setRegion(v);
+    setAuto(false);
   };
   const qs = chooseRole ? questions[role] || [] : questions.fixed;
 
@@ -52,7 +61,7 @@ export default function OnboardingForm({ s, regions, questions, chooseRole, role
 
       <label>
         {s.region}
-        <select name="region" required value={region} onChange={(e) => setRegion(e.target.value)}>
+        <select name="region" required value={region} onChange={(e) => onRegion(e.target.value)}>
           <option value="" disabled>{s.region_pick}</option>
           {regions.map((r) => (
             <option key={r.v} value={r.v}>{r.label}</option>
@@ -76,7 +85,7 @@ export default function OnboardingForm({ s, regions, questions, chooseRole, role
         {live ? (
           <small className="postal-err" role="status">{live}</small>
         ) : (
-          <small className="muted">{abroad ? s.postal_hint_abroad : cur?.p ? s.postal_hint_region.replace('{p}', cur.p.join(' / ')) : s.postal_hint}</small>
+          <small className="muted">{abroad ? s.postal_hint_abroad : auto && cur ? s.region_from_postal.replace('{r}', cur.label) : cur?.p ? s.postal_hint_region.replace('{p}', cur.p.join(' / ')) : s.postal_hint}</small>
         )}
       </label>
 
